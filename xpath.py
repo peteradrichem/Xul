@@ -18,7 +18,7 @@ from tab.xml.etree import xml_xpath
 
 
 # Versie
-__version_info__ = ('1', '4', '0')
+__version_info__ = ('1', '4', '1')
 __version__ = '.'.join(__version_info__)
 
 description = "Use XPath expression to select nodes in XML file(s)."
@@ -122,7 +122,7 @@ def print_result_list(result_list):
 
 
 # Logging op het console
-init_console_logging('info')
+init_console_logging('info', "%(message)s")
 
 # CLI parsen: XPath expression & XML file(s)
 xpath_exp, xml_files = parse_cli()

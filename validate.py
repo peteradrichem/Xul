@@ -15,7 +15,7 @@ from tab.xml.etree import build_xml_tree, build_xml_schema, build_dtd
 
 
 # Versie
-__version_info__ = ('1', '8', '0')
+__version_info__ = ('1', '8', '1')
 __version__ = '.'.join(__version_info__)
 
 description = "Validate XML files against an XSD or DTD file"
@@ -47,7 +47,7 @@ def parse_cli():
 
 
 # Logging op het console
-init_console_logging('info')
+init_console_logging('info', "%(message)s")
 
 # CLI parsen: XSD/DTD file & XML files
 xsd_file, dtd_file, xml_files = parse_cli()
