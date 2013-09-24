@@ -18,13 +18,13 @@ from tab.xml.etree import xml_xpath
 
 
 # Versie
-__version_info__ = ('1', '4', '1')
+__version_info__ = ('1', '4', '2')
 __version__ = '.'.join(__version_info__)
 
 description = "Use XPath expression to select nodes in XML file(s)."
 epilog = "Documentation: http://docu.npoict.nl/applicatiebeheer/documentatie/xml_scripts"
 
-def parse_cli():
+def parse_cl():
     ''' Lees de command-line options van het XPath script uit
 
         Resultaat tuple bevat:
@@ -40,9 +40,7 @@ def parse_cli():
         help="XPath expression")
 
     # Parse script's command line
-    (options, args) = parser.parse_args()
-
-    return options.xpath_exp, args
+    return parser.parse_args()
 
 
 def print_node(node):
@@ -125,22 +123,22 @@ def print_result_list(result_list):
 init_console_logging('info', "%(message)s")
 
 # CLI parsen: XPath expression & XML file(s)
-xpath_exp, xml_files = parse_cli()
+(options, xml_files) = parse_cl()
 
 # XPath expression
-if not xpath_exp:
+if not options.xpath_exp:
     stderr.write('No XPath expression specified\n')
     exit(50)
 # XML bestand meegegeven?
 if not xml_files:
-    stderr.write("No XML file to use XPath '%s' on\n" % xpath_exp)
+    stderr.write("No XML file to use XPath '%s' on\n" % options.xpath_exp)
     exit(0)
 
 # Loop de XML files af
 for xml_f in xml_files:
     print "XML file: %s" % xml_f
-    print "XPath: %s" % xpath_exp
-    xp_result = xml_xpath(xml_f, xpath_exp)
+    print "XPath: %s" % options.xpath_exp
+    xp_result = xml_xpath(xml_f, options.xpath_exp)
     if xp_result is None:
         print "no result (error)"
     # STRING - string - lxml.etree._ElementStringResult - smart string (.is_text/.is_tail)

@@ -15,13 +15,13 @@ from tab.xml.etree import build_xml_tree, build_xml_schema, build_dtd
 
 
 # Versie
-__version_info__ = ('1', '8', '1')
+__version_info__ = ('1', '8', '2')
 __version__ = '.'.join(__version_info__)
 
 description = "Validate XML files against an XSD or DTD file"
 epilog = "Documentation: http://docu.npoict.nl/applicatiebeheer/documentatie/xml_scripts"
 
-def parse_cli():
+def parse_cl():
     ''' Leest de opgegeven command-line options uit
 
         Resultaat tuple bevat:
@@ -41,25 +41,23 @@ def parse_cli():
         help="DTD file to validate XML file(s)")
 
     # Parse script's command line
-    (options, args) = parser.parse_args()
-
-    return options.xsd_file, options.dtd_file, args
+    return parser.parse_args()
 
 
 # Logging op het console
 init_console_logging('info', "%(message)s")
 
 # CLI parsen: XSD/DTD file & XML files
-xsd_file, dtd_file, xml_files = parse_cli()
+(options, xml_files) = parse_cl()
 
 # XSD of DTD?
-if xsd_file:
-    validator = build_xml_schema(xsd_file)
-    val_file = xsd_file
+if options.xsd_file:
+    validator = build_xml_schema(options.xsd_file)
+    val_file = options.xsd_file
     val_type = "XSD"
-elif dtd_file:
-    validator = build_dtd(dtd_file)
-    val_file = dtd_file
+elif options.dtd_file:
+    validator = build_dtd(options.dtd_file)
+    val_file = options.dtd_file
     val_type = "DTD"
 else:
     validator = None

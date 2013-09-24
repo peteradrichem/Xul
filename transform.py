@@ -15,13 +15,13 @@ from tab.xml.etree import build_xsl_transform, xml_transformer
 
 
 # Versie
-__version_info__ = ('1', '7', '1')
+__version_info__ = ('1', '7', '2')
 __version__ = '.'.join(__version_info__)
 
 description = "Transform XML file(s) with XSLT file"
 epilog = "Documentation: http://docu.npoict.nl/applicatiebeheer/documentatie/xml_scripts"
 
-def parse_cli():
+def parse_cl():
     ''' Leest de opgegeven command-line options uit
 
         Resultaat tuple bevat:
@@ -36,20 +36,18 @@ def parse_cli():
         help="XSLT file to transform XML file(s)")
 
     # Parse script's command line
-    (options, args) = parser.parse_args()
-
-    return options.xslt_file, args
+    return parser.parse_args()
 
 
 # Logging op het console
 init_console_logging('info', "%(message)s")
 
 # CLI parsen: XSLT & XML file(s)
-xslt_file, xml_files = parse_cli()
+(options, xml_files) = parse_cl()
 
 # XSLT file
-if xslt_file:
-    transformer = build_xsl_transform(xslt_file)
+if options.xslt_file:
+    transformer = build_xsl_transform(options.xslt_file)
 else:
     stderr.write('No XSLT file specified\n')
     exit(105)
@@ -59,7 +57,7 @@ if not transformer:
     exit(105)
 # XML bestand meegegeven?
 if not xml_files:
-    stderr.write("Valid XSLT file '%s' (no XML file to operate on)\n" % xslt_file)
+    stderr.write("Valid XSLT file '%s' (no XML file to operate on)\n" % options.xslt_file)
     exit(0)
 
 # Loop de XML files af
