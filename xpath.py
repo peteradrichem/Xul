@@ -14,7 +14,7 @@ from sys import stderr
 #
 # Import NPO ICT TAB modules
 from tab.log import init_console_logging
-from tab.xml.etree import xml_xpath
+from tab.xml import etree
 
 
 # Versie
@@ -130,16 +130,25 @@ init_console_logging('info', "%(message)s")
 if not options.xpath_exp:
     stderr.write('No XPath expression specified\n')
     exit(50)
-# XML bestand meegegeven?
+xpath_obj = etree.build_xpath(options.xpath_exp)
+if not xpath_obj:
+    exit(60)
+print "XPath: %s" % options.xpath_exp
+
+# XML bestand(en) meegegeven?
 if not xml_files:
     stderr.write("No XML file to use XPath '%s' on\n" % options.xpath_exp)
     exit(0)
 
 # Loop de XML files af
 for xml_f in xml_files:
-    print "XML file: %s" % xml_f
-    print "XPath: %s" % options.xpath_exp
-    xp_result = xml_xpath(xml_f, options.xpath_exp)
+    print "\nFile: %s" % xml_f
+    xml_tree = etree.build_xml_tree(xml_f)
+    if not xml_tree:
+        stderr.write('Cannot use XPath on %s\n' % xml_f)
+        continue
+
+    xp_result = etree.et_xpath(xml_tree, xpath_obj)
     if xp_result is None:
         print "no result (error)"
     # STRING - string - lxml.etree._ElementStringResult - smart string (.is_text/.is_tail)
