@@ -10,7 +10,7 @@ from optparse import OptionParser
 from sys import stderr
 #
 # Import etree.tostring van lxml
-from lxml.etree import tostring
+#from lxml.etree import tostring
 #
 # Import NPO ICT TAB modules
 from tab.log import init_console_logging
@@ -97,7 +97,8 @@ def print_result_list(result_list):
                 el_tag = el.tag()
             else:
                 el_tag = "<%s>" % el.tag
-            # TEXT / TAIL - lxml.etree._ElementStringResult / lxml.etree._ElementUnicodeResult
+            # TEXT / TAIL - lxml.etree._ElementStringResult /
+            #               lxml.etree._ElementUnicodeResult
             # "/nebo_gids_export/zender/dag/uitzending/aflevering/text()"
             #   boom structuur die als lijst print_result_list() binnen komt
             if item and not item.isspace():
@@ -158,13 +159,12 @@ for xml_f in xml_files:
             print "%d results on lines:" % xp_r_len
         try:
             print_result_list(xp_result)
-        except IOError as inst:
-            (err_code, err_mesg) = inst.args
+        except IOError as e:
             # [Errno 32] Broken pipe afvangen
-            if err_code == 32:
-                stderr.write("%s\n" % err_mesg)
+            if e.errno == 32:
+                stderr.write("%s\n" % e.strerror)
             else:
-                stderr.write("%s\n" % err_mesg)
+                stderr.write("%s\n" % e.strerror)
                 exit(75)
     # FLOAT - float - .is_integer()
     # "number(/html/nummer)"    "count(/nebo_xml)"
