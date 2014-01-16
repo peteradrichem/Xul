@@ -65,8 +65,8 @@ for xml_f in xml_files:
     result = xml_transformer(xml_f, transformer)
     if result:
         try:
-            # UTF-8 en pretty print
-            #   http://docs.python.org/library/xml.etree.elementtree.html#xml.etree.ElementTree.ElementTree.write
+            # UTF-8 en pretty print (#xml.etree.ElementTree.ElementTree.write)
+            #   http://docs.python.org/2/library/xml.etree.elementtree.html
             result.write(stdout, encoding='UTF-8',
                     xml_declaration=True, pretty_print=True)
         # Vang AssertionError af
@@ -74,10 +74,9 @@ for xml_f in xml_files:
             stderr.write("Trouble with XSL transformation of %s\n" % xml_f)
             stderr.write("Cannot print XSLT result as XML: %s\n" % inst)
             print result
-        except IOError as inst:
-            (err_code, err_mesg) = inst.args
+        except IOError as e:
             # [Errno 32] Broken pipe afvangen
-            if err_code == 32:
+            if e.errno == 32:
                 pass
             else:
-                stderr.write("%s\n" % err_mesg)
+                stderr.write("%s\n" % e.strerror)
