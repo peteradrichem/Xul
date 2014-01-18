@@ -143,12 +143,7 @@ if not xml_files:
 # Loop de XML files af
 for xml_f in xml_files:
     print "\nFile: %s" % xml_f
-    xml_tree = etree.build_xml_tree(xml_f)
-    if not xml_tree:
-        stderr.write('Cannot use XPath on %s\n' % xml_f)
-        continue
-
-    xp_result = etree.et_xpath(xml_tree, xpath_obj)
+    xp_result = etree.call_xpath(xml_f, xpath_obj)
     if xp_result is None:
         print "no result (error)"
     # STRING - string - lxml.etree._ElementStringResult - smart string (.is_text/.is_tail)
