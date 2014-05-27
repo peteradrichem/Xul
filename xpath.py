@@ -13,12 +13,12 @@ from sys import stderr
 #from lxml.etree import tostring
 #
 # Import NPO ICT TAB modules
-from tab.log import init_console_logging
+from tab.log import setup_logger_console
 from tab.xml import etree
 
 
 # Versie
-__version_info__ = ('1', '5', '0')
+__version_info__ = ('1', '6', '0')
 __version__ = '.'.join(__version_info__)
 
 description = "Use XPath expression to select nodes in XML file(s)."
@@ -121,7 +121,7 @@ def print_result_list(result_list):
 
 
 # Logging op het console
-init_console_logging('info', "%(message)s")
+setup_logger_console()
 
 # CLI parsen: XPath expression & XML file(s)
 (options, xml_files) = parse_cl()

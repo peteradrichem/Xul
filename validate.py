@@ -10,12 +10,12 @@ from optparse import OptionParser
 from sys import stderr
 #
 # Import NPO ICT TAB modules
-from tab.log import init_console_logging
+from tab.log import setup_logger_console
 from tab.xml.etree import build_xml_tree, build_xml_schema, build_dtd
 
 
 # Versie
-__version_info__ = ('1', '8', '2')
+__version_info__ = ('1', '9', '0')
 __version__ = '.'.join(__version_info__)
 
 description = "Validate XML files against an XSD or DTD file"
@@ -45,7 +45,7 @@ def parse_cl():
 
 
 # Logging op het console
-init_console_logging('info', "%(message)s")
+setup_logger_console()
 
 # CLI parsen: XSD/DTD file & XML files
 (options, xml_files) = parse_cl()
