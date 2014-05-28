@@ -62,6 +62,7 @@ if not xml_files:
 
 # Loop de XML files af
 for xml_f in xml_files:
+    # Foutmeldingen via xml_transformer
     result = xml_transformer(xml_f, transformer)
     if result:
         try:
