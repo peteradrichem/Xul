@@ -4,5 +4,3 @@
 syntax: regexp
 .*\.pyc
 xml/
-xsd/
-xslt/
