@@ -2,33 +2,32 @@
 # coding=utf-8
 # vim: set encoding=utf-8 :
 
-""" XSD/DTD validatie tooltje """
+""" Validate XML files with a XSD or DTD file """
 
 
 # Import standaard Python modules
 from optparse import OptionParser
 from sys import stderr
 #
-# Import NPO ICT TAB modules
-from tab.log import setup_logger_console
-from tab.xml.etree import build_xml_tree, build_xml_schema, build_dtd
+# Import TAB modules
+from tab import setup_logger_console
+from tab.xml import build_xml_tree, build_xml_schema, build_dtd
 
 
 # Versie
-__version_info__ = ('1', '9', '0')
+__version_info__ = ('1', '9', '1')
 __version__ = '.'.join(__version_info__)
 
-description = "Validate XML files against an XSD or DTD file"
+description = "Validate XML files with a XSD or DTD file"
 epilog = "Documentation: http://docu.npoict.nl/applicatiebeheer/documentatie/xml_scripts"
 
 def parse_cl():
-    ''' Leest de opgegeven command-line options uit
-
-        Resultaat tuple bevat:
-        - XSD file
-        - DTD file
-        - XML files list
-    '''
+    """ Lees de command-line options uit.
+        Geef opties en bestanden lijst terug
+        - options.xsd_file: XSD file
+        - options.dtd_file: DTD file
+        - args: files list
+    """
     usage = """\t%prog -x xsd_file xml_file_1 ... xml_file_n
 \t%prog -d dtd_file xml_file_1 ... xml_file_n"""
     parser = OptionParser(usage=usage, description=description,
@@ -47,7 +46,7 @@ def parse_cl():
 # Logging op het console
 setup_logger_console()
 
-# CLI parsen: XSD/DTD file & XML files
+# Command-line parsen: XSD/DTD file & XML files
 (options, xml_files) = parse_cl()
 
 # XSD of DTD?
@@ -75,12 +74,13 @@ elif not validator:
 #
 # XML bestand meegegeven?
 if not xml_files:
-    stderr.write("Valid %s file '%s' (no XML file to operate on)\n" % (val_type,
-            val_file))
+    stderr.write("Valid %s file '%s'\n" % (val_type, val_file))
+    stderr.write("No XML file(s) to operate on\n")
     exit(0)
 
 # Loop de XML files af
 for xml_f in xml_files:
+    # Opm: build_xml_tree rapporteert XML fouten in xml_f
     xml_tree = build_xml_tree(xml_f)
     if xml_tree:
         # Probeer de ElementTree te valideren
