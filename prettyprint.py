@@ -39,12 +39,12 @@ def parse_cl():
 # Logging op het console
 setup_logger_console()
 
-# CLI parsen: XML files
+# Command-line parsen: XML files
 (options, xml_files) = parse_cl()
 
 # XML bestand meegegeven?
 if not xml_files:
-    stderr.write("No XML file to operate on\n")
+    stderr.write("No XML file(s) to operate on\n")
     exit(0)
 
 # XML parser t.b.v pretty printing (remove_blank_text) initialiseren
@@ -59,7 +59,7 @@ for xml_f in xml_files:
         try:
             xml_tree.write(stdout, encoding='UTF-8',
                     xml_declaration=True, pretty_print=True)
-            # Voorkomt "close failed in file object destructor:" meldingen
+            # Voorkom "close failed in file object destructor:" meldingen
             # bij meerdere XML bestanden en 'Broken pipe'
             stdout.flush()
         # 'IOError: [Errno 32] Broken pipe' afvangen
