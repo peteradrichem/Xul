@@ -2,7 +2,7 @@
 # coding=utf-8
 # vim: set encoding=utf-8 :
 
-""" XPath tooltje """
+""" XPath utility """
 
 
 # Import standaard Python modules
@@ -12,32 +12,34 @@ from sys import stderr
 # Import etree.tostring van lxml
 #from lxml.etree import tostring
 #
-# Import NPO ICT TAB modules
-from tab.log import setup_logger_console
-from tab.xml import etree
+# Import TAB modules
+from tab import setup_logger_console
+from tab.xml import build_xml_tree, build_xpath, call_xpath
 
 
 # Versie
-__version_info__ = ('1', '6', '0')
+__version_info__ = ('1', '7', '0')
 __version__ = '.'.join(__version_info__)
 
 description = "Use XPath expression to select nodes in XML file(s)."
 epilog = "Documentation: http://docu.npoict.nl/applicatiebeheer/documentatie/xml_scripts"
 
 def parse_cl():
-    ''' Lees de command-line options van het XPath script uit
-
-        Resultaat tuple bevat:
-        - XPath expression
-        - XML file(s)
-    '''
-
+    """ Lees de command-line options van het XPath script uit.
+        Geef opties en bestanden lijst terug
+        - options.xpath_exp: XPath expression
+        - options.lxml_method: lxml ElementTree.xpath method i.p.v. XPath class?
+        - args: files list
+    """
     usage = "%prog -p xpath xml_file_1 ... xml_file_n"
     parser = OptionParser(usage=usage, description=description,
         epilog=epilog, version="%prog " + __version__)
     parser.add_option("-x", "--xpath",
         action="store", type="string", dest="xpath_exp",
         help="XPath expression")
+    parser.add_option("-m", "--method",
+        action="store_true", default=False, dest="lxml_method",
+        help="use ElementTree.xpath method instead of XPath class")
 
     # Parse script's command line
     return parser.parse_args()
@@ -123,29 +125,45 @@ def print_result_list(result_list):
 # Logging op het console
 setup_logger_console()
 
-# CLI parsen: XPath expression & XML file(s)
+# Command-line parsen: XPath expression & XML file(s)
 (options, xml_files) = parse_cl()
 
 # XPath expression
-if not options.xpath_exp:
+if options.xpath_exp:
+    xpath_obj = build_xpath(options.xpath_exp)
+    if not xpath_obj:
+        exit(60)
+else:
     stderr.write('No XPath expression specified\n')
     exit(50)
-xpath_obj = etree.build_xpath(options.xpath_exp)
-if not xpath_obj:
-    exit(60)
-print "XPath: %s" % options.xpath_exp
 
 # XML bestand(en) meegegeven?
-if not xml_files:
+if xml_files:
+    print "XPath: %s" % options.xpath_exp
+else:
     stderr.write("No XML file to use XPath '%s' on\n" % options.xpath_exp)
     exit(0)
 
-# Loop de XML files af
+# Wordt de ElementTree.xpath method van lxml gebruikt?
+if options.lxml_method:
+    def do_xpath(xml_file):
+        """ Gebruik de lxml.etree.ElementTree.xpath method """
+        xml_tree = build_xml_tree(xml_file, lenient=False)
+        if not xml_tree:
+            return None
+        return xml_tree.xpath(options.xpath_exp)
+else:
+    def do_xpath(xml_file):
+        """ Gebruik de lxml.etree.XPath class """
+        return call_xpath(xml_file, xpath_obj)
+
+
+## Loop de XML files af
 for xml_f in xml_files:
     print "\nFile: %s" % xml_f
-    xp_result = etree.call_xpath(xml_f, xpath_obj)
+    xp_result = do_xpath(xml_f)
     if xp_result is None:
-        print "no result (error)"
+        print "No result (error)"
     # STRING - string - lxml.etree._ElementStringResult - smart string (.is_text/.is_tail)
     # "string(/voorspellingen/@startdatum)"
     elif hasattr(xp_result, "is_text") or hasattr(xp_result, "is_tail"):
