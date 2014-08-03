@@ -154,27 +154,27 @@ if options.lxml_method:
             return None
         else:
             root = xml_tree.getroot()
+            ns_map = {}
+            # Zijn er XML namespace (xmlns) gedefinieerd?
             if root.nsmap:
                 print "root:\t%s" % root.tag
                 print "Namespaces:"
-                ns_map = {}
                 for key in root.nsmap:
                     if key:
                         ns_map[key] = root.nsmap[key]
                         print "\t%s: %s" % (key, ns_map[key])
                     else:
-                        # root.nsmap.get(root.prefix)
+                        # default (None) namespace: root.nsmap.get(root.prefix)
+                        # prefix t.b.v XPath: 'r'
                         ns_map['r'] = root.nsmap[key]
                         print "\tr: %s" % ns_map['r']
-                try:
-                    xp_result = xml_tree.xpath(options.xpath_exp, namespaces=ns_map)
-                except XPathEvalError as e:
-                    stderr.write("XPath '%s' evaluation error: %s\n" %
-                            (options.xpath_exp, e))
-                    xp_result = None
-                return xp_result
-            else:
-                return xml_tree.xpath(options.xpath_exp)
+            try:
+                xp_result = xml_tree.xpath(options.xpath_exp, namespaces=ns_map)
+            except XPathEvalError as e:
+                stderr.write("XPath '%s' evaluation error: %s\n" %
+                        (options.xpath_exp, e))
+                xp_result = None
+            return xp_result
 else:
     def do_xpath(xml_file):
         """ Gebruik de lxml.etree.XPath class """
