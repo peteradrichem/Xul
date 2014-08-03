@@ -11,6 +11,7 @@ from sys import stderr
 #
 # Import etree.tostring van lxml
 #from lxml.etree import tostring
+from lxml.etree import XPathEvalError
 #
 # Import TAB modules
 from tab import setup_logger_console
@@ -151,7 +152,29 @@ if options.lxml_method:
         xml_tree = build_xml_tree(xml_file, lenient=False)
         if not xml_tree:
             return None
-        return xml_tree.xpath(options.xpath_exp)
+        else:
+            root = xml_tree.getroot()
+            if root.nsmap:
+                print "root:\t%s" % root.tag
+                print "Namespaces:"
+                ns_map = {}
+                for key in root.nsmap:
+                    if key:
+                        ns_map[key] = root.nsmap[key]
+                        print "\t%s: %s" % (key, ns_map[key])
+                    else:
+                        # root.nsmap.get(root.prefix)
+                        ns_map['r'] = root.nsmap[key]
+                        print "\tr: %s" % ns_map['r']
+                try:
+                    xp_result = xml_tree.xpath(options.xpath_exp, namespaces=ns_map)
+                except XPathEvalError as e:
+                    stderr.write("XPath '%s' evaluation error: %s\n" %
+                            (options.xpath_exp, e))
+                    xp_result = None
+                return xp_result
+            else:
+                return xml_tree.xpath(options.xpath_exp)
 else:
     def do_xpath(xml_file):
         """ Gebruik de lxml.etree.XPath class """
@@ -174,7 +197,7 @@ for xml_f in xml_files:
     elif hasattr(xp_result, "index"):
         xp_r_len = len(xp_result)
         if xp_r_len == 0:
-            print "no result"
+            print "no result (empy list)"
         elif xp_r_len == 1:
             print "result on line",
         else:
@@ -186,7 +209,7 @@ for xml_f in xml_files:
             if e.errno == 32:
                 stderr.write("%s\n" % e.strerror)
             else:
-                stderr.write("%s\n" % e.strerror)
+                stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
                 exit(75)
     # FLOAT - float - .is_integer()
     # "number(/html/nummer)"    "count(/nebo_xml)"
