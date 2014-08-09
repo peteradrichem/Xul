@@ -221,12 +221,9 @@ for xml_f in xml_files:
         try:
             print_result_list(xp_result)
         except IOError as e:
-            # [Errno 32] Broken pipe afvangen
-            if e.errno == 32:
-                stderr.write("%s\n" % e.strerror)
-            else:
+            # 'IOError: [Errno 32] Broken pipe' afvangen
+            if e.errno != 32:
                 stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
-                exit(75)
     # FLOAT - float - .is_integer()
     # "number(/html/nummer)"    "count(/nebo_xml)"
     # Opm: nan == NaN == not a number
