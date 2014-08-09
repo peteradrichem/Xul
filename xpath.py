@@ -15,15 +15,16 @@ from lxml.etree import XPathEvalError
 #
 # Import TAB modules
 from tab import setup_logger_console
-from tab.xml import build_xml_tree, build_xpath, call_xpath
+from tab.xml import build_xml_tree, build_xpath, etree_xpath
 
 
 # Versie
-__version_info__ = ('1', '7', '0')
+__version_info__ = ('1', '8', '0')
 __version__ = '.'.join(__version_info__)
 
 description = "Use XPath expression to select nodes in XML file(s)."
 epilog = "Documentation: http://docu.npoict.nl/applicatiebeheer/documentatie/xml_scripts"
+
 
 def parse_cl():
     """ Lees de command-line options van het XPath script uit.
@@ -123,6 +124,26 @@ def print_result_list(result_list):
             print item
 
 
+def xml_namespaces(dom):
+    """ Geef root namespaces in DOM (ElementTree) terug """
+    root = dom.getroot()
+    ns_map = {}
+    # Zijn er XML namespace (xmlns) gedefinieerd?
+    if root.nsmap:
+        print "root:\t%s" % root.tag
+        print "Namespaces:"
+        for key in root.nsmap:
+            if key:
+                ns_map[key] = root.nsmap[key]
+                print "\t%s: %s" % (key, ns_map[key])
+            else:
+                # default (None) namespace: root.nsmap.get(root.prefix)
+                # prefix t.b.v XPath: 'r'
+                ns_map['r'] = root.nsmap[key]
+                print "\tr: %s" % ns_map['r']
+    return ns_map
+
+
 # Logging op het console
 setup_logger_console()
 
@@ -138,55 +159,50 @@ else:
     stderr.write('No XPath expression specified\n')
     exit(50)
 
-# XML bestand(en) meegegeven?
+# Zijn er XML bestand(en) meegegeven?
 if xml_files:
     print "XPath: %s" % options.xpath_exp
 else:
     stderr.write("No XML file to use XPath '%s' on\n" % options.xpath_exp)
     exit(0)
 
-# Wordt de ElementTree.xpath method van lxml gebruikt?
+# lxml.ElementTree.xpath method gebruiken?
 if options.lxml_method:
-    def do_xpath(xml_file):
+    def xpath_dom(dom):
         """ Gebruik de lxml.etree.ElementTree.xpath method """
-        xml_tree = build_xml_tree(xml_file, lenient=False)
-        if not xml_tree:
+        try:
+            result = dom.xpath(options.xpath_exp,
+                    namespaces=xml_namespaces(dom))
+        except XPathEvalError as e:
+            stderr.write("XPath '%s' evaluation error: %s\n" %
+                    (options.xpath_exp, e))
             return None
         else:
-            root = xml_tree.getroot()
-            ns_map = {}
-            # Zijn er XML namespace (xmlns) gedefinieerd?
-            if root.nsmap:
-                print "root:\t%s" % root.tag
-                print "Namespaces:"
-                for key in root.nsmap:
-                    if key:
-                        ns_map[key] = root.nsmap[key]
-                        print "\t%s: %s" % (key, ns_map[key])
-                    else:
-                        # default (None) namespace: root.nsmap.get(root.prefix)
-                        # prefix t.b.v XPath: 'r'
-                        ns_map['r'] = root.nsmap[key]
-                        print "\tr: %s" % ns_map['r']
-            try:
-                xp_result = xml_tree.xpath(options.xpath_exp, namespaces=ns_map)
-            except XPathEvalError as e:
-                stderr.write("XPath '%s' evaluation error: %s\n" %
-                        (options.xpath_exp, e))
-                xp_result = None
-            return xp_result
+            return result
+# Default is lxml.etree.XPath class
 else:
-    def do_xpath(xml_file):
-        """ Gebruik de lxml.etree.XPath class """
-        return call_xpath(xml_file, xpath_obj)
+    def xpath_dom(dom):
+        """ Gebruik de lxml.etree.XPath class (xpath_obj) """
+        return etree_xpath(dom, xpath_obj)
+        # Zijn er XML namespace (xmlns) prefixes gedefinieerd?
+        #return etree_xpath(dom, xpath_obj, xml_namespaces(dom))
 
 
-## Loop de XML files af
+def xpath_file(xml_file):
+    """ Bouw XML DOM (Document Object Model) en pass XPath toe """
+    dom = build_xml_tree(xml_file, lenient=False)
+    if not dom:
+        return None
+    else:
+        return xpath_dom(dom)
+
+
+## Loop de XML bestanden af
 for xml_f in xml_files:
     print "\nFile: %s" % xml_f
-    xp_result = do_xpath(xml_f)
+    xp_result = xpath_file(xml_f)
     if xp_result is None:
-        print "No result (error)"
+        stderr.write("XPath failed on %s\n" % xml_f)
     # STRING - string - lxml.etree._ElementStringResult - smart string (.is_text/.is_tail)
     # "string(/voorspellingen/@startdatum)"
     elif hasattr(xp_result, "is_text") or hasattr(xp_result, "is_tail"):

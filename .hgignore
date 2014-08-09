@@ -4,3 +4,4 @@
 syntax: regexp
 .*\.pyc
 xml/
+docs/
