@@ -124,9 +124,9 @@ def print_result_list(result_list):
             print item
 
 
-def xml_namespaces(dom):
-    """ Geef root namespaces in DOM (ElementTree) terug """
-    root = dom.getroot()
+def xml_namespaces(xml_dom):
+    """ Geef root namespaces in XML DOM (ElementTree) terug """
+    root = xml_dom.getroot()
     ns_map = {}
     # Zijn er XML namespace (xmlns) gedefinieerd?
     if root.nsmap:
@@ -152,27 +152,26 @@ setup_logger_console()
 
 # XPath expression
 if options.xpath_exp:
-    xpath_obj = build_xpath(options.xpath_exp)
-    if not xpath_obj:
+    if build_xpath(options.xpath_exp):
+        print "XPath: %s" % options.xpath_exp
+    else:
         exit(60)
 else:
     stderr.write('No XPath expression specified\n')
     exit(50)
 
 # Zijn er XML bestand(en) meegegeven?
-if xml_files:
-    print "XPath: %s" % options.xpath_exp
-else:
-    stderr.write("No XML file to use XPath '%s' on\n" % options.xpath_exp)
+if not xml_files:
+    stderr.write("No XML file(s) to use XPath on\n")
     exit(0)
 
 # lxml.ElementTree.xpath method gebruiken?
 if options.lxml_method:
-    def xpath_dom(dom):
+    def xpath_dom(xml_dom):
         """ Gebruik de lxml.etree.ElementTree.xpath method """
         try:
-            result = dom.xpath(options.xpath_exp,
-                    namespaces=xml_namespaces(dom))
+            result = xml_dom.xpath(options.xpath_exp,
+                    namespaces=xml_namespaces(xml_dom))
         except XPathEvalError as e:
             stderr.write("XPath '%s' evaluation error: %s\n" %
                     (options.xpath_exp, e))
@@ -181,11 +180,15 @@ if options.lxml_method:
             return result
 # Default is lxml.etree.XPath class
 else:
-    def xpath_dom(dom):
-        """ Gebruik de lxml.etree.XPath class (xpath_obj) """
-        return etree_xpath(dom, xpath_obj)
-        # Zijn er XML namespace (xmlns) prefixes gedefinieerd?
-        #return etree_xpath(dom, xpath_obj, xml_namespaces(dom))
+    def xpath_dom(xml_dom):
+        """ Gebruik de lxml.etree.XPath class """
+        # Welke XML namespace (xmlns) prefixes zijn er gedefinieerd?
+        ns_map = xml_namespaces(xml_dom)
+        xpath_obj = build_xpath(options.xpath_exp, ns_map)
+        if not xpath_obj:
+            return None
+        else:
+            return etree_xpath(xml_dom, xpath_obj)
 
 
 def xpath_file(xml_file):
