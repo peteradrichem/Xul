@@ -127,20 +127,21 @@ def print_result_list(result_list):
 def xml_namespaces(xml_dom):
     """ Geef root namespaces in XML DOM (ElementTree) terug """
     root = xml_dom.getroot()
-    ns_map = {}
+    ns_map = {'re': "http://exslt.org/regular-expressions"}
     # Zijn er XML namespace (xmlns) gedefinieerd?
     if root.nsmap:
         print "root:\t%s" % root.tag
-        print "Namespaces:"
         for key in root.nsmap:
             if key:
                 ns_map[key] = root.nsmap[key]
-                print "\t%s: %s" % (key, ns_map[key])
             else:
                 # default (None) namespace: root.nsmap.get(root.prefix)
                 # prefix t.b.v XPath: 'r'
                 ns_map['r'] = root.nsmap[key]
-                print "\tr: %s" % ns_map['r']
+    # Toon de XML namespaces
+    print "XML namespaces:"
+    for key in ns_map:
+        print "\t%s: %s" % (key, ns_map[key])
     return ns_map
 
 
@@ -193,11 +194,17 @@ else:
 
 def xpath_file(xml_file):
     """ Bouw XML DOM (Document Object Model) en pass XPath toe """
-    dom = build_xml_tree(xml_file, lenient=False)
-    if not dom:
+    xml_dom = build_xml_tree(xml_file, lenient=False)
+    if not xml_dom:
         return None
     else:
-        return xpath_dom(dom)
+        try:
+            result = xpath_dom(xml_dom)
+        except TypeError as e:
+            stderr.write("XPath '%s' type error: %s\n" % (options.xpath_exp, e))
+            return None
+        else:
+            return result
 
 
 ## Loop de XML bestanden af
