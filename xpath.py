@@ -11,7 +11,7 @@ from sys import stderr
 #
 # Import etree.tostring van lxml
 #from lxml.etree import tostring
-from lxml.etree import XPathEvalError
+from lxml.etree import XPathEvalError, iselement
 #
 # Import TAB modules
 from tab import setup_logger_console
@@ -50,7 +50,7 @@ def parse_cl():
 def print_node(node):
     """ Print de node (UTF-8):
         - comment node -- comment()
-        - element node -- /path/el, node()
+        - element node -- /path/el, //*
         - PI: processing instruction -- processing-instruction()
     """
     # lxml.etree.tostring print standaard het hele element
@@ -68,6 +68,8 @@ def print_node(node):
         s = node.text.encode('UTF-8', 'ignore')
         print "%d:\t%s" % (node.sourceline, node.tag(s))
     # ELEMENT - lxml.etree._Element -- node.tag
+    elif node.text and node.text.isdigit():
+        print "%d:\t%s = %s" % (node.sourceline, node.tag, node.text)
     elif node.text and not node.text.isspace():
         s = node.text.encode('UTF-8', 'ignore')
         print "%d:\t%s = '%s'" % (node.sourceline, node.tag, s)
@@ -80,12 +82,15 @@ def print_node(node):
 
 
 def print_result_list(result_list):
-    """ Print de items uit de XPath result list
+    """ Print de nodes uit de XPath result list
         Aanname: terminal kan character encoding UTF-8 aan
     """
+    # Alle nodes -- node()
     for item in result_list:
-        # Is het resultaat een node? (comment, element, processing instruction)
-        if hasattr(item, "tag"):
+        # Is de resultaat node (item) een element? (item.tag)
+        #   element, comment, processing instruction
+        # Of een attribute, namespace, text (atomic value)
+        if iselement(item):
             print_node(item)
         # Is het resultaat een attribuut? -- @ -- attribute node
         elif hasattr(item, "is_attribute") and item.is_attribute:
@@ -95,19 +100,25 @@ def print_result_list(result_list):
         # Is het resultaat een smart string? -- text() -- text node
         elif (hasattr(item, "is_text") or hasattr(item, "is_tail")) and (
                     item.is_text or item.is_tail):
+            # Wie is de parent?
             el = item.getparent()
-            # is el een comment node?
+            # Is el een comment node? -- comment()
             if not isinstance(el.tag, basestring):
-                el_tag = el.tag()
+                #el_tag = el.tag()
+                el_tag = el
             else:
-                el_tag = "<%s>" % el.tag
+                el_tag = "<%s/>" % el.tag
+
+            # DIGIT - lxml.etree._ElementStringResult
+            if item.isdigit():
+                print "%d:\tdigit %s" % (el.sourceline, item)
             # TEXT / TAIL - lxml.etree._ElementStringResult /
             #               lxml.etree._ElementUnicodeResult
             # "/nebo_gids_export/zender/dag/uitzending/aflevering/text()"
             #   boom structuur die als lijst print_result_list() binnen komt
-            if item and not item.isspace():
+            elif item and not item.isspace():
                 s = item.encode('UTF-8', 'ignore')
-                print "%d:\t'%s'" % (el.sourceline, s)
+                print "%d:\ttext '%s'" % (el.sourceline, s)
             # spatie tekst / tail
             elif item.is_text and item.is_tail:
                 print "%d:\tspace+tail text %s" % (el.sourceline, el_tag)
@@ -118,9 +129,14 @@ def print_result_list(result_list):
             else:
                 print "**text node DEBUG fallback**"
                 print_node(el)
+        # namespaces -- namespace:: -- namespace-uri(/*)
+        elif isinstance(item, tuple):
+            # Geen regel nummer
+            print "\tprefix: %s,\tURI: %s" % item
         else:
             # ?
             print "**DEBUG fallback**"
+            print type(item)
             print item
 
 
@@ -214,7 +230,8 @@ for xml_f in xml_files:
     if xp_result is None:
         stderr.write("XPath failed on %s\n" % xml_f)
     # STRING - string - lxml.etree._ElementStringResult - smart string (.is_text/.is_tail)
-    # "string(/voorspellingen/@startdatum)"
+    #   "string(/voorspellingen/@startdatum)"
+    # Namespace URI -- namespace-uri()
     elif hasattr(xp_result, "is_text") or hasattr(xp_result, "is_tail"):
         print "XPath string: '%s'" % xp_result
     # LIST - list - node-set
@@ -225,9 +242,15 @@ for xml_f in xml_files:
         if xp_r_len == 0:
             print "no result (empy list)"
         elif xp_r_len == 1:
-            print "result on line",
+            if isinstance(xp_result[0], tuple):
+                print "Namespace result:"
+            else:
+                print "result on line",
         else:
-            print "%d results on lines:" % xp_r_len
+            if isinstance(xp_result[0], tuple):
+                print "%d namespace results:" % xp_r_len
+            else:
+                print "%d results on lines:" % xp_r_len
         try:
             print_result_list(xp_result)
         except IOError as e:
