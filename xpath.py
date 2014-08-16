@@ -89,7 +89,7 @@ def print_result_list(result_list):
     for item in result_list:
         # Is de resultaat node (item) een element? (item.tag)
         #   element, comment, processing instruction
-        # Of een attribute, namespace, text (atomic value)
+        # Of een attribute, namespace, entity, text (atomic value)
         if iselement(item):
             print_node(item)
         # Is het resultaat een attribuut? -- @ -- attribute node
@@ -193,6 +193,10 @@ if options.lxml_method:
             stderr.write("XPath '%s' evaluation error: %s\n" %
                     (options.xpath_exp, e))
             return None
+        # Als EXSLT functie met onjuist aantal argumenten wordt aangeroepen
+        except TypeError as e:
+            stderr.write("XPath '%s' type error: %s\n" % (options.xpath_exp, e))
+            return None
         else:
             return result
 # Default is lxml.etree.XPath class
@@ -214,13 +218,7 @@ def xpath_file(xml_file):
     if not xml_dom:
         return None
     else:
-        try:
-            result = xpath_dom(xml_dom)
-        except TypeError as e:
-            stderr.write("XPath '%s' type error: %s\n" % (options.xpath_exp, e))
-            return None
-        else:
-            return result
+        return xpath_dom(xml_dom)
 
 
 ## Loop de XML bestanden af
