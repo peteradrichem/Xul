@@ -118,14 +118,18 @@ def print_result_list(result_list):
             #   boom structuur die als lijst print_result_list() binnen komt
             elif item and not item.isspace():
                 s = item.encode('UTF-8', 'ignore')
-                print "%d:\ttext '%s'" % (el.sourceline, s)
-            # spatie tekst / tail
+                if item.is_tail:
+                    print "%d:\ttail '%s' after %s" % (el.sourceline, s, el_tag)
+                else:
+                    print "%d:\ttext '%s' in %s" % (el.sourceline, s, el_tag)
+            # Witruimte: tekst of tail
             elif item.is_text and item.is_tail:
-                print "%d:\tspace+tail text %s" % (el.sourceline, el_tag)
+                # Zou niet voor moeten komen!
+                print "%d:\twhitespace+tail? in/after %s" % (el.sourceline, el_tag)
             elif item.is_text:
-                print "%d:\tspace text %s" % (el.sourceline, el_tag)
+                print "%d:\twhitespace in %s" % (el.sourceline, el_tag)
             elif item.is_tail:
-                print "%d:\tspace tail %s" % (el.sourceline, el_tag)
+                print "%d:\tspace tail after %s" % (el.sourceline, el_tag)
             else:
                 print "**text node DEBUG fallback**"
                 print_node(el)
