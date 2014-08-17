@@ -69,8 +69,10 @@ def print_node(node):
         print "%d:\t%s" % (node.sourceline, node.tag(s))
     # ELEMENT - lxml.etree._Element -- node.tag
     elif node.text and node.text.isdigit():
+        # number
         print "%d:\t%s = %s" % (node.sourceline, node.tag, node.text)
     elif node.text and not node.text.isspace():
+        # text
         s = node.text.encode('UTF-8', 'ignore')
         print "%d:\t%s = '%s'" % (node.sourceline, node.tag, s)
         #print "%d:\t%s = '%s'" % (node.sourceline, node.tag,
@@ -89,33 +91,38 @@ def print_result_list(result_list):
     for item in result_list:
         # Is de resultaat node (item) een element? (item.tag)
         #   element, comment, processing instruction
-        # Of een attribute, namespace, entity, text (atomic value)
         if iselement(item):
             print_node(item)
-        # Is het resultaat een attribuut? -- @ -- attribute node
+        # Of een attribute, namespace, entity, text (atomic value)
+
+        ## Smart string -- .getparent()
+        # - attribute node: .is_attribute
+        # - text node: .is_text
+        # - tail node: .is_tail
+        # string: lxml.etree._ElementStringResult
+        # Unicode: lxml.etree._ElementUnicodeResult
+        #
+        # ATTRIBUTE node -- @ -- .is_attribute
         elif hasattr(item, "is_attribute") and item.is_attribute:
-            # ATTRIBUTE - lxml.etree._ElementStringResult -- .is_attribute
             el = item.getparent()
             print "%d:\t@%s = '%s'" % (el.sourceline, item.attrname, item)
-        # Is het resultaat een smart string? -- text() -- text node
+        # Smart string: .is_text of .is_tail = True
         elif (hasattr(item, "is_text") or hasattr(item, "is_tail")) and (
                     item.is_text or item.is_tail):
-            # Wie is de parent?
+            # Wat is het parent element?
             el = item.getparent()
-            # Is el een comment node? -- comment()
+            # Is parent een comment? -- comment()
             if not isinstance(el.tag, basestring):
                 #el_tag = el.tag()
                 el_tag = el
             else:
                 el_tag = "<%s/>" % el.tag
 
-            # DIGIT - lxml.etree._ElementStringResult
+            # DIGIT -- .isdigit
             if item.isdigit():
                 print "%d:\tdigit %s" % (el.sourceline, item)
-            # TEXT / TAIL - lxml.etree._ElementStringResult /
-            #               lxml.etree._ElementUnicodeResult
-            # "/nebo_gids_export/zender/dag/uitzending/aflevering/text()"
-            #   boom structuur die als lijst print_result_list() binnen komt
+            # TEXT node -- text() -- .is_text
+            # TAIL node -- text() -- .is_tail
             elif item and not item.isspace():
                 s = item.encode('UTF-8', 'ignore')
                 if item.is_tail:
@@ -133,7 +140,7 @@ def print_result_list(result_list):
             else:
                 print "**text node DEBUG fallback**"
                 print_node(el)
-        # namespaces -- namespace:: -- namespace-uri(/*)
+        # Namespaces -- namespace:: -- namespace-uri(/*)
         elif isinstance(item, tuple):
             # Geen regel nummer
             print "\tprefix: %s,\tURI: %s" % item
@@ -231,15 +238,18 @@ for xml_f in xml_files:
     xp_result = xpath_file(xml_f)
     if xp_result is None:
         stderr.write("XPath failed on %s\n" % xml_f)
-    # STRING - string - lxml.etree._ElementStringResult - smart string (.is_text/.is_tail)
+    ## XPath return values
+    #   http://lxml.de/xpathxslt.html#xpath-return-values
+    #
+    # STRING - string (basestring) - smart string
     #   "string(/voorspellingen/@startdatum)"
     # Namespace URI -- namespace-uri()
-    elif hasattr(xp_result, "is_text") or hasattr(xp_result, "is_tail"):
+    elif isinstance(xp_result, basestring):
         print "XPath string: '%s'" % xp_result
     # LIST - list - node-set
     #   Lijst met elementen of text of attributen
-    #elif isinstance(xp_result, list):
-    elif hasattr(xp_result, "index"):
+    elif isinstance(xp_result, list):
+        # Resultaat header
         xp_r_len = len(xp_result)
         if xp_r_len == 0:
             print "no result (empy list)"
@@ -259,16 +269,19 @@ for xml_f in xml_files:
             # 'IOError: [Errno 32] Broken pipe' afvangen
             if e.errno != 32:
                 stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
-    # FLOAT - float - .is_integer()
+    # FLOAT - float
     # "number(/html/nummer)"    "count(/nebo_xml)"
     # Opm: nan == NaN == not a number
     elif hasattr(xp_result, "is_integer"):
-        print "XPath number: %s" % xp_result
+        if xp_result.is_integer():
+            print "XPath number: %i" % xp_result
+        else:
+            # float
+            print "XPath number: %s" % xp_result
     # BOOLEAN - bool - boolean
     # true(), false(), not()
     # "count(/nebo_xml) = 1"
     elif isinstance(xp_result, bool):
         print "XPath test: %s" % xp_result
-    # http://lxml.de/xpathxslt.html#xpath-return-values
     else:
         print "Unknown XPath result: %s" % xp_result
