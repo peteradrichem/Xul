@@ -47,8 +47,8 @@ def parse_cl():
     return parser.parse_args()
 
 
-def print_node(node):
-    """ Print de node (UTF-8):
+def print_el(node):
+    """ Print (UTF-8) het element / de node:
         - comment node -- comment()
         - element node -- /path/el, //*
         - PI: processing instruction -- processing-instruction()
@@ -69,18 +69,64 @@ def print_node(node):
         print "%d:\t%s" % (node.sourceline, node.tag(s))
     # ELEMENT - lxml.etree._Element -- node.tag
     elif node.text and node.text.isdigit():
-        # number
+        # Python digit
         print "%d:\t%s = %s" % (node.sourceline, node.tag, node.text)
     elif node.text and not node.text.isspace():
-        # text
         s = node.text.encode('UTF-8', 'ignore')
         print "%d:\t%s = '%s'" % (node.sourceline, node.tag, s)
         #print "%d:\t%s = '%s'" % (node.sourceline, node.tag,
                 #tostring(node, encoding='UTF-8', method="text", with_tail=False))
     elif node.text:
-        print "%d:\t%s = space" % (node.sourceline, node.tag)
+        print "%d:\t%s = whitespace" % (node.sourceline, node.tag)
     else:
         print "%d:\t%s = empty" % (node.sourceline, node.tag)
+
+
+def print_smart_string(smart_string):
+    """ Print (UTF-8) de 'smart' string in relatie met zijn parent
+        - smart_string: `string' met getparent method
+            string: lxml.etree._ElementStringResult
+            Unicode: lxml.etree._ElementUnicodeResult
+
+        http://lxml.de/xpathxslt.html#xpath-return-values
+    """
+    # Wat is het parent element?
+    par_el = smart_string.getparent()
+    # None komt voor bij string() en concat()
+    if par_el is None:
+        print "XPath string: '%s'" % smart_string
+        return
+    # comment: tag is een method (lxml.etree._Comment)
+    if not isinstance(par_el.tag, basestring):
+        par_el_str = "comment"
+    # tag is een string (lxml.etree._Element)
+    else:
+        par_el_str = "<%s/>" % par_el.tag
+
+    # ATTRIBUTE node -- @ -- .is_attribute
+    if smart_string.is_attribute:
+        print "%d:\t@%s = '%s' in %s" % (par_el.sourceline, smart_string.attrname,
+                smart_string, par_el_str)
+    # Python str.isdigit
+    elif smart_string.isdigit():
+        print "%d:\t%s in %s" % (par_el.sourceline, smart_string, par_el_str)
+    # TEXT node -- text() -- .is_text
+    elif smart_string.is_text:
+        if smart_string.isspace():
+            print "%d:\twhitespace in %s" % (par_el.sourceline, par_el_str)
+        else:
+            text_node = smart_string.encode('UTF-8', 'ignore')
+            print "%d:\t'%s' in %s" % (par_el.sourceline, text_node, par_el_str)
+    # TAIL node -- text() -- .is_tail
+    elif smart_string.is_tail:
+        if smart_string.isspace():
+            print "%d:\ttail whitespace after %s" % (par_el.sourceline, par_el_str)
+        else:
+            tail_node = smart_string.encode('UTF-8', 'ignore')
+            print "%d:\ttail '%s' after %s" % (par_el.sourceline, tail_node, par_el_str)
+    else:
+        print "**smart string DEBUG fallback**"
+        print_el(par_el)
 
 
 def print_result_list(result_list):
@@ -92,58 +138,18 @@ def print_result_list(result_list):
         # Is de resultaat node (item) een element? (item.tag)
         #   element, comment, processing instruction
         if iselement(item):
-            print_node(item)
+            print_el(item)
         # Of een attribute, namespace, entity, text (atomic value)
 
-        ## Smart string -- .getparent()
-        # - attribute node: .is_attribute
-        # - text node: .is_text
-        # - tail node: .is_tail
-        # string: lxml.etree._ElementStringResult
-        # Unicode: lxml.etree._ElementUnicodeResult
-        #
-        # ATTRIBUTE node -- @ -- .is_attribute
-        elif hasattr(item, "is_attribute") and item.is_attribute:
-            el = item.getparent()
-            print "%d:\t@%s = '%s'" % (el.sourceline, item.attrname, item)
-        # Smart string: .is_text of .is_tail = True
-        elif (hasattr(item, "is_text") or hasattr(item, "is_tail")) and (
-                    item.is_text or item.is_tail):
-            # Wat is het parent element?
-            el = item.getparent()
-            # Is parent een comment? -- comment()
-            if not isinstance(el.tag, basestring):
-                #el_tag = el.tag()
-                el_tag = el
-            else:
-                el_tag = "<%s/>" % el.tag
+        # Smart string -- .getparent()
+        elif hasattr(item, "getparent"):
+            print_smart_string(item)
 
-            # DIGIT -- .isdigit
-            if item.isdigit():
-                print "%d:\tdigit %s" % (el.sourceline, item)
-            # TEXT node -- text() -- .is_text
-            # TAIL node -- text() -- .is_tail
-            elif item and not item.isspace():
-                s = item.encode('UTF-8', 'ignore')
-                if item.is_tail:
-                    print "%d:\ttail '%s' after %s" % (el.sourceline, s, el_tag)
-                else:
-                    print "%d:\ttext '%s' in %s" % (el.sourceline, s, el_tag)
-            # Witruimte: tekst of tail
-            elif item.is_text and item.is_tail:
-                # Zou niet voor moeten komen!
-                print "%d:\twhitespace+tail? in/after %s" % (el.sourceline, el_tag)
-            elif item.is_text:
-                print "%d:\twhitespace in %s" % (el.sourceline, el_tag)
-            elif item.is_tail:
-                print "%d:\tspace tail after %s" % (el.sourceline, el_tag)
-            else:
-                print "**text node DEBUG fallback**"
-                print_node(el)
-        # Namespaces -- namespace:: -- namespace-uri(/*)
+        # Namespaces -- namespace::
         elif isinstance(item, tuple):
             # Geen regel nummer
             print "\tprefix: %s,\tURI: %s" % item
+
         else:
             # ?
             print "**DEBUG fallback**"
@@ -245,7 +251,7 @@ for xml_f in xml_files:
     #   "string(/voorspellingen/@startdatum)"
     # Namespace URI -- namespace-uri()
     elif isinstance(xp_result, basestring):
-        print "XPath string: '%s'" % xp_result
+        print_smart_string(xp_result)
     # LIST - list - node-set
     #   Lijst met elementen of text of attributen
     elif isinstance(xp_result, list):
