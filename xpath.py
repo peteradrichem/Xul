@@ -19,7 +19,7 @@ from tab.xml import build_xml_tree, build_xpath, etree_xpath
 
 
 # Versie
-__version_info__ = ('1', '8', '0')
+__version_info__ = ('2', '0', '0')
 __version__ = '.'.join(__version_info__)
 
 description = "Use XPath expression to select nodes in XML file(s)."
@@ -51,7 +51,7 @@ def print_el(node):
     """ Print (UTF-8) het element / de node:
         - comment node -- comment()
         - element node -- /path/el, //*
-        - PI: processing instruction -- processing-instruction()
+        - PI: processing instruction -- //processing-instruction()
     """
     # lxml.etree.tostring print standaard het hele element
     #   - met method="text" alleen tekst
@@ -69,7 +69,7 @@ def print_el(node):
         print "%d:\t%s" % (node.sourceline, node.tag(s))
     # ELEMENT - lxml.etree._Element -- node.tag
     elif node.text and node.text.isdigit():
-        # Python digit
+        # Python str.isdigit()
         print "%d:\t%s = %s" % (node.sourceline, node.tag, node.text)
     elif node.text and not node.text.isspace():
         s = node.text.encode('UTF-8', 'ignore')
@@ -107,7 +107,7 @@ def print_smart_string(smart_string):
     if smart_string.is_attribute:
         print "%d:\t@%s = '%s' in %s" % (par_el.sourceline, smart_string.attrname,
                 smart_string, par_el_str)
-    # Python str.isdigit
+    # Python str.isdigit()
     elif smart_string.isdigit():
         print "%d:\t%s in %s" % (par_el.sourceline, smart_string, par_el_str)
     # TEXT node -- text() -- .is_text
@@ -133,7 +133,7 @@ def print_result_list(result_list):
     """ Print de nodes uit de XPath result list
         Aanname: terminal kan character encoding UTF-8 aan
     """
-    # Alle nodes -- node()
+    # Alle nodes -- //node()
     for item in result_list:
         # Is de resultaat node (item) een element? (item.tag)
         #   element, comment, processing instruction
@@ -161,7 +161,7 @@ def xml_namespaces(xml_dom):
     """ Geef root namespaces in XML DOM (ElementTree) terug """
     root = xml_dom.getroot()
     ns_map = {'re': "http://exslt.org/regular-expressions"}
-    # Zijn er XML namespace (xmlns) gedefinieerd?
+    # Zijn er XML namespace (xmlns) in het root element gedefinieerd?
     if root.nsmap:
         print "root:\t%s" % root.tag
         for key in root.nsmap:
@@ -229,28 +229,27 @@ else:
             return etree_xpath(xml_dom, xpath_obj)
 
 
-def xpath_file(xml_file):
-    """ Bouw XML DOM (Document Object Model) en pass XPath toe """
-    xml_dom = build_xml_tree(xml_file, lenient=False)
-    if not xml_dom:
-        return None
-    else:
-        return xpath_dom(xml_dom)
-
-
 ## Loop de XML bestanden af
 for xml_f in xml_files:
     print "\nFile: %s" % xml_f
-    xp_result = xpath_file(xml_f)
+    # Bouw XML DOM (Document Object Model)
+    xml_dom = build_xml_tree(xml_f, lenient=False)
+    if xml_dom is None:
+        continue
+    # Pas XPath toe op XML DOM
+    xp_result = xpath_dom(xml_dom)
     if xp_result is None:
         stderr.write("XPath failed on %s\n" % xml_f)
+        continue
+
     ## XPath return values
     #   http://lxml.de/xpathxslt.html#xpath-return-values
     #
     # STRING - string (basestring) - smart string
     #   "string(/voorspellingen/@startdatum)"
-    # Namespace URI -- namespace-uri()
-    elif isinstance(xp_result, basestring):
+    # Namespace URI
+    #   "namespace-uri(*)"
+    if isinstance(xp_result, basestring):
         print_smart_string(xp_result)
     # LIST - list - node-set
     #   Lijst met elementen of text of attributen
@@ -279,6 +278,7 @@ for xml_f in xml_files:
     # "number(/html/nummer)"    "count(/nebo_xml)"
     # Opm: nan == NaN == not a number
     elif hasattr(xp_result, "is_integer"):
+        # Python float.is_integer()
         if xp_result.is_integer():
             print "XPath number: %i" % xp_result
         else:
