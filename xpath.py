@@ -42,6 +42,9 @@ def parse_cl():
     parser.add_option("-m", "--method",
         action="store_true", default=False, dest="lxml_method",
         help="use ElementTree.xpath method instead of XPath class")
+    parser.add_option("-p", "--print-xpath",
+        action="store_true", default=False, dest="print_xpath",
+        help="print absolute XPath with result")
 
     # Parse script's command line
     return parser.parse_args()
@@ -82,7 +85,7 @@ def print_el(node):
         print "%d:\t%s = empty" % (node.sourceline, node.tag)
 
 
-def print_smart_string(smart_string):
+def print_smart_string(smart_string, xml_dom):
     """ Print (UTF-8) de 'smart' string in relatie met zijn parent
         - smart_string: `string' met getparent method
             string: lxml.etree._ElementStringResult
@@ -128,8 +131,12 @@ def print_smart_string(smart_string):
         print "**smart string DEBUG fallback**"
         print_el(par_el)
 
+    # XPath parent element
+    if options.print_xpath:
+        print("\tParent XPath: %s" % xml_dom.getpath(par_el))
 
-def print_result_list(result_list):
+
+def print_result_list(result_list, xml_dom):
     """ Print de nodes uit de XPath result list
         Aanname: terminal kan character encoding UTF-8 aan
     """
@@ -139,11 +146,13 @@ def print_result_list(result_list):
         #   element, comment, processing instruction
         if iselement(item):
             print_el(item)
+            if options.print_xpath:
+                print("\tXPath: %s" % xml_dom.getpath(item))
         # Of een attribute, namespace, entity, text (atomic value)
 
         # Smart string -- .getparent()
         elif hasattr(item, "getparent"):
-            print_smart_string(item)
+            print_smart_string(item, xml_dom)
 
         # Namespaces -- namespace::
         elif isinstance(item, tuple):
@@ -250,7 +259,7 @@ for xml_f in xml_files:
     # Namespace URI
     #   "namespace-uri(*)"
     if isinstance(xp_result, basestring):
-        print_smart_string(xp_result)
+        print_smart_string(xp_result, xml_dom)
     # LIST - list - node-set
     #   Lijst met elementen of text of attributen
     elif isinstance(xp_result, list):
@@ -262,14 +271,14 @@ for xml_f in xml_files:
             if isinstance(xp_result[0], tuple):
                 print "Namespace result:"
             else:
-                print "result on line",
+                print "result on line:"
         else:
             if isinstance(xp_result[0], tuple):
                 print "%d namespace results:" % xp_r_len
             else:
                 print "%d results on lines:" % xp_r_len
         try:
-            print_result_list(xp_result)
+            print_result_list(xp_result, xml_dom)
         except IOError as e:
             # 'IOError: [Errno 32] Broken pipe' afvangen
             if e.errno != 32:
