@@ -174,33 +174,39 @@ def print_result_list(result_list, xml_dom):
             print node
 
 
+def update_namespace(ns_map, el, none_prefix='r'):
+    """ Breid ns_map uit met el.nsmap
+        Opm: ns_map.update(el.nsmap) faalt bij empty namespace prefix
+        Geen bescherming tegen namespace prefix collisions
+
+        Element namespace: el.nsmap.get(el.prefix)
+        Default (None) namespace: el.nsmap[None]
+    """
+    for key in el.nsmap:
+        if not key:
+            # Prefix voor de default namespace t.b.v XPath
+            ns_map[none_prefix] = el.nsmap[key]
+        elif not key in ns_map:
+            ns_map[key] = el.nsmap[key]
+
+
 def xml_namespaces(xml_dom):
-    """ Geef namespaces in XML DOM (ElementTree) terug """
+    """ XML namespaces (xmlns) in XML DOM (ElementTree).
+        Resultaat is dict met prefix, URI
+    """
+    ns_map = {'re': "http://exslt.org/regular-expressions"}
     # root element -- /*
     root = xml_dom.getroot()
     if options.namespaces:
-        ns_map = {'re': "http://exslt.org/regular-expressions"}
+        # XML namespaces (xmlns) in XML DOM elementen
         for el in xml_dom.iter('*'):
             if el.nsmap:
-                for key in el.nsmap:
-                    if not key:
-                        ns_map['r'] = el.nsmap[key]
-                    elif not key in ns_map:
-                        ns_map[key] = el.nsmap[key]
-    # Zijn er XML namespace (xmlns) in het root element gedefinieerd?
+                update_namespace(ns_map, el)
+    # XML namespaces (xmlns) in het root element
     elif root.nsmap:
-        ns_map = {'re': "http://exslt.org/regular-expressions"}
         options.namespaces = True
         print "root:\t%s" % root.tag
-        for key in root.nsmap:
-            if not key:
-                # default (None) namespace: root.nsmap.get(root.prefix)
-                # prefix t.b.v XPath: 'r'
-                ns_map['r'] = root.nsmap[key]
-            elif not key in ns_map:
-                ns_map[key] = root.nsmap[key]
-    else:
-        ns_map = {}
+        update_namespace(ns_map, root)
 
     if options.namespaces:
         # Toon de XML namespaces
