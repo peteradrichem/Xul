@@ -50,26 +50,28 @@ def parse_cl():
     return parser.parse_args()
 
 
-def print_el(node):
+def print_element(node):
     """ Print (UTF-8) het element / de node:
-        - comment node -- comment()
         - element node -- /path/el, //*
+        - comment node -- comment()
         - PI: processing instruction -- //processing-instruction()
+
+        lxml.etree.tostring print standaard het hele element
+        - met method="text" alleen tekst
+        - met with_tail=False vervalt de tail; vaak end-of-line (EOL)
     """
-    # lxml.etree.tostring print standaard het hele element
-    #   - met method="text" alleen tekst
-    #   - met with_tail=False vervalt de tail; vaak end-of-line (EOL)
-    #
     # PI - lxml.etree._ProcessingInstruction -- node.target & node.tag()
     #   "/processing-instruction()"
     if hasattr(node, "target"):
         s = node.text.encode('UTF-8', 'ignore')
         print "%d:\tprocessing-instruction('%s') = %s" % (node.sourceline,
                 node.target, node.tag(s))
+
     # COMMENT - lxml.etree._Comment -- node.tag() == <!---->
     elif not isinstance(node.tag, basestring):
         s = node.text.encode('UTF-8', 'ignore')
         print "%d:\t%s" % (node.sourceline, node.tag(s))
+
     # ELEMENT - lxml.etree._Element -- node.tag
     elif node.text and node.text.isdigit():
         # Python str.isdigit()
@@ -129,7 +131,7 @@ def print_smart_string(smart_string, xml_dom):
             print "%d:\ttail '%s' after %s" % (par_el.sourceline, tail_node, par_el_str)
     else:
         print "**smart string DEBUG fallback**"
-        print_el(par_el)
+        print_element(par_el)
 
     # XPath parent element
     if options.print_xpath:
@@ -137,33 +139,32 @@ def print_smart_string(smart_string, xml_dom):
 
 
 def print_result_list(result_list, xml_dom):
-    """ Print de nodes uit de XPath result list
+    """ Print de nodes uit de XPath resultaat lijst
         Aanname: terminal kan character encoding UTF-8 aan
     """
     # Alle nodes -- //node()
-    for item in result_list:
-        # Is de resultaat node (item) een element? (item.tag)
-        #   element, comment, processing instruction
-        if iselement(item):
-            print_el(item)
+    for node in result_list:
+        # Een element inclusief comment, processing instruction (node.tag)
+        if iselement(node):
+            print_element(node)
             if options.print_xpath:
-                print("\tXPath: %s" % xml_dom.getpath(item))
-        # Of een attribute, namespace, entity, text (atomic value)
+                print("\tXPath: %s" % xml_dom.getpath(node))
 
+        # Een attribute, entity, text (atomic value)
         # Smart string -- .getparent()
-        elif hasattr(item, "getparent"):
-            print_smart_string(item, xml_dom)
+        elif hasattr(node, "getparent"):
+            print_smart_string(node, xml_dom)
 
         # Namespaces -- namespace::
-        elif isinstance(item, tuple):
+        elif isinstance(node, tuple):
             # Geen regel nummer
-            print "\tprefix: %s,\tURI: %s" % item
+            print "\tprefix: %s,\tURI: %s" % node
 
+        # ?
         else:
-            # ?
             print "**DEBUG fallback**"
-            print type(item)
-            print item
+            print type(node)
+            print node
 
 
 def xml_namespaces(xml_dom):
@@ -185,6 +186,62 @@ def xml_namespaces(xml_dom):
     for key in ns_map:
         print "\t%s: %s" % (key, ns_map[key])
     return ns_map
+
+
+def print_result_header(list_result):
+    """ Print header behorende bij de lijst met XPath resultaten """
+    xp_r_len = len(list_result)
+    if xp_r_len == 0:
+        print "no result (empy list)"
+    elif xp_r_len == 1:
+        if isinstance(list_result[0], tuple):
+            print "Namespace result:"
+        else:
+            print "result on line:"
+    else:
+        if isinstance(list_result[0], tuple):
+            print "%d namespace results:" % xp_r_len
+        else:
+            print "%d results on lines:" % xp_r_len
+
+
+def print_xpath_result(xp_result, xml_dom):
+    """ XPath return values:
+            http://lxml.de/xpathxslt.html#xpath-return-values
+    """
+    # STRING - string (basestring) - smart string
+    #   "string(/voorspellingen/@startdatum)"
+    # Namespace URI
+    #   "namespace-uri(*)"
+    if isinstance(xp_result, basestring):
+        print_smart_string(xp_result, xml_dom)
+
+    # LIST - list - node-set
+    elif isinstance(xp_result, list):
+        print_result_header(xp_result)
+        try:
+            print_result_list(xp_result, xml_dom)
+        except IOError as e:
+            # 'IOError: [Errno 32] Broken pipe' afvangen
+            if e.errno != 32:
+                stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
+
+    # FLOAT - float
+    #   "number(/html/nummer)"    "count(/nebo_xml)"
+    # Opm: nan == NaN == not a number
+    elif hasattr(xp_result, "is_integer"):
+        # Python float.is_integer()
+        if xp_result.is_integer():
+            print "XPath number: %i" % xp_result
+        else:
+            print "XPath number: %s" % xp_result
+
+    # BOOLEAN - bool - boolean
+    #   true(), false(), not(), "count(/nebo_xml) = 1"
+    elif isinstance(xp_result, bool):
+        print "XPath test: %s" % xp_result
+    else:
+        print "Unknown XPath result: %s" % xp_result
 
 
 # Logging op het console
@@ -213,7 +270,7 @@ if options.lxml_method:
     def xpath_dom(xml_dom):
         """ Gebruik de lxml.etree.ElementTree.xpath method """
         try:
-            result = xml_dom.xpath(options.xpath_exp,
+            xp_result = xml_dom.xpath(options.xpath_exp,
                     namespaces=xml_namespaces(xml_dom))
         except XPathEvalError as e:
             stderr.write("XPath '%s' evaluation error: %s\n" %
@@ -224,7 +281,7 @@ if options.lxml_method:
             stderr.write("XPath '%s' type error: %s\n" % (options.xpath_exp, e))
             return None
         else:
-            return result
+            return xp_result
 # Default is lxml.etree.XPath class
 else:
     def xpath_dom(xml_dom):
@@ -241,62 +298,14 @@ else:
 ## Loop de XML bestanden af
 for xml_f in xml_files:
     print "\nFile: %s" % xml_f
-    # Bouw XML DOM (Document Object Model)
-    xml_dom = build_xml_tree(xml_f, lenient=False)
-    if xml_dom is None:
+    # Bouw XML DOM (Document Object Model) Node Tree
+    xml_dom_node_tree = build_xml_tree(xml_f, lenient=False)
+    if xml_dom_node_tree is None:
         continue
-    # Pas XPath toe op XML DOM
-    xp_result = xpath_dom(xml_dom)
-    if xp_result is None:
+    # Pas XPath toe op XML DOM Node Tree
+    result = xpath_dom(xml_dom_node_tree)
+    if result is None:
         stderr.write("XPath failed on %s\n" % xml_f)
-        continue
-
-    ## XPath return values
-    #   http://lxml.de/xpathxslt.html#xpath-return-values
-    #
-    # STRING - string (basestring) - smart string
-    #   "string(/voorspellingen/@startdatum)"
-    # Namespace URI
-    #   "namespace-uri(*)"
-    if isinstance(xp_result, basestring):
-        print_smart_string(xp_result, xml_dom)
-    # LIST - list - node-set
-    #   Lijst met elementen of text of attributen
-    elif isinstance(xp_result, list):
-        # Resultaat header
-        xp_r_len = len(xp_result)
-        if xp_r_len == 0:
-            print "no result (empy list)"
-        elif xp_r_len == 1:
-            if isinstance(xp_result[0], tuple):
-                print "Namespace result:"
-            else:
-                print "result on line:"
-        else:
-            if isinstance(xp_result[0], tuple):
-                print "%d namespace results:" % xp_r_len
-            else:
-                print "%d results on lines:" % xp_r_len
-        try:
-            print_result_list(xp_result, xml_dom)
-        except IOError as e:
-            # 'IOError: [Errno 32] Broken pipe' afvangen
-            if e.errno != 32:
-                stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
-    # FLOAT - float
-    # "number(/html/nummer)"    "count(/nebo_xml)"
-    # Opm: nan == NaN == not a number
-    elif hasattr(xp_result, "is_integer"):
-        # Python float.is_integer()
-        if xp_result.is_integer():
-            print "XPath number: %i" % xp_result
-        else:
-            # float
-            print "XPath number: %s" % xp_result
-    # BOOLEAN - bool - boolean
-    # true(), false(), not()
-    # "count(/nebo_xml) = 1"
-    elif isinstance(xp_result, bool):
-        print "XPath test: %s" % xp_result
     else:
-        print "Unknown XPath result: %s" % xp_result
+        # Print XPath resultaat
+        print_xpath_result(result, xml_dom_node_tree)
