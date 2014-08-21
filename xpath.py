@@ -33,18 +33,21 @@ def parse_cl():
         - options.lxml_method: lxml ElementTree.xpath method i.p.v. XPath class?
         - args: files list
     """
-    usage = "%prog -p xpath xml_file_1 ... xml_file_n"
+    usage = "%prog [options] -x xpath xml_file_1 ... xml_file_n"
     parser = OptionParser(usage=usage, description=description,
         epilog=epilog, version="%prog " + __version__)
     parser.add_option("-x", "--xpath",
         action="store", type="string", dest="xpath_exp",
         help="XPath expression")
+    parser.add_option("-n", "--namespace",
+        action="store_true", default=False, dest="namespaces",
+        help="with XML namespace prefixes")
+    parser.add_option("-p", "--print-xpath",
+        action="store_true", default=False, dest="print_xpath",
+        help="print absolute (parent) element XPath with result")
     parser.add_option("-m", "--method",
         action="store_true", default=False, dest="lxml_method",
         help="use ElementTree.xpath method instead of XPath class")
-    parser.add_option("-p", "--print-xpath",
-        action="store_true", default=False, dest="print_xpath",
-        help="print absolute XPath with result")
 
     # Parse script's command line
     return parser.parse_args()
@@ -93,9 +96,13 @@ def print_smart_string(smart_string, xml_dom):
             string: lxml.etree._ElementStringResult
             Unicode: lxml.etree._ElementUnicodeResult
 
+        Smart string is een text (atomic value) of attribute node
+        - text node (tail, entity): bevat tekst
+        - attribute node: bevat waarde van het element attribuut
+
         http://lxml.de/xpathxslt.html#xpath-return-values
     """
-    # Wat is het parent element?
+    # Het parent element
     par_el = smart_string.getparent()
     # None komt voor bij string() en concat()
     if par_el is None:
@@ -168,23 +175,39 @@ def print_result_list(result_list, xml_dom):
 
 
 def xml_namespaces(xml_dom):
-    """ Geef root namespaces in XML DOM (ElementTree) terug """
+    """ Geef namespaces in XML DOM (ElementTree) terug """
+    # root element -- /*
     root = xml_dom.getroot()
-    ns_map = {'re': "http://exslt.org/regular-expressions"}
+    if options.namespaces:
+        ns_map = {'re': "http://exslt.org/regular-expressions"}
+        for el in xml_dom.iter('*'):
+            if el.nsmap:
+                for key in el.nsmap:
+                    if not key:
+                        ns_map['r'] = el.nsmap[key]
+                    elif not key in ns_map:
+                        ns_map[key] = el.nsmap[key]
     # Zijn er XML namespace (xmlns) in het root element gedefinieerd?
-    if root.nsmap:
+    elif root.nsmap:
+        ns_map = {'re': "http://exslt.org/regular-expressions"}
+        options.namespaces = True
         print "root:\t%s" % root.tag
         for key in root.nsmap:
-            if key:
-                ns_map[key] = root.nsmap[key]
-            else:
+            if not key:
                 # default (None) namespace: root.nsmap.get(root.prefix)
                 # prefix t.b.v XPath: 'r'
                 ns_map['r'] = root.nsmap[key]
-    # Toon de XML namespaces
-    print "XML namespaces:"
-    for key in ns_map:
-        print "\t%s: %s" % (key, ns_map[key])
+            elif not key in ns_map:
+                ns_map[key] = root.nsmap[key]
+    else:
+        ns_map = {}
+
+    if options.namespaces:
+        # Toon de XML namespaces
+        print "XML namespaces:"
+        for key in ns_map:
+            print "\t%s: %s" % (key, ns_map[key])
+
     return ns_map
 
 
@@ -298,11 +321,11 @@ else:
 ## Loop de XML bestanden af
 for xml_f in xml_files:
     print "\nFile: %s" % xml_f
-    # Bouw XML DOM (Document Object Model) Node Tree
+    # Bouw XML DOM (Document Object Model) Node Tree (ElementTree)
     xml_dom_node_tree = build_xml_tree(xml_f, lenient=False)
     if xml_dom_node_tree is None:
         continue
-    # Pas XPath toe op XML DOM Node Tree
+    # Pas XPath toe op XML DOM
     result = xpath_dom(xml_dom_node_tree)
     if result is None:
         stderr.write("XPath failed on %s\n" % xml_f)
