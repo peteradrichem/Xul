@@ -9,9 +9,8 @@
 from optparse import OptionParser
 from sys import stderr
 #
-# Import etree.tostring van lxml
-#from lxml.etree import tostring
-from lxml.etree import XPathEvalError, iselement
+# lxml XML toolkit imports
+from lxml.etree import XPathEvalError, iselement, tostring
 #
 # Import TAB modules
 from tab import setup_logger_console
@@ -41,10 +40,13 @@ def parse_cl():
         help="XPath expression")
     parser.add_option("-n", "--namespace",
         action="store_true", default=False, dest="namespaces",
-        help="with XML namespace prefixes")
+        help="enable XML namespace prefixes")
     parser.add_option("-p", "--print-xpath",
         action="store_true", default=False, dest="print_xpath",
-        help="print absolute (parent) element XPath with result")
+        help="print the absolute XPath of a result (or parent) element")
+    parser.add_option("-e", "--element-tree",
+        action="store_true", default=False, dest="element_tree",
+        help="print the XML tree of a result element")
     parser.add_option("-m", "--method",
         action="store_true", default=False, dest="lxml_method",
         help="use ElementTree.xpath method instead of XPath class")
@@ -53,41 +55,45 @@ def parse_cl():
     return parser.parse_args()
 
 
-def print_element(node):
-    """ Print (UTF-8) het element / de node:
+def el_result(node):
+    """ Geef representatie (UTF-8) van het element / de node:
         - element node -- /path/el, //*
         - comment node -- comment()
         - PI: processing instruction -- //processing-instruction()
-
-        lxml.etree.tostring print standaard het hele element
-        - met method="text" alleen tekst
-        - met with_tail=False vervalt de tail; vaak end-of-line (EOL)
     """
     # PI - lxml.etree._ProcessingInstruction -- node.target & node.tag()
     #   "/processing-instruction()"
     if hasattr(node, "target"):
-        s = node.text.encode('UTF-8', 'ignore')
-        print "%d:\tprocessing-instruction('%s') = %s" % (node.sourceline,
-                node.target, node.tag(s))
+        return "processing-instruction('%s') = %s" % (node.target,
+                node.tag(node.text.encode('UTF-8', 'ignore')))
 
     # COMMENT - lxml.etree._Comment -- node.tag() == <!---->
     elif not isinstance(node.tag, basestring):
-        s = node.text.encode('UTF-8', 'ignore')
-        print "%d:\t%s" % (node.sourceline, node.tag(s))
+        return node.tag(node.text.encode('UTF-8', 'ignore'))
 
     # ELEMENT - lxml.etree._Element -- node.tag
     elif node.text and node.text.isdigit():
         # Python str.isdigit()
-        print "%d:\t%s = %s" % (node.sourceline, node.tag, node.text)
+        return "<%s> contains %s" % (node.tag, node.text)
     elif node.text and not node.text.isspace():
-        s = node.text.encode('UTF-8', 'ignore')
-        print "%d:\t%s = '%s'" % (node.sourceline, node.tag, s)
-        #print "%d:\t%s = '%s'" % (node.sourceline, node.tag,
-                #tostring(node, encoding='UTF-8', method="text", with_tail=False))
+        return "<%s> contains '%s'" % (node.tag, node.text.encode('UTF-8', 'ignore'))
     elif node.text:
-        print "%d:\t%s = whitespace" % (node.sourceline, node.tag)
+        return "<%s> contains whitespace" % node.tag
     else:
-        print "%d:\t%s = empty" % (node.sourceline, node.tag)
+        return "<%s> is empty" % node.tag
+
+
+def print_element(node):
+    """ Print het element / de node.
+        Standaard via el_result(). Indien options.element_tree dan wordt
+        lxml.etree.tostring gebruikt om een de XML tree van het element te printen
+        - with_tail=False: de tailt vervalt; vaak end-of-line (EOL)
+    """
+    if options.element_tree:
+        node_result = "'%s'" % tostring(node, encoding='UTF-8', with_tail=False)
+    else:
+        node_result = el_result(node)
+    print "%d:\t%s" % (node.sourceline, node_result)
 
 
 def print_smart_string(smart_string, xml_dom):
@@ -113,7 +119,7 @@ def print_smart_string(smart_string, xml_dom):
         par_el_str = "comment"
     # tag is een string (lxml.etree._Element)
     else:
-        par_el_str = "<%s/>" % par_el.tag
+        par_el_str = "<%s>" % par_el.tag
 
     # ATTRIBUTE node -- @ -- .is_attribute
     if smart_string.is_attribute:
@@ -142,7 +148,7 @@ def print_smart_string(smart_string, xml_dom):
 
     # XPath parent element
     if options.print_xpath:
-        print("\tParent XPath: %s" % xml_dom.getpath(par_el))
+        print "\tParent XPath: %s" % xml_dom.getpath(par_el)
 
 
 def print_result_list(result_list, xml_dom):
@@ -155,7 +161,7 @@ def print_result_list(result_list, xml_dom):
         if iselement(node):
             print_element(node)
             if options.print_xpath:
-                print("\tXPath: %s" % xml_dom.getpath(node))
+                print "\tXPath: %s" % xml_dom.getpath(node)
 
         # Een attribute, entity, text (atomic value)
         # Smart string -- .getparent()
@@ -174,20 +180,20 @@ def print_result_list(result_list, xml_dom):
             print node
 
 
-def update_namespace(ns_map, el, none_prefix='r'):
-    """ Breid ns_map uit met el.nsmap
-        Opm: ns_map.update(el.nsmap) faalt bij empty namespace prefix
+def update_namespace(ns_map, elm, none_prefix='r'):
+    """ Breid ns_map uit met elm.nsmap
+        Opm: ns_map.update(elm.nsmap) faalt bij empty namespace prefix
         Geen bescherming tegen namespace prefix collisions
 
-        Element namespace: el.nsmap.get(el.prefix)
-        Default (None) namespace: el.nsmap[None]
+        Element namespace: elm.nsmap.get(elm.prefix)
+        Default (None) namespace: elm.nsmap[None]
     """
-    for key in el.nsmap:
+    for key in elm.nsmap:
         if not key:
             # Prefix voor de default namespace t.b.v XPath
-            ns_map[none_prefix] = el.nsmap[key]
+            ns_map[none_prefix] = elm.nsmap[key]
         elif not key in ns_map:
-            ns_map[key] = el.nsmap[key]
+            ns_map[key] = elm.nsmap[key]
 
 
 def xml_namespaces(xml_dom):
@@ -199,9 +205,9 @@ def xml_namespaces(xml_dom):
     root = xml_dom.getroot()
     if options.namespaces:
         # XML namespaces (xmlns) in XML DOM elementen
-        for el in xml_dom.iter('*'):
-            if el.nsmap:
-                update_namespace(ns_map, el)
+        for elm in xml_dom.iter('*'):
+            if elm.nsmap:
+                update_namespace(ns_map, elm)
     # XML namespaces (xmlns) in het root element
     elif root.nsmap:
         options.namespaces = True
