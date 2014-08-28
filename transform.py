@@ -28,9 +28,11 @@ def parse_cl():
         - args: files list
     """
     usage = "%prog -x xslt_file xml_file ..."
-    parser = OptionParser(usage=usage, description=description,
+    parser = OptionParser(
+        usage=usage, description=description,
         epilog=epilog, version="%prog " + __version__)
-    parser.add_option("-x", "--xslt",
+    parser.add_option(
+        "-x", "--xslt",
         action="store", type="string", dest="xslt_file",
         help="XSLT file to transform XML file(s)")
 
@@ -68,8 +70,9 @@ for xml_f in xml_files:
         try:
             # UTF-8 en pretty print (#xml.etree.ElementTree.ElementTree.write)
             #   http://docs.python.org/2/library/xml.etree.elementtree.html
-            result.write(stdout, encoding='UTF-8',
-                    xml_declaration=True, pretty_print=True)
+            result.write(
+                stdout, encoding='UTF-8',
+                xml_declaration=True, pretty_print=True)
             # Voorkom "close failed in file object destructor:" meldingen
             # bij meerdere XML bestanden en 'Broken pipe'
             stdout.flush()

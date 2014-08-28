@@ -33,21 +33,27 @@ def parse_cl():
         - args: files list
     """
     usage = "%prog [options] -x xpath xml_file_1 ... xml_file_n"
-    parser = OptionParser(usage=usage, description=description,
+    parser = OptionParser(
+        usage=usage, description=description,
         epilog=epilog, version="%prog " + __version__)
-    parser.add_option("-x", "--xpath",
+    parser.add_option(
+        "-x", "--xpath",
         action="store", type="string", dest="xpath_exp",
         help="XPath expression")
-    parser.add_option("-n", "--namespace",
+    parser.add_option(
+        "-n", "--namespace",
         action="store_true", default=False, dest="namespaces",
         help="enable XML namespace prefixes")
-    parser.add_option("-p", "--print-xpath",
+    parser.add_option(
+        "-p", "--print-xpath",
         action="store_true", default=False, dest="print_xpath",
         help="print the absolute XPath of a result (or parent) element")
-    parser.add_option("-e", "--element-tree",
+    parser.add_option(
+        "-e", "--element-tree",
         action="store_true", default=False, dest="element_tree",
         help="print the XML tree of a result element")
-    parser.add_option("-m", "--method",
+    parser.add_option(
+        "-m", "--method",
         action="store_true", default=False, dest="lxml_method",
         help="use ElementTree.xpath method instead of XPath class")
 
@@ -64,8 +70,8 @@ def el_result(node):
     # PI - lxml.etree._ProcessingInstruction -- node.target & node.tag()
     #   "/processing-instruction()"
     if hasattr(node, "target"):
-        return "processing-instruction('%s') = %s" % (node.target,
-                node.tag(node.text.encode('UTF-8', 'ignore')))
+        return "processing-instruction('%s') = %s" % (
+            node.target, node.tag(node.text.encode('UTF-8', 'ignore')))
 
     # COMMENT - lxml.etree._Comment -- node.tag() == <!---->
     elif not isinstance(node.tag, basestring):
@@ -123,8 +129,8 @@ def print_smart_string(smart_string, xml_dom):
 
     # ATTRIBUTE node -- @ -- .is_attribute
     if smart_string.is_attribute:
-        print "%d:\t@%s = '%s' in %s" % (par_el.sourceline, smart_string.attrname,
-                smart_string, par_el_str)
+        print "%d:\t@%s = '%s' in %s" % (
+            par_el.sourceline, smart_string.attrname, smart_string, par_el_str)
     # Python str.isdigit()
     elif smart_string.isdigit():
         print "%d:\t%s in %s" % (par_el.sourceline, smart_string, par_el_str)
@@ -305,11 +311,11 @@ if options.lxml_method:
     def xpath_dom(xml_dom):
         """ Gebruik de lxml.etree.ElementTree.xpath method """
         try:
-            xp_result = xml_dom.xpath(options.xpath_exp,
-                    namespaces=xml_namespaces(xml_dom))
+            xp_result = xml_dom.xpath(
+                options.xpath_exp, namespaces=xml_namespaces(xml_dom))
         except XPathEvalError as e:
-            stderr.write("XPath '%s' evaluation error: %s\n" %
-                    (options.xpath_exp, e))
+            stderr.write(
+                "XPath '%s' evaluation error: %s\n" % (options.xpath_exp, e))
             return None
         # Als EXSLT functie met onjuist aantal argumenten wordt aangeroepen
         except TypeError as e:

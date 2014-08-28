@@ -29,7 +29,8 @@ def parse_cl():
         Geef opties en bestanden lijst terug
     """
     usage = """\t%prog xml_file_1 ... xml_file_n"""
-    cl_parser = OptionParser(usage=usage, description=description,
+    cl_parser = OptionParser(
+        usage=usage, description=description,
         epilog=epilog, version="%prog " + __version__)
 
     # Parse script's command line
@@ -57,8 +58,9 @@ for xml_f in xml_files:
     xml_tree = build_xml_tree(xml_f, parser=parser)
     if xml_tree:
         try:
-            xml_tree.write(stdout, encoding='UTF-8',
-                    xml_declaration=True, pretty_print=True)
+            xml_tree.write(
+                stdout, encoding='UTF-8',
+                xml_declaration=True, pretty_print=True)
             # Voorkom "close failed in file object destructor:" meldingen
             # bij meerdere XML bestanden en 'Broken pipe'
             stdout.flush()

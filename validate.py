@@ -30,12 +30,15 @@ def parse_cl():
     """
     usage = """\t%prog -x xsd_file xml_file_1 ... xml_file_n
 \t%prog -d dtd_file xml_file_1 ... xml_file_n"""
-    parser = OptionParser(usage=usage, description=description,
+    parser = OptionParser(
+        usage=usage, description=description,
         epilog=epilog, version="%prog " + __version__)
-    parser.add_option("-x", "--xsd",
+    parser.add_option(
+        "-x", "--xsd",
         action="store", type="string", dest="xsd_file",
         help="XSD file to validate XML file(s)")
-    parser.add_option("-d", "--dtd",
+    parser.add_option(
+        "-d", "--dtd",
         action="store", type="string", dest="dtd_file",
         help="DTD file to validate XML file(s)")
 
@@ -87,7 +90,9 @@ for xml_f in xml_files:
         if validator.validate(xml_tree):
             print "XML file '%s' validates against '%s'" % (xml_f, val_file)
         else:
-            stderr.write("XML file '%s' does not validate against '%s':\n" % (xml_f,
-                    val_file))
+            stderr.write(
+                "XML file '%s' does not validate against '%s':\n" %
+                (xml_f, val_file))
             for e in validator.error_log:
-                stderr.write("\tline %i, column %i: %s\n" % (e.line, e.column, e.message))
+                stderr.write(
+                    "\tline %i, column %i: %s\n" % (e.line, e.column, e.message))
