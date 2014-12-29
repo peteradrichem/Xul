@@ -1,6 +1,5 @@
 #!/usr/local/bin/python -t
 # coding=utf-8
-# vim: set encoding=utf-8 :
 
 """ Transform XML files with a XSL file """
 

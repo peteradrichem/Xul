@@ -1,6 +1,5 @@
 #!/usr/local/bin/python -t
 # coding=utf-8
-# vim: set encoding=utf-8 :
 
 """ Pretty print XML files """
 
@@ -9,8 +8,8 @@
 from optparse import OptionParser
 from sys import stdout, stderr
 #
-# Import etree van lxml
-from lxml import etree
+# Import XMLParser van lxml.etree
+from lxml.etree import XMLParser
 #
 # Import TAB modules
 from tab import setup_logger_console
@@ -50,7 +49,7 @@ if not xml_files:
 
 # XML parser t.b.v pretty printing (remove_blank_text) initialiseren
 #   http://lxml.de/FAQ.html#parsing-and-serialisation
-parser = etree.XMLParser(remove_blank_text=True)
+parser = XMLParser(remove_blank_text=True)
 
 # Loop de XML files af
 for xml_f in xml_files:
