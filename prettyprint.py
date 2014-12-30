@@ -9,7 +9,7 @@ from optparse import OptionParser
 from sys import stdout, stderr
 #
 # Import XMLParser van lxml.etree
-from lxml.etree import XMLParser
+from lxml.etree import XMLParser, tostring
 #
 # Import TAB modules
 from tab import setup_logger_console
@@ -27,13 +27,31 @@ def parse_cl():
     """ Lees de command-line options uit.
         Geef opties en bestanden lijst terug
     """
-    usage = """\t%prog xml_file_1 ... xml_file_n"""
+    usage = """\t%prog [-n] xml_file_1 ... xml_file_n"""
     cl_parser = OptionParser(
         usage=usage, description=description,
         epilog=epilog, version="%prog " + __version__)
+    cl_parser.add_option(
+        "-n", "--no-color", action="store_false", default=True,
+        dest="color", help="disable colored output")
 
     # Parse script's command line
     return cl_parser.parse_args()
+
+
+def prettyprint(etree):
+    """ Pretty print de XML etree; indien mogelijk in kleur """
+    if options.color:
+        lexer = get_lexer_by_name('xml', encoding='utf8')
+        formatter = Terminal256Formatter(encoding='utf8')
+        xml_str = tostring(
+            etree, encoding='UTF-8',
+            xml_declaration=True, pretty_print=True)
+        print highlight(xml_str, lexer, formatter)
+    else:
+        etree.write(
+            stdout, encoding='UTF-8',
+            xml_declaration=True, pretty_print=True)
 
 
 # Logging op het console
@@ -41,6 +59,14 @@ setup_logger_console()
 
 # Command-line parsen: XML files
 (options, xml_files) = parse_cl()
+
+if options.color:
+    try:
+        from pygments import highlight
+        from pygments.lexers import get_lexer_by_name
+        from pygments.formatters.terminal256 import Terminal256Formatter
+    except ImportError as inst:
+        options.color = False
 
 # XML bestand meegegeven?
 if not xml_files:
@@ -57,9 +83,7 @@ for xml_f in xml_files:
     xml_tree = build_xml_tree(xml_f, parser=parser)
     if xml_tree:
         try:
-            xml_tree.write(
-                stdout, encoding='UTF-8',
-                xml_declaration=True, pretty_print=True)
+            prettyprint(xml_tree)
             # Voorkom "close failed in file object destructor:" meldingen
             # bij meerdere XML bestanden en 'Broken pipe'
             stdout.flush()
