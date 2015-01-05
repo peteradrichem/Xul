@@ -42,8 +42,8 @@ def parse_cl():
 def prettyprint(etree):
     """ Pretty print de XML etree; indien mogelijk in kleur """
     if options.color:
-        lexer = get_lexer_by_name('xml', encoding='utf8')
-        formatter = Terminal256Formatter(encoding='utf8')
+        lexer = get_lexer_by_name('xml', encoding='utf-8')
+        formatter = Terminal256Formatter(encoding='utf-8', nobold=True)
         xml_str = tostring(
             etree, encoding='UTF-8',
             xml_declaration=True, pretty_print=True)
