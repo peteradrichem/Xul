@@ -4,6 +4,12 @@ Setup script for building XML scripts
 
 from setuptools import setup
 
+long_desc = """**XML scripts**
+Pretty printing of XML files,
+Use XPath expression to select nodes in XML file,
+Transform XML files with XSLT file,
+Validate XML files with a XSD or DTD file"""
+
 setup(
     name="XML scripts",
     version="2.0.0",
@@ -30,13 +36,7 @@ setup(
     description="XML scripts",
     keywords='xml xpath xslt xsd',
     license='BSD',
-    long_description="""\
-**XML scripts**
-Pretty printing of XML files,
-Use XPath expression to select nodes in XML file,
-Transform XML files with XSLT file,
-Validate XML files with a XSD or DTD file
-""",
+    long_description=long_desc,
     platforms='any',
     url='http://docu.npoict.nl/applicatiebeheer/documentatie/xml_scripts'
 )
