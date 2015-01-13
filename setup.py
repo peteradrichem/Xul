@@ -5,10 +5,10 @@ Setup script for building XML scripts
 from setuptools import setup
 
 long_desc = """**XML scripts**
-Pretty printing of XML files,
+Pretty print XML files in human readable form,
 Use XPath expression to select nodes in XML file,
-Transform XML files with XSLT file,
-Validate XML files with a XSD or DTD file"""
+Transform XML files with XSL,
+Validate XML files with a XSD or DTD"""
 
 setup(
     name="XML scripts",
@@ -34,9 +34,10 @@ setup(
         "Topic :: Utilities"
     ],
     description="XML scripts",
-    keywords='xml xpath xslt xsd',
+    keywords='xml xpath xslt xsd dtd',
     license='BSD',
     long_description=long_desc,
     platforms='any',
-    url='http://docu.npoict.nl/applicatiebeheer/documentatie/xml_scripts'
+    url='http://docu.npoict.nl/applicatiebeheer/documentatie/xml_scripts',
+    download_url='https://bitbucket.org/peteradrichem/xml-scripts'
 )
