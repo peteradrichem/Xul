@@ -4,11 +4,11 @@
 """ Transform XML files with a XSL file """
 
 
-# Import standaard Python modules
+# Standard Python modules
 from optparse import OptionParser
 from sys import stdout, stderr
 #
-# Import TAB modules
+# TAB modules
 from tab import setup_logger_console
 from tab.xml import build_xsl_transform, xml_transformer
 

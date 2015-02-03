@@ -4,14 +4,14 @@
 """ Pretty print XML files """
 
 
-# Import standaard Python modules
+# Standard Python modules
 from optparse import OptionParser
 from sys import stdout, stderr
 #
-# Import XMLParser van lxml.etree
+# XMLParser van lxml.etree
 from lxml.etree import XMLParser, tostring
 #
-# Import TAB modules
+# TAB modules
 from tab import setup_logger_console
 from tab.xml import build_xml_tree
 

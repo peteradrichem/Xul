@@ -4,14 +4,15 @@
 """ XPath utility """
 
 
-# Import standaard Python modules
+# Standard Python modules
 from optparse import OptionParser
 from sys import stderr
 #
-# lxml XML toolkit imports
+# lxml XML toolkit
+# pylint: disable=no-name-in-module
 from lxml.etree import XPathEvalError, iselement, tostring
 #
-# Import TAB modules
+# TAB modules
 from tab import setup_logger_console
 from tab.xml import build_xml_tree, build_xpath, etree_xpath
 
@@ -92,7 +93,7 @@ def print_element(node):
     """ Print het element / de node.
         Standaard via el_result(). Indien options.element_tree dan wordt
         lxml.etree.tostring gebruikt om een de XML tree van het element te printen
-        - with_tail=False: de tailt vervalt; vaak end-of-line (EOL)
+        - with_tail=False: de tail vervalt; vaak end-of-line (EOL)
     """
     if options.element_tree:
         node_result = "'%s'" % tostring(node, encoding='UTF-8', with_tail=False)

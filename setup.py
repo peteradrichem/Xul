@@ -11,8 +11,12 @@ Transform XML files with XSL,
 Validate XML files with a XSD or DTD"""
 
 setup(
-    name="XML scripts",
+    name="XML_scripts",
     version="2.0.0",
+    description="XML scripts",
+    author='Peter Adrichem',
+    author_email='Peter.Adrichem@gmail.com',
+    url='http://docu.npoict.nl/applicatiebeheer/documentatie/xml_scripts',
 
     scripts=['prettyprint.py', 'transform.py', 'validate.py', 'xpath.py'],
     zip_safe=False,
@@ -21,23 +25,24 @@ setup(
         "lxml"
     ],
 
-    # Metadata (for upload to PyPI)
-    author='Peter Adrichem',
-    author_email='Peter.Adrichem@gmail.com',
     classifiers=[
-        "Development Status :: 5 - Production/Stable",
-        "Environment :: Console",
-        "Programming Language :: Python",
-        "Programming Language :: Python :: 2.6",
-        "Programming Language :: Python :: 2.7",
-        "Topic :: Text Processing :: Markup :: XML",
-        "Topic :: Utilities"
+        'Development Status :: 5 - Production/Stable',
+        'Environment :: Console',
+        'Intended Audience :: End Users/Desktop',
+        'Intended Audience :: System Administrators',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: MacOS :: MacOS X',
+        'Operating System :: POSIX',
+        'Operating System :: Unix',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2.7',
+        'Topic :: Text Processing :: Markup :: XML',
+        'Topic :: Utilities'
     ],
-    description="XML scripts",
     keywords='xml xpath xslt xsd dtd',
-    license='BSD',
+    license='MIT',
     long_description=long_desc,
-    platforms='any',
-    url='http://docu.npoict.nl/applicatiebeheer/documentatie/xml_scripts',
-    download_url='https://bitbucket.org/peteradrichem/xml-scripts'
+    download_url='https://bitbucket.org/peteradrichem/xml-scripts',
+    #bugtrack_url='https://bitbucket.org/peteradrichem/xml-scripts/issues'
 )

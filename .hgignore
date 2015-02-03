@@ -1,7 +1,6 @@
 # http://www.selenic.com/mercurial/hg.1.html#patterns
-#
-# regexp syntax
-syntax: regexp
-.*\.pyc
+syntax: glob
+*.pyc
 xml/
 docs/
+*.egg-info/
