@@ -42,6 +42,9 @@ Pretty print
 .. code:: tcsh
 
         % prettyprint.py --help
+
+.. code::
+
         Usage:  prettyprint.py [-n] xml_file_1 ... xml_file_n
 
         Pretty print XML files
@@ -59,6 +62,9 @@ Transform
 .. code:: tcsh
 
         % transform.py --help
+
+.. code::
+
         Usage: transform.py -x xslt_file xml_file ...
 
         Transform XML file(s) with XSLT file
@@ -77,6 +83,9 @@ Validate
 .. code:: tcsh
 
         % validate.py --help
+
+.. code::
+
         Usage:  validate.py -x xsd_file xml_file_1 ... xml_file_n
                 validate.py -d dtd_file xml_file_1 ... xml_file_n
 
@@ -98,6 +107,8 @@ XPath
 .. code:: tcsh
 
         % xpath.py --help
+.. code::
+
         Usage: xpath.py [options] -x xpath xml_file_1 ... xml_file_n
 
         Use XPath expression to select nodes in XML file(s).
