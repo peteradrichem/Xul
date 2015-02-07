@@ -2,13 +2,13 @@
 Setup script for building XML scripts
 """
 
+import codecs
 from setuptools import setup
 
-long_desc = """**XML scripts**
-Pretty print XML files in human readable form,
-Use XPath expression to select nodes in XML file,
-Transform XML files with XSL,
-Validate XML files with a XSD or DTD"""
+def long_description():
+    """ Long description via README.rst"""
+    with codecs.open('README.rst', encoding='utf8') as f:
+        return f.read()
 
 setup(
     name="XML_scripts",
@@ -42,7 +42,7 @@ setup(
     ],
     keywords='xml xpath xslt xsd dtd',
     license='MIT',
-    long_description=long_desc,
+    long_description=long_description(),
     download_url='https://bitbucket.org/peteradrichem/xml-scripts',
     #bugtrack_url='https://bitbucket.org/peteradrichem/xml-scripts/issues'
 )

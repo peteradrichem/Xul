@@ -1,10 +1,14 @@
 XML scripts
 ===========
 
-Version 2.0.0
-
 Python scripts for XML files.
-Transform with XSL, validate with XSD (or DTD), use XPath and pretty print your XML files.
+
+.. note:: Version 2.0.0
+
+Pretty print XML files in human readable form,
+transform XML files with XSL,
+validate XML files with a XSD or DTD
+or use XPath expression to select nodes in a XML file.
 
 Scripts
 -------
@@ -24,7 +28,7 @@ Requirements
 ------------
 - `lxml <http://lxml.de/>`_
 - `TAB <https://bitbucket.org/peteradrichem/tab>`_
-- optional `Pygments <http://pygments.org/>`_
+- `Pygments <http://pygments.org/>`_ (optional)
 
 Installation
 ------------
@@ -107,6 +111,7 @@ XPath
 .. code:: tcsh
 
         % xpath.py --help
+
 .. code::
 
         Usage: xpath.py [options] -x xpath xml_file_1 ... xml_file_n
