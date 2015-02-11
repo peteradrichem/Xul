@@ -4,3 +4,5 @@ syntax: glob
 xml/
 docs/
 *.egg-info/
+build/
+dist/

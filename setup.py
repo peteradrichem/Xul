@@ -3,11 +3,14 @@ Setup script for building XML scripts
 """
 
 import codecs
+from os import path
 from setuptools import setup
 
+here = path.abspath(path.dirname(__file__))
+
 def long_description():
-    """ Long description via README.rst"""
-    with codecs.open('README.rst', encoding='utf8') as f:
+    """ Get the long description from the README.rst file """
+    with codecs.open(path.join(here, 'README.rst'), encoding='utf-8') as f:
         return f.read()
 
 setup(
@@ -44,5 +47,5 @@ setup(
     license='MIT',
     long_description=long_description(),
     download_url='https://bitbucket.org/peteradrichem/xml-scripts',
-    #bugtrack_url='https://bitbucket.org/peteradrichem/xml-scripts/issues'
+    bugtrack_url='https://bitbucket.org/peteradrichem/xml-scripts/issues'
 )

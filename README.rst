@@ -3,8 +3,6 @@ XML scripts
 
 Python scripts for XML files.
 
-.. note:: Version 2.0.0
-
 Pretty print XML files in human readable form,
 transform XML files with XSL,
 validate XML files with a XSD or DTD
