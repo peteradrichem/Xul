@@ -16,7 +16,7 @@ def long_description():
 setup(
     name="XML_scripts",
     version="2.0.0",
-    description="XML scripts",
+    description="XML (XPath, XSD, XSLT) scripts",
     author='Peter Adrichem',
     author_email='Peter.Adrichem@gmail.com',
     url='http://docu.npoict.nl/applicatiebeheer/documentatie/xml_scripts',
@@ -25,7 +25,7 @@ setup(
     zip_safe=False,
     install_requires=[
         "TAB>=0.9.19",
-        "lxml"
+        "lxml>=2.0"
     ],
 
     classifiers=[
@@ -45,6 +45,7 @@ setup(
     ],
     keywords='xml xpath xslt xsd dtd',
     license='MIT',
+    platforms='CPython',
     long_description=long_description(),
     download_url='https://bitbucket.org/peteradrichem/xml-scripts',
     bugtrack_url='https://bitbucket.org/peteradrichem/xml-scripts/issues'
