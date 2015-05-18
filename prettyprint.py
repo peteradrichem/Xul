@@ -6,7 +6,7 @@
 
 # Standard Python modules
 from optparse import OptionParser
-from sys import stdout, stderr
+from sys import stdout, stderr, stdin
 #
 # XMLParser van lxml.etree
 from lxml.etree import XMLParser, tostring
@@ -68,16 +68,11 @@ if options.color:
     except ImportError as inst:
         options.color = False
 
-# XML bestand meegegeven?
-if not xml_files:
-    stderr.write("No XML file(s) to operate on\n")
-    exit(0)
-
 # XML parser t.b.v pretty printing (remove_blank_text) initialiseren
 #   http://lxml.de/FAQ.html#parsing-and-serialisation
 parser = XMLParser(remove_blank_text=True)
 
-# Loop de XML files af
+# Loop de opgegeven XML bestanden af
 for xml_f in xml_files:
     # Opm: build_xml_tree rapporteert XML fouten in xml_f
     xml_tree = build_xml_tree(xml_f, parser=parser)
@@ -91,3 +86,9 @@ for xml_f in xml_files:
         except IOError as e:
             if e.errno != 32:
                 stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
+
+# Probeer stdin als er geen enkel XML bestand is meegegeven
+if not xml_files:
+    from lxml.etree import parse
+    xml_tree = parse(stdin, parser)
+    prettyprint(xml_tree)
