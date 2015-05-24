@@ -20,7 +20,7 @@ __version_info__ = ('1', '1', '0')
 __version__ = '.'.join(__version_info__)
 
 def parse_cl():
-    """Parse the command-line for options and XML files"""
+    """Parse the command-line for options and XML files."""
     cl_parser = OptionParser(
         usage="\t%prog [-n] xml_file_1 ... xml_file_n",
         description=__doc__,

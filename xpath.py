@@ -1,15 +1,18 @@
 #!/usr/local/bin/python -t
 # coding=utf-8
 
-""" XPath utility """
+"""XPath utility:
+
+Use XPath expression to select nodes in XML file(s).
+"""
 
 
-# Standard Python modules
+# Standard Python
 from optparse import OptionParser
 from sys import stderr
 #
-# lxml XML toolkit
 # pylint: disable=no-name-in-module
+# lxml ElementTree <http://lxml.de/>
 from lxml.etree import XPathEvalError, iselement, tostring
 #
 # TAB modules
@@ -17,25 +20,18 @@ from tab import setup_logger_console
 from tab.xml import build_xml_tree, build_xpath, etree_xpath
 
 
-# Versie
-__version_info__ = ('2', '0', '0')
+__version_info__ = ('2', '1', '0')
 __version__ = '.'.join(__version_info__)
-
-description = "Use XPath expression to select nodes in XML file(s)."
-epilog = "Documentation: http://docu.npoict.nl/applicatiebeheer/documentatie/xml_scripts"
 
 
 def parse_cl():
-    """ Lees de command-line options van het XPath script uit.
-        Geef opties en bestanden lijst terug
-        - options.xpath_exp: XPath expression
-        - options.lxml_method: lxml ElementTree.xpath method i.p.v. XPath class?
-        - args: files list
-    """
-    usage = "%prog [options] -x xpath xml_file_1 ... xml_file_n"
+    """Parse the command-line for options and XML files."""
     parser = OptionParser(
-        usage=usage, description=description,
-        epilog=epilog, version="%prog " + __version__)
+        usage="%prog [options] -x xpath xml_file_1 ... xml_file_n",
+        description=__doc__,
+        epilog="Documentation: " +
+        "http://docu.npoict.nl/applicatiebeheer/documentatie/xml_scripts",
+        version="%prog " + __version__)
     parser.add_option(
         "-x", "--xpath",
         action="store", type="string", dest="xpath_exp",
@@ -57,7 +53,6 @@ def parse_cl():
         action="store_true", default=False, dest="lxml_method",
         help="use ElementTree.xpath method instead of XPath class")
 
-    # Parse script's command line
     return parser.parse_args()
 
 
@@ -285,10 +280,10 @@ def print_xpath_result(xp_result, xml_dom):
         print "Unknown XPath result: %s" % xp_result
 
 
-# Logging op het console
+# Logging to the console (TAB modules)
 setup_logger_console()
 
-# Command-line parsen: XPath expression & XML file(s)
+# Command-line
 (options, xml_files) = parse_cl()
 
 # XPath expression
@@ -306,10 +301,10 @@ if not xml_files:
     stderr.write("No XML file(s) to use XPath on\n")
     exit(0)
 
-# lxml.ElementTree.xpath method gebruiken?
+# lxml.ElementTree.xpath method?
 if options.lxml_method:
     def xpath_dom(xml_dom):
-        """ Gebruik de lxml.etree.ElementTree.xpath method """
+        """xpath_dom with lxml.etree.ElementTree.xpath method."""
         try:
             xp_result = xml_dom.xpath(
                 options.xpath_exp, namespaces=xml_namespaces(xml_dom))
@@ -317,16 +312,16 @@ if options.lxml_method:
             stderr.write(
                 "XPath '%s' evaluation error: %s\n" % (options.xpath_exp, e))
             return None
-        # Als EXSLT functie met onjuist aantal argumenten wordt aangeroepen
+        # TypeError bij aanroepen EXSLT functie met onjuist aantal argumenten
         except TypeError as e:
             stderr.write("XPath '%s' type error: %s\n" % (options.xpath_exp, e))
             return None
         else:
             return xp_result
-# Default is lxml.etree.XPath class
+# Default: lxml.etree.XPath class
 else:
     def xpath_dom(xml_dom):
-        """ Gebruik de lxml.etree.XPath class """
+        """xpath_dom with lxml.etree.XPath class."""
         # Welke XML namespace (xmlns) prefixes zijn er gedefinieerd?
         ns_map = xml_namespaces(xml_dom)
         xpath_obj = build_xpath(options.xpath_exp, ns_map)
@@ -336,7 +331,7 @@ else:
             return etree_xpath(xml_dom, xpath_obj)
 
 
-## Loop de XML bestanden af
+# Use XPath on XML files
 for xml_f in xml_files:
     print "\nFile: %s" % xml_f
     # Bouw XML DOM (Document Object Model) Node Tree (ElementTree)
