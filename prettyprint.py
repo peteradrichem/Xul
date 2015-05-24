@@ -17,7 +17,7 @@ from tab.xml import build_xml_tree
 
 
 # Versie
-__version_info__ = ('1', '0', '0')
+__version_info__ = ('1', '1', '0')
 __version__ = '.'.join(__version_info__)
 
 description = "Pretty print XML files"
@@ -42,8 +42,6 @@ def parse_cl():
 def prettyprint(etree):
     """ Pretty print de XML etree; indien mogelijk in kleur """
     if options.color:
-        lexer = get_lexer_by_name('xml', encoding='utf-8')
-        formatter = Terminal256Formatter(encoding='utf-8', nobold=True)
         xml_str = tostring(
             etree, encoding='UTF-8',
             xml_declaration=True, pretty_print=True)
@@ -62,10 +60,12 @@ setup_logger_console()
 
 if options.color:
     try:
-        from pygments import highlight
         from pygments.lexers import get_lexer_by_name
+        lexer = get_lexer_by_name('xml', encoding='utf-8')
         from pygments.formatters.terminal256 import Terminal256Formatter
-    except ImportError as inst:
+        formatter = Terminal256Formatter(encoding='utf-8', nobold=True)
+        from pygments import highlight
+    except ImportError:
         options.color = False
 
 # XML parser t.b.v pretty printing (remove_blank_text) initialiseren
