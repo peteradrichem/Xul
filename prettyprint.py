@@ -1,14 +1,14 @@
 #!/usr/local/bin/python -t
 # coding=utf-8
 
-""" Pretty print XML files """
+"""Pretty print XML files"""
 
 
-# Standard Python modules
+# Standard Python
 from optparse import OptionParser
 from sys import stdout, stderr, stdin
 #
-# XMLParser van lxml.etree
+# lxml ElementTree <http://lxml.de/>
 from lxml.etree import XMLParser, tostring
 #
 # TAB modules
@@ -16,31 +16,26 @@ from tab import setup_logger_console
 from tab.xml import build_xml_tree
 
 
-# Versie
 __version_info__ = ('1', '1', '0')
 __version__ = '.'.join(__version_info__)
 
-description = "Pretty print XML files"
-epilog = "Documentation: http://docu.npoict.nl/applicatiebeheer/documentatie/xml_scripts"
-
 def parse_cl():
-    """ Lees de command-line options uit.
-        Geef opties en bestanden lijst terug
-    """
-    usage = """\t%prog [-n] xml_file_1 ... xml_file_n"""
+    """Parse the command-line for options and XML files"""
     cl_parser = OptionParser(
-        usage=usage, description=description,
-        epilog=epilog, version="%prog " + __version__)
+        usage="\t%prog [-n] xml_file_1 ... xml_file_n",
+        description=__doc__,
+        epilog="Documentation: " +
+        "http://docu.npoict.nl/applicatiebeheer/documentatie/xml_scripts",
+        version="%prog " + __version__)
     cl_parser.add_option(
         "-n", "--no-color", action="store_false", default=True,
         dest="color", help="disable colored output")
 
-    # Parse script's command line
     return cl_parser.parse_args()
 
 
 def prettyprint(etree):
-    """ Pretty print de XML etree; indien mogelijk in kleur """
+    """Pretty print XML ElementTree in optional (Pygments) color"""
     if options.color:
         xml_str = tostring(
             etree, encoding='UTF-8',
@@ -52,10 +47,10 @@ def prettyprint(etree):
             xml_declaration=True, pretty_print=True)
 
 
-# Logging op het console
+# Logging to the console (TAB modules)
 setup_logger_console()
 
-# Command-line parsen: XML files
+# Command-line
 (options, xml_files) = parse_cl()
 
 if options.color:
@@ -68,11 +63,11 @@ if options.color:
     except ImportError:
         options.color = False
 
-# XML parser t.b.v pretty printing (remove_blank_text) initialiseren
+# Initialise XML parser and remove blank text for 'pretty_print' formatting
 #   http://lxml.de/FAQ.html#parsing-and-serialisation
 parser = XMLParser(remove_blank_text=True)
 
-# Loop de opgegeven XML bestanden af
+# Pretty print XML files
 for xml_f in xml_files:
     # Opm: build_xml_tree rapporteert XML fouten in xml_f
     xml_tree = build_xml_tree(xml_f, parser=parser)
@@ -82,12 +77,12 @@ for xml_f in xml_files:
             # Voorkom "close failed in file object destructor:" meldingen
             # bij meerdere XML bestanden en 'Broken pipe'
             stdout.flush()
-        # 'IOError: [Errno 32] Broken pipe' afvangen
         except IOError as e:
+            # 'IOError: [Errno 32] Broken pipe' afvangen
             if e.errno != 32:
                 stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
 
-# Probeer stdin als er geen enkel XML bestand is meegegeven
+# Read from standard input when no XML files are specified
 if not xml_files:
     from lxml.etree import parse
     xml_tree = parse(stdin, parser)
