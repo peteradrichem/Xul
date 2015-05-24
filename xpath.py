@@ -6,11 +6,11 @@
 
 # Standard Python
 from optparse import OptionParser
-from sys import stderr
+from sys import stderr, stdin
 #
 # pylint: disable=no-name-in-module
 # lxml ElementTree <http://lxml.de/>
-from lxml.etree import XPathEvalError, iselement, tostring
+from lxml.etree import XPathEvalError, iselement, tostring, XMLParser, parse
 #
 # TAB modules
 from tab import setup_logger_console
@@ -230,7 +230,7 @@ def print_result_header(list_result):
         if isinstance(list_result[0], tuple):
             print "Namespace result:"
         else:
-            print "result on line:"
+            print "1 result on line:"
     else:
         if isinstance(list_result[0], tuple):
             print "%d namespace results:" % xp_r_len
@@ -238,6 +238,7 @@ def print_result_header(list_result):
             print "%d results on lines:" % xp_r_len
 
 
+# pylint: disable=redefined-outer-name
 def print_xpath_result(xp_result, xml_dom):
     """ XPath return values:
             http://lxml.de/xpathxslt.html#xpath-return-values
@@ -294,11 +295,6 @@ if __name__ == '__main__':
         stderr.write('No XPath expression specified\n')
         exit(50)
 
-    # Zijn er XML bestand(en) meegegeven?
-    if not xml_files:
-        stderr.write("No XML file(s) to use XPath on\n")
-        exit(0)
-
     # lxml.ElementTree.xpath method?
     if options.lxml_method:
         def xpath_dom(xml_dom):
@@ -343,3 +339,14 @@ if __name__ == '__main__':
         else:
             # Print XPath resultaat
             print_xpath_result(result, xml_dom_node_tree)
+
+    # Read from standard input when no XML files are specified
+    if not xml_files:
+        xml_dom_node_tree = parse(stdin, XMLParser())
+        # Pas XPath toe op XML DOM
+        xp_result = xpath_dom(xml_dom_node_tree)
+        if xp_result is None:
+            stderr.write("XPath failed\n")
+        else:
+            # Print XPath resultaat
+            print_xpath_result(xp_result, xml_dom_node_tree)
