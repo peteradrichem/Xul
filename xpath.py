@@ -20,7 +20,6 @@ from tab.xml import build_xml_tree, build_xpath, etree_xpath
 __version_info__ = ('2', '1', '0')
 __version__ = '.'.join(__version_info__)
 
-
 def parse_cl():
     """Parse the command-line for options and XML files."""
     parser = OptionParser(
@@ -331,16 +330,22 @@ if __name__ == '__main__':
             else:
                 return etree_xpath(xml_dom, xpath_obj)
 
+    # Initialise XML parser
+    xml_parser = XMLParser()
+
 
     # Use XPath on XML files
     for xml_f in xml_files:
         print "\nFile: %s" % xml_f
         # Bouw XML DOM (Document Object Model) Node Tree (ElementTree)
-        xml_dom_node_tree = build_xml_tree(xml_f, lenient=False)
+        xml_dom_node_tree = build_xml_tree(
+            xml_f,
+            parser=xml_parser,
+            lenient=False)
         if xml_dom_node_tree is None:
             continue
         print_xpath_result(xml_dom_node_tree)
 
     # Read from standard input when no XML files are specified
     if not xml_files:
-        print_xpath_result(parse(stdin, XMLParser()))
+        print_xpath_result(parse(stdin, xml_parser))
