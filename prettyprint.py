@@ -9,7 +9,7 @@ from optparse import OptionParser
 from sys import stdout, stderr, stdin
 #
 # lxml ElementTree <http://lxml.de/>
-from lxml.etree import XMLParser, tostring
+from lxml.etree import XMLParser, tostring, parse
 #
 # TAB modules
 from tab import setup_logger_console
@@ -47,43 +47,43 @@ def prettyprint(etree):
             xml_declaration=True, pretty_print=True)
 
 
-# Logging to the console (TAB modules)
-setup_logger_console()
+if __name__ == '__main__':
+    # Logging to the console (TAB modules)
+    setup_logger_console()
 
-# Command-line
-(options, xml_files) = parse_cl()
+    # Command-line
+    (options, xml_files) = parse_cl()
 
-if options.color:
-    try:
-        from pygments.lexers import get_lexer_by_name
-        lexer = get_lexer_by_name('xml', encoding='utf-8')
-        from pygments.formatters.terminal256 import Terminal256Formatter
-        formatter = Terminal256Formatter(encoding='utf-8', nobold=True)
-        from pygments import highlight
-    except ImportError:
-        options.color = False
-
-# Initialise XML parser and remove blank text for 'pretty_print' formatting
-#   http://lxml.de/FAQ.html#parsing-and-serialisation
-parser = XMLParser(remove_blank_text=True)
-
-# Pretty print XML files
-for xml_f in xml_files:
-    # Opm: build_xml_tree rapporteert XML fouten in xml_f
-    xml_tree = build_xml_tree(xml_f, parser=parser)
-    if xml_tree:
+    if options.color:
         try:
-            prettyprint(xml_tree)
-            # Voorkom "close failed in file object destructor:" meldingen
-            # bij meerdere XML bestanden en 'Broken pipe'
-            stdout.flush()
-        except IOError as e:
-            # 'IOError: [Errno 32] Broken pipe' afvangen
-            if e.errno != 32:
-                stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
+            from pygments.lexers import get_lexer_by_name
+            lexer = get_lexer_by_name('xml', encoding='utf-8')
+            from pygments.formatters.terminal256 import Terminal256Formatter
+            formatter = Terminal256Formatter(encoding='utf-8', nobold=True)
+            from pygments import highlight
+        except ImportError:
+            options.color = False
 
-# Read from standard input when no XML files are specified
-if not xml_files:
-    from lxml.etree import parse
-    xml_tree = parse(stdin, parser)
-    prettyprint(xml_tree)
+    # Initialise XML parser and remove blank text for 'pretty_print' formatting
+    #   http://lxml.de/FAQ.html#parsing-and-serialisation
+    parser = XMLParser(remove_blank_text=True)
+
+    # Pretty print XML files
+    for xml_f in xml_files:
+        # Opm: build_xml_tree rapporteert XML fouten in xml_f
+        xml_tree = build_xml_tree(xml_f, parser=parser)
+        if xml_tree:
+            try:
+                prettyprint(xml_tree)
+                # Voorkom "close failed in file object destructor:" meldingen
+                # bij meerdere XML bestanden en 'Broken pipe'
+                stdout.flush()
+            except IOError as e:
+                # 'IOError: [Errno 32] Broken pipe' afvangen
+                if e.errno != 32:
+                    stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
+
+    # Read from standard input when no XML files are specified
+    if not xml_files:
+        xml_tree = parse(stdin, parser)
+        prettyprint(xml_tree)
