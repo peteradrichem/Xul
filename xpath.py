@@ -1,10 +1,7 @@
 #!/usr/local/bin/python -t
 # coding=utf-8
 
-"""XPath utility:
-
-Use XPath expression to select nodes in XML file(s).
-"""
+"""Use XPath expression to select nodes in XML file(s)."""
 
 
 # Standard Python
@@ -280,68 +277,69 @@ def print_xpath_result(xp_result, xml_dom):
         print "Unknown XPath result: %s" % xp_result
 
 
-# Logging to the console (TAB modules)
-setup_logger_console()
+if __name__ == '__main__':
+    # Logging to the console (TAB modules)
+    setup_logger_console()
 
-# Command-line
-(options, xml_files) = parse_cl()
+    # Command-line
+    (options, xml_files) = parse_cl()
 
-# XPath expression
-if options.xpath_exp:
-    if build_xpath(options.xpath_exp):
-        print "XPath: %s" % options.xpath_exp
-    else:
-        exit(60)
-else:
-    stderr.write('No XPath expression specified\n')
-    exit(50)
-
-# Zijn er XML bestand(en) meegegeven?
-if not xml_files:
-    stderr.write("No XML file(s) to use XPath on\n")
-    exit(0)
-
-# lxml.ElementTree.xpath method?
-if options.lxml_method:
-    def xpath_dom(xml_dom):
-        """xpath_dom with lxml.etree.ElementTree.xpath method."""
-        try:
-            xp_result = xml_dom.xpath(
-                options.xpath_exp, namespaces=xml_namespaces(xml_dom))
-        except XPathEvalError as e:
-            stderr.write(
-                "XPath '%s' evaluation error: %s\n" % (options.xpath_exp, e))
-            return None
-        # TypeError bij aanroepen EXSLT functie met onjuist aantal argumenten
-        except TypeError as e:
-            stderr.write("XPath '%s' type error: %s\n" % (options.xpath_exp, e))
-            return None
+    # XPath expression
+    if options.xpath_exp:
+        if build_xpath(options.xpath_exp):
+            print "XPath: %s" % options.xpath_exp
         else:
-            return xp_result
-# Default: lxml.etree.XPath class
-else:
-    def xpath_dom(xml_dom):
-        """xpath_dom with lxml.etree.XPath class."""
-        # Welke XML namespace (xmlns) prefixes zijn er gedefinieerd?
-        ns_map = xml_namespaces(xml_dom)
-        xpath_obj = build_xpath(options.xpath_exp, ns_map)
-        if not xpath_obj:
-            return None
-        else:
-            return etree_xpath(xml_dom, xpath_obj)
-
-
-# Use XPath on XML files
-for xml_f in xml_files:
-    print "\nFile: %s" % xml_f
-    # Bouw XML DOM (Document Object Model) Node Tree (ElementTree)
-    xml_dom_node_tree = build_xml_tree(xml_f, lenient=False)
-    if xml_dom_node_tree is None:
-        continue
-    # Pas XPath toe op XML DOM
-    result = xpath_dom(xml_dom_node_tree)
-    if result is None:
-        stderr.write("XPath failed on %s\n" % xml_f)
+            exit(60)
     else:
-        # Print XPath resultaat
-        print_xpath_result(result, xml_dom_node_tree)
+        stderr.write('No XPath expression specified\n')
+        exit(50)
+
+    # Zijn er XML bestand(en) meegegeven?
+    if not xml_files:
+        stderr.write("No XML file(s) to use XPath on\n")
+        exit(0)
+
+    # lxml.ElementTree.xpath method?
+    if options.lxml_method:
+        def xpath_dom(xml_dom):
+            """xpath_dom with lxml.etree.ElementTree.xpath method."""
+            try:
+                xp_result = xml_dom.xpath(
+                    options.xpath_exp, namespaces=xml_namespaces(xml_dom))
+            except XPathEvalError as e:
+                stderr.write(
+                    "XPath '%s' evaluation error: %s\n" % (options.xpath_exp, e))
+                return None
+            # TypeError bij aanroepen EXSLT functie met onjuist aantal argumenten
+            except TypeError as e:
+                stderr.write("XPath '%s' type error: %s\n" % (options.xpath_exp, e))
+                return None
+            else:
+                return xp_result
+    # Default: lxml.etree.XPath class
+    else:
+        def xpath_dom(xml_dom):
+            """xpath_dom with lxml.etree.XPath class."""
+            # Welke XML namespace (xmlns) prefixes zijn er gedefinieerd?
+            ns_map = xml_namespaces(xml_dom)
+            xpath_obj = build_xpath(options.xpath_exp, ns_map)
+            if not xpath_obj:
+                return None
+            else:
+                return etree_xpath(xml_dom, xpath_obj)
+
+
+    # Use XPath on XML files
+    for xml_f in xml_files:
+        print "\nFile: %s" % xml_f
+        # Bouw XML DOM (Document Object Model) Node Tree (ElementTree)
+        xml_dom_node_tree = build_xml_tree(xml_f, lenient=False)
+        if xml_dom_node_tree is None:
+            continue
+        # Pas XPath toe op XML DOM
+        result = xpath_dom(xml_dom_node_tree)
+        if result is None:
+            stderr.write("XPath failed on %s\n" % xml_f)
+        else:
+            # Print XPath resultaat
+            print_xpath_result(result, xml_dom_node_tree)
