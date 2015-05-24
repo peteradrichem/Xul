@@ -238,11 +238,18 @@ def print_result_header(list_result):
             print "%d results on lines:" % xp_r_len
 
 
-# pylint: disable=redefined-outer-name
-def print_xpath_result(xp_result, xml_dom):
-    """ XPath return values:
-            http://lxml.de/xpathxslt.html#xpath-return-values
+def print_xpath_result(xml_dom):
+    """Print XPath results.
+
+    XPath return values:
+        http://lxml.de/xpathxslt.html#xpath-return-values
     """
+    # Pas XPath toe op XML DOM
+    xp_result = xpath_dom(xml_dom)
+    if xp_result is None:
+        stderr.write("XPath failed\n")
+        return
+
     # STRING - string (basestring) - smart string
     #   "string(/voorspellingen/@startdatum)"
     # Namespace URI
@@ -332,21 +339,8 @@ if __name__ == '__main__':
         xml_dom_node_tree = build_xml_tree(xml_f, lenient=False)
         if xml_dom_node_tree is None:
             continue
-        # Pas XPath toe op XML DOM
-        result = xpath_dom(xml_dom_node_tree)
-        if result is None:
-            stderr.write("XPath failed on %s\n" % xml_f)
-        else:
-            # Print XPath resultaat
-            print_xpath_result(result, xml_dom_node_tree)
+        print_xpath_result(xml_dom_node_tree)
 
     # Read from standard input when no XML files are specified
     if not xml_files:
-        xml_dom_node_tree = parse(stdin, XMLParser())
-        # Pas XPath toe op XML DOM
-        xp_result = xpath_dom(xml_dom_node_tree)
-        if xp_result is None:
-            stderr.write("XPath failed\n")
-        else:
-            # Print XPath resultaat
-            print_xpath_result(xp_result, xml_dom_node_tree)
+        print_xpath_result(parse(stdin, XMLParser()))
