@@ -31,7 +31,7 @@ def parse_cl():
     parser.add_option(
         "-x", "--xpath",
         action="store", type="string", dest="xpath_exp",
-        help="XPath expression")
+        help="XML Path Language (XPath) expression")
     parser.add_option(
         "-n", "--namespace",
         action="store_true", default=False, dest="namespaces",
@@ -50,6 +50,33 @@ def parse_cl():
         help="use ElementTree.xpath method instead of XPath class")
 
     return parser.parse_args()
+
+
+def class_xpath_dom(xml_dom):
+    """XPath with lxml.etree.XPath class."""
+    ns_map = xml_namespaces(xml_dom)
+    xpath_obj = build_xpath(options.xpath_exp, ns_map)
+    if not xpath_obj:
+        return None
+    else:
+        return etree_xpath(xml_dom, xpath_obj)
+
+
+def et_xpath_dom(xml_dom):
+    """XPath with lxml.etree.ElementTree.xpath method."""
+    try:
+        xp_result = xml_dom.xpath(
+            options.xpath_exp, namespaces=xml_namespaces(xml_dom))
+    except XPathEvalError as e:
+        stderr.write(
+            "XPath '%s' evaluation error: %s\n" % (options.xpath_exp, e))
+        return None
+    # TypeError bij aanroepen EXSLT functie met onjuist aantal argumenten
+    except TypeError as e:
+        stderr.write("XPath '%s' type error: %s\n" % (options.xpath_exp, e))
+        return None
+    else:
+        return xp_result
 
 
 def el_result(node):
@@ -195,7 +222,7 @@ def update_namespace(ns_map, elm, none_prefix='r'):
 
 def xml_namespaces(xml_dom):
     """ XML namespaces (xmlns) in XML DOM (ElementTree).
-        Resultaat is dict met prefix, URI
+        Resultaat is 'XML namespace prefix: URI' dict
     """
     ns_map = {'re': "http://exslt.org/regular-expressions"}
     # root element -- /*
@@ -243,7 +270,7 @@ def print_xpath_result(xml_dom):
     XPath return values:
         http://lxml.de/xpathxslt.html#xpath-return-values
     """
-    # Pas XPath toe op XML DOM
+    # Use XPath expression on XML DOM
     xp_result = xpath_dom(xml_dom)
     if xp_result is None:
         stderr.write("XPath failed\n")
@@ -301,34 +328,12 @@ if __name__ == '__main__':
         stderr.write('No XPath expression specified\n')
         exit(50)
 
-    # lxml.ElementTree.xpath method?
     if options.lxml_method:
-        def xpath_dom(xml_dom):
-            """xpath_dom with lxml.etree.ElementTree.xpath method."""
-            try:
-                xp_result = xml_dom.xpath(
-                    options.xpath_exp, namespaces=xml_namespaces(xml_dom))
-            except XPathEvalError as e:
-                stderr.write(
-                    "XPath '%s' evaluation error: %s\n" % (options.xpath_exp, e))
-                return None
-            # TypeError bij aanroepen EXSLT functie met onjuist aantal argumenten
-            except TypeError as e:
-                stderr.write("XPath '%s' type error: %s\n" % (options.xpath_exp, e))
-                return None
-            else:
-                return xp_result
-    # Default: lxml.etree.XPath class
+        # lxml.ElementTree.xpath method
+        xpath_dom = et_xpath_dom
     else:
-        def xpath_dom(xml_dom):
-            """xpath_dom with lxml.etree.XPath class."""
-            # Welke XML namespace (xmlns) prefixes zijn er gedefinieerd?
-            ns_map = xml_namespaces(xml_dom)
-            xpath_obj = build_xpath(options.xpath_exp, ns_map)
-            if not xpath_obj:
-                return None
-            else:
-                return etree_xpath(xml_dom, xpath_obj)
+        # Default: lxml.etree.XPath class
+        xpath_dom = class_xpath_dom
 
     # Initialise XML parser
     xml_parser = XMLParser()
