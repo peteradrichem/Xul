@@ -52,7 +52,7 @@ if __name__ == '__main__':
     # Transform XML files with XSL
     if not xml_files:
         stderr.write("Valid XSL file '%s'\n" % options.xsl_file)
-        stderr.write("No XML file(s) to operate on\n")
+        stderr.write("But no XML file(s) to operate on\n")
         exit(0)
     for xml_f in xml_files:
         # Opm: xml_transformer rapporteert XML fouten in xml_f etc.
@@ -67,12 +67,10 @@ if __name__ == '__main__':
                 # Voorkom "close failed in file object destructor:" meldingen
                 # bij meerdere XML bestanden en 'Broken pipe'
                 stdout.flush()
-            # Vang AssertionError af (tekst i.p.v. XML resultaat)
-            except AssertionError as inst:
-                stderr.write("Trouble with XSL transformation of %s\n" % xml_f)
-                stderr.write("Cannot print XSLT result as XML: %s\n" % inst)
+            except AssertionError:
+                # Text result instead of XML
                 print result
-            # 'IOError: [Errno 32] Broken pipe' afvangen
             except IOError as e:
+                # 'IOError: [Errno 32] Broken pipe'
                 if e.errno != 32:
                     stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
