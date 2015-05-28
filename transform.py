@@ -1,10 +1,10 @@
 #!/usr/local/bin/python -t
 # coding=utf-8
 
-""" Transform XML files with a XSL file """
+"""Transform XML file(s) with a XSL file."""
 
 
-# Standard Python modules
+# Standard Python
 from optparse import OptionParser
 from sys import stdout, stderr
 #
@@ -13,55 +13,46 @@ from tab import setup_logger_console
 from tab.xml import build_xsl_transform, xml_transformer
 
 
-# Versie
 __version_info__ = ('1', '9', '0')
 __version__ = '.'.join(__version_info__)
 
-description = "Transform XML file(s) with XSLT file"
-epilog = "Documentation: http://docu.npoict.nl/applicatiebeheer/documentatie/xml_scripts"
-
 def parse_cl():
-    """ Lees de command-line options uit.
-        Geef opties en bestanden lijst terug
-        - options.xslt_file: XSLT file
-        - args: files list
-    """
-    usage = "%prog -x xslt_file xml_file ..."
+    """Parse the command-line for options and XML files."""
     parser = OptionParser(
-        usage=usage, description=description,
-        epilog=epilog, version="%prog " + __version__)
+        usage="%prog -x xsl_file xml_file ...",
+        description=__doc__,
+        epilog="Documentation: " +
+        "http://docu.npoict.nl/applicatiebeheer/documentatie/xml_scripts",
+        version="%prog " + __version__)
     parser.add_option(
-        "-x", "--xslt",
-        action="store", type="string", dest="xslt_file",
-        help="XSLT file to transform XML file(s)")
+        "-x", "--xsl",
+        action="store", type="string", dest="xsl_file",
+        help="XSL file to transform XML file(s)")
 
-    # Parse script's command line
     return parser.parse_args()
 
 
-# Logging op het console
+# Logging to the console (TAB modules)
 setup_logger_console()
 
-# Command-line parsen: XSLT & XML file(s)
+# Command-line
 (options, xml_files) = parse_cl()
 
-# XSLT file
-if options.xslt_file:
-    transformer = build_xsl_transform(options.xslt_file)
+# Build a XSL Transformer (XSLT) from an XSL file
+if options.xsl_file:
+    transformer = build_xsl_transform(options.xsl_file)
 else:
-    stderr.write('No XSLT file specified\n')
+    stderr.write('No XSL file specified\n')
     exit(105)
-# XSLT transformer OK?
 if not transformer:
-    stderr.write('Invalid XSLT file specified\n')
+    stderr.write('Invalid XSL file specified\n')
     exit(105)
-# XML bestand meegegeven?
+
+# Transform XML files with XSL
 if not xml_files:
-    stderr.write("Valid XSLT file '%s'\n" % options.xslt_file)
+    stderr.write("Valid XSL file '%s'\n" % options.xsl_file)
     stderr.write("No XML file(s) to operate on\n")
     exit(0)
-
-# Loop de XML files af
 for xml_f in xml_files:
     # Opm: xml_transformer rapporteert XML fouten in xml_f etc.
     result = xml_transformer(xml_f, transformer)
