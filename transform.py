@@ -13,7 +13,7 @@ from tab import setup_logger_console
 from tab.xml import build_xsl_transform, xml_transformer
 
 
-__version_info__ = ('1', '9', '0')
+__version_info__ = ('2', '0', '0')
 __version__ = '.'.join(__version_info__)
 
 def parse_cl():
