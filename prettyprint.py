@@ -1,13 +1,14 @@
 #!/usr/local/bin/python -t
 # coding=utf-8
 
-"""Pretty print XML files"""
+"""Pretty print XML files."""
 
 
 # Standard Python
 from optparse import OptionParser
 from sys import stdout, stderr, stdin
 #
+# pylint: disable=no-name-in-module
 # lxml ElementTree <http://lxml.de/>
 from lxml.etree import XMLParser, tostring, parse
 #
@@ -35,7 +36,7 @@ def parse_cl():
 
 
 def prettyprint(etree):
-    """Pretty print XML ElementTree in optional (Pygments) color"""
+    """Pretty print XML ElementTree in optional (Pygments) color."""
     if options.color:
         xml_str = tostring(
             etree, encoding='UTF-8',

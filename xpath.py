@@ -80,10 +80,12 @@ def et_xpath_dom(xml_dom):
 
 
 def el_result(node):
-    """ Geef representatie (UTF-8) van het element / de node:
-        - element node -- /path/el, //*
-        - comment node -- comment()
-        - PI: processing instruction -- //processing-instruction()
+    """Return element node representation (UTF-8 encoded).
+
+       Node examples:
+       - element node -- /path/el, //*
+       - comment node -- comment()
+       - PI: processing instruction -- //processing-instruction()
     """
     # PI - lxml.etree._ProcessingInstruction -- node.target & node.tag()
     #   "/processing-instruction()"
@@ -108,12 +110,13 @@ def el_result(node):
 
 
 def print_element(node):
-    """ Print het element / de node.
-        Standaard via el_result(). Indien options.element_tree dan wordt
-        lxml.etree.tostring gebruikt om een de XML tree van het element te printen
-        - with_tail=False: de tail vervalt; vaak end-of-line (EOL)
+    """Print element node (UTF-8 encoded).
+
+       Print element, using el_result(). When options.element_tree is True
+       use lxml.etree.tostring() to print the whole element tree.
     """
     if options.element_tree:
+        # Ignore tail text; often end-of-line (EOL)
         node_result = "'%s'" % tostring(node, encoding='UTF-8', with_tail=False)
     else:
         node_result = el_result(node)
@@ -121,27 +124,29 @@ def print_element(node):
 
 
 def print_smart_string(smart_string, xml_dom):
-    """ Print (UTF-8) de 'smart' string in relatie met zijn parent
-        - smart_string: `string' met getparent method
-            string: lxml.etree._ElementStringResult
-            Unicode: lxml.etree._ElementUnicodeResult
+    """Print lxml 'smart' string with parent element tag.
 
-        Smart string is een text (atomic value) of attribute node
-        - text node (tail, entity): bevat tekst
-        - attribute node: bevat waarde van het element attribuut
+       smart_string -- XPath string result that provides a getparent() method.
+          - string: lxml.etree._ElementStringResult
+          - Unicode: lxml.etree._ElementUnicodeResult
+       xml_dom -- XML DOM (ElementTree)
 
-        http://lxml.de/xpathxslt.html#xpath-return-values
+       lxml 'smart' string is a text node (atomic value) or an attribute node:
+       - text node (tail, entity): contains text
+       - attribute node: contains the value of the attribute
+
+       http://lxml.de/xpathxslt.html#xpath-return-values
     """
-    # Het parent element
+    # XPath result parent element
     par_el = smart_string.getparent()
-    # None komt voor bij string() en concat()
+    # string() and concat() results do not have an origin
     if par_el is None:
         print "XPath string: '%s'" % smart_string
         return
-    # comment: tag is een method (lxml.etree._Comment)
+    # comment: tag is a method (lxml.etree._Comment)
     if not isinstance(par_el.tag, basestring):
         par_el_str = "comment"
-    # tag is een string (lxml.etree._Element)
+    # tag is a string (lxml.etree._Element)
     else:
         par_el_str = "<%s>" % par_el.tag
 
@@ -170,15 +175,13 @@ def print_smart_string(smart_string, xml_dom):
         print "**smart string DEBUG fallback**"
         print_element(par_el)
 
-    # XPath parent element
+    # Print parent element XPath expression
     if options.print_xpath:
         print "\tParent XPath: %s" % xml_dom.getpath(par_el)
 
 
 def print_result_list(result_list, xml_dom):
-    """ Print de nodes uit de XPath resultaat lijst
-        Aanname: terminal kan character encoding UTF-8 aan
-    """
+    """Print all nodes from the list of XPath results."""
     # Alle nodes -- //node()
     for node in result_list:
         # Een element inclusief comment, processing instruction (node.tag)
@@ -205,12 +208,15 @@ def print_result_list(result_list, xml_dom):
 
 
 def update_namespace(ns_map, elm, none_prefix='r'):
-    """ Breid ns_map uit met elm.nsmap
-        Opm: ns_map.update(elm.nsmap) faalt bij empty namespace prefix
-        Geen bescherming tegen namespace prefix collisions
+    """Update ns_map with elm.nsmap.
 
-        Element namespace: elm.nsmap.get(elm.prefix)
-        Default (None) namespace: elm.nsmap[None]
+       Default namespace (None prefix): elm.nsmap[None].
+       Element namespace URL: elm.nsmap.get(elm.prefix).
+
+       Remarks:
+        * The empty namespace prefix is not supported in XPath;
+          ns_map.update(elm.nsmap) will fail.
+        * No protection against namespace prefix collisions.
     """
     for key in elm.nsmap:
         if not key:
@@ -221,25 +227,27 @@ def update_namespace(ns_map, elm, none_prefix='r'):
 
 
 def xml_namespaces(xml_dom):
-    """ XML namespaces (xmlns) in XML DOM (ElementTree).
-        Resultaat is 'XML namespace prefix: URI' dict
+    """XML namespaces in XML DOM.
+
+       xml_dom -- XML DOM (ElementTree)
+
+       Return XML namespaces (xmlns) 'prefix: URI' dict.
     """
     ns_map = {'re': "http://exslt.org/regular-expressions"}
     # root element -- /*
     root = xml_dom.getroot()
     if options.namespaces:
-        # XML namespaces (xmlns) in XML DOM elementen
+        # Find XML namespaces (xmlns) in elements
         for elm in xml_dom.iter('*'):
             if elm.nsmap:
                 update_namespace(ns_map, elm)
-    # XML namespaces (xmlns) in het root element
+    # XML namespaces (xmlns) in root element
     elif root.nsmap:
         options.namespaces = True
         print "root:\t%s" % root.tag
         update_namespace(ns_map, root)
 
     if options.namespaces:
-        # Toon de XML namespaces
         print "XML namespaces:"
         for key in ns_map:
             print "\t%s: %s" % (key, ns_map[key])
@@ -248,7 +256,7 @@ def xml_namespaces(xml_dom):
 
 
 def print_result_header(list_result):
-    """ Print header behorende bij de lijst met XPath resultaten """
+    """Print header for list of XPath results."""
     xp_r_len = len(list_result)
     if xp_r_len == 0:
         print "no result (empy list)"

@@ -1,6 +1,7 @@
-"""
-Setup script for building XML scripts
-"""
+# coding=utf-8
+
+"""Setup script for building XML scripts."""
+
 
 import codecs
 from os import path
@@ -9,7 +10,7 @@ from setuptools import setup
 here = path.abspath(path.dirname(__file__))
 
 def long_description():
-    """ Get the long description from the README.rst file """
+    """Get the long description from the README.rst file."""
     with codecs.open(path.join(here, 'README.rst'), encoding='utf-8') as f:
         return f.read()
 
