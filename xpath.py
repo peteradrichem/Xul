@@ -79,7 +79,7 @@ def et_xpath_dom(xml_dom):
         return xp_result
 
 
-def el_result(node):
+def node_repr(node):
     """Return element node representation (UTF-8 encoded).
 
        Node examples:
@@ -109,18 +109,18 @@ def el_result(node):
         return "<%s> is empty" % node.tag
 
 
-def print_element(node):
+def print_node(node):
     """Print element node (UTF-8 encoded).
 
-       Print element, using el_result(). When options.element_tree is True
+       Print element, using node_repr(). When options.element_tree is True
        use lxml.etree.tostring() to print the whole element tree.
     """
     if options.element_tree:
         # Ignore tail text; often end-of-line (EOL)
-        node_result = "'%s'" % tostring(node, encoding='UTF-8', with_tail=False)
+        node_string = "'%s'" % tostring(node, encoding='UTF-8', with_tail=False)
     else:
-        node_result = el_result(node)
-    print "%d:\t%s" % (node.sourceline, node_result)
+        node_string = node_repr(node)
+    print "%d:\t%s" % (node.sourceline, node_string)
 
 
 def print_smart_string(smart_string, xml_dom):
@@ -173,7 +173,7 @@ def print_smart_string(smart_string, xml_dom):
             print "%d:\ttail '%s' after %s" % (par_el.sourceline, tail_node, par_el_str)
     else:
         print "**smart string DEBUG fallback**"
-        print_element(par_el)
+        print_node(par_el)
 
     # Print parent element XPath expression
     if options.print_xpath:
@@ -186,7 +186,7 @@ def print_result_list(result_list, xml_dom):
     for node in result_list:
         # Een element inclusief comment, processing instruction (node.tag)
         if iselement(node):
-            print_element(node)
+            print_node(node)
             if options.print_xpath:
                 print "\tXPath: %s" % xml_dom.getpath(node)
 
