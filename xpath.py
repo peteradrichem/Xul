@@ -98,14 +98,14 @@ def node_repr(node):
         return node.tag(node.text.encode('UTF-8', 'ignore'))
 
     # ELEMENT - lxml.etree._Element -- node.tag
-    # node.text: see smart_with_parent()
-    elif node.text and node.text.isdigit():
-        # Python str.isdigit()
-        return "<%s> contains %s" % (node.tag, node.text)
-    elif node.text and not node.text.isspace():
-        return "<%s> contains '%s'" % (node.tag, node.text.encode('UTF-8', 'ignore'))
     elif node.text:
-        return "<%s> contains whitespace" % node.tag
+        # node.text is a string; not a 'smart' string
+        if node.text.isdigit():
+            return "<%s> contains %s" % (node.tag, node.text)
+        elif not node.text.isspace():
+            return "<%s> contains '%s'" % (node.tag, node.text.encode('UTF-8', 'ignore'))
+        else:
+            return "<%s> contains whitespace" % node.tag
     else:
         return "<%s> is empty" % node.tag
 
@@ -128,33 +128,38 @@ def smart_with_parent(smart_string):
     """Return lxml 'smart' string representation (UTF-8 encoded) with parent relation.
 
        lxml 'smart' string is a text node (atomic value) or an attribute node:
-       - text node (tail, entity): contains text
+       - text node (tail, entity): contains text; never empty
        - attribute node: contains the value of the attribute
 
        http://lxml.de/xpathxslt.html#xpath-return-values
     """
-    smart_parent_rel = None
+    smart_repr = None
+    parent_rel = None
 
-    # ATTRIBUTE node -- @ -- .is_attribute
-    if smart_string.is_attribute:
-        smart_parent_rel = "@%s = '%s' of" % (smart_string.attrname, smart_string)
-    # TEXT node -- text() -- .is_text -- Python str.isdigit()
-    elif smart_string.isdigit():
-        smart_parent_rel = "%s in" % smart_string
+    # TEXT node -- text() -- Python str.isdigit()
+    if smart_string.isdigit():
+        smart_repr = smart_string
+        parent_rel = "in"
     # TEXT node -- text() -- .is_text
     elif smart_string.is_text:
+        parent_rel = "in"
         if smart_string.isspace():
-            smart_parent_rel = "whitespace in"
+            smart_repr = "whitespace"
         else:
-            smart_parent_rel = "'%s' in" % smart_string.encode('UTF-8', 'ignore')
+            smart_repr = "'%s'" % smart_string.encode('UTF-8', 'ignore')
     # TAIL node -- text() -- .is_tail
     elif smart_string.is_tail:
+        parent_rel = "after"
         if smart_string.isspace():
-            smart_parent_rel = "tail whitespace after"
+            smart_repr = "tail whitespace"
         else:
-            smart_parent_rel = "tail '%s' after" % smart_string.encode('UTF-8', 'ignore')
+            smart_repr = "tail '%s'" % smart_string.encode('UTF-8', 'ignore')
+    # ATTRIBUTE node -- @ -- .is_attribute
+    elif smart_string.is_attribute:
+        parent_rel = "of"
+        smart_repr = "@%s = '%s'" % (smart_string.attrname, smart_string)
 
-    return smart_parent_rel
+    return (smart_repr, parent_rel)
 
 
 def print_smart_string(smart_string, xml_dom):
@@ -178,9 +183,9 @@ def print_smart_string(smart_string, xml_dom):
     else:
         par_el_str = "<%s>" % par_el.tag
 
-    smart_parent_rel = smart_with_parent(smart_string)
-    if smart_parent_rel:
-        print "%d:\t%s %s" % (par_el.sourceline, smart_parent_rel, par_el_str)
+    smart_repr, parent_rel = smart_with_parent(smart_string)
+    if smart_repr:
+        print "%d:\t%s %s %s" % (par_el.sourceline, smart_repr, parent_rel, par_el_str)
     else:
         print "**smart string DEBUG fallback**"
         print_node(par_el)
