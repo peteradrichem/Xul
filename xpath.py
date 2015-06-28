@@ -17,7 +17,7 @@ from tab import setup_logger_console
 from tab.xml import build_xml_tree, build_xpath, etree_xpath
 
 
-__version_info__ = ('2', '1', '0')
+__version_info__ = ('2', '1', '1')
 __version__ = '.'.join(__version_info__)
 
 def parse_cl():
@@ -80,7 +80,7 @@ def et_xpath_dom(xml_dom):
 
 
 def node_repr(node):
-    """Return element node representation (UTF-8 encoded).
+    """Return node representation (UTF-8 encoded).
 
        Node examples:
        - element node -- /path/el, //*
@@ -93,11 +93,12 @@ def node_repr(node):
         return "processing-instruction('%s') = %s" % (
             node.target, node.tag(node.text.encode('UTF-8', 'ignore')))
 
-    # COMMENT - lxml.etree._Comment -- node.tag() == <!---->
+    # COMMENT node - lxml.etree._Comment -- node.tag() == <!---->
     elif not isinstance(node.tag, basestring):
         return node.tag(node.text.encode('UTF-8', 'ignore'))
 
     # ELEMENT - lxml.etree._Element -- node.tag
+    # node.text: see smart_with_parent()
     elif node.text and node.text.isdigit():
         # Python str.isdigit()
         return "<%s> contains %s" % (node.tag, node.text)
@@ -110,9 +111,9 @@ def node_repr(node):
 
 
 def print_node(node):
-    """Print element node (UTF-8 encoded).
+    """Print node (UTF-8 encoded).
 
-       Print element, using node_repr(). When options.element_tree is True
+       Print node, using node_repr(). When options.element_tree is True
        use lxml.etree.tostring() to print the whole element tree.
     """
     if options.element_tree:
@@ -123,6 +124,39 @@ def print_node(node):
     print "%d:\t%s" % (node.sourceline, node_string)
 
 
+def smart_with_parent(smart_string):
+    """Return lxml 'smart' string representation (UTF-8 encoded) with parent relation.
+
+       lxml 'smart' string is a text node (atomic value) or an attribute node:
+       - text node (tail, entity): contains text
+       - attribute node: contains the value of the attribute
+
+       http://lxml.de/xpathxslt.html#xpath-return-values
+    """
+    smart_parent_rel = None
+
+    # ATTRIBUTE node -- @ -- .is_attribute
+    if smart_string.is_attribute:
+        smart_parent_rel = "@%s = '%s' of" % (smart_string.attrname, smart_string)
+    # TEXT node -- text() -- .is_text -- Python str.isdigit()
+    elif smart_string.isdigit():
+        smart_parent_rel = "%s in" % smart_string
+    # TEXT node -- text() -- .is_text
+    elif smart_string.is_text:
+        if smart_string.isspace():
+            smart_parent_rel = "whitespace in"
+        else:
+            smart_parent_rel = "'%s' in" % smart_string.encode('UTF-8', 'ignore')
+    # TAIL node -- text() -- .is_tail
+    elif smart_string.is_tail:
+        if smart_string.isspace():
+            smart_parent_rel = "tail whitespace after"
+        else:
+            smart_parent_rel = "tail '%s' after" % smart_string.encode('UTF-8', 'ignore')
+
+    return smart_parent_rel
+
+
 def print_smart_string(smart_string, xml_dom):
     """Print lxml 'smart' string with parent element tag.
 
@@ -130,12 +164,6 @@ def print_smart_string(smart_string, xml_dom):
           - string: lxml.etree._ElementStringResult
           - Unicode: lxml.etree._ElementUnicodeResult
        xml_dom -- XML DOM (ElementTree)
-
-       lxml 'smart' string is a text node (atomic value) or an attribute node:
-       - text node (tail, entity): contains text
-       - attribute node: contains the value of the attribute
-
-       http://lxml.de/xpathxslt.html#xpath-return-values
     """
     # XPath result parent element
     par_el = smart_string.getparent()
@@ -150,27 +178,9 @@ def print_smart_string(smart_string, xml_dom):
     else:
         par_el_str = "<%s>" % par_el.tag
 
-    # ATTRIBUTE node -- @ -- .is_attribute
-    if smart_string.is_attribute:
-        print "%d:\t@%s = '%s' in %s" % (
-            par_el.sourceline, smart_string.attrname, smart_string, par_el_str)
-    # Python str.isdigit()
-    elif smart_string.isdigit():
-        print "%d:\t%s in %s" % (par_el.sourceline, smart_string, par_el_str)
-    # TEXT node -- text() -- .is_text
-    elif smart_string.is_text:
-        if smart_string.isspace():
-            print "%d:\twhitespace in %s" % (par_el.sourceline, par_el_str)
-        else:
-            text_node = smart_string.encode('UTF-8', 'ignore')
-            print "%d:\t'%s' in %s" % (par_el.sourceline, text_node, par_el_str)
-    # TAIL node -- text() -- .is_tail
-    elif smart_string.is_tail:
-        if smart_string.isspace():
-            print "%d:\ttail whitespace after %s" % (par_el.sourceline, par_el_str)
-        else:
-            tail_node = smart_string.encode('UTF-8', 'ignore')
-            print "%d:\ttail '%s' after %s" % (par_el.sourceline, tail_node, par_el_str)
+    smart_parent_rel = smart_with_parent(smart_string)
+    if smart_parent_rel:
+        print "%d:\t%s %s" % (par_el.sourceline, smart_parent_rel, par_el_str)
     else:
         print "**smart string DEBUG fallback**"
         print_node(par_el)
@@ -187,6 +197,7 @@ def print_result_list(result_list, xml_dom):
         # Een element inclusief comment, processing instruction (node.tag)
         if iselement(node):
             print_node(node)
+            # Print node XPath expression
             if options.print_xpath:
                 print "\tXPath: %s" % xml_dom.getpath(node)
 
