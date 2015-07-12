@@ -13,8 +13,10 @@ from sys import stderr, stdin
 from lxml.etree import XPathEvalError, iselement, tostring, XMLParser, parse
 #
 # TAB modules
-from tab import setup_logger_console
 from tab.xml import build_xml_tree, build_xpath, etree_xpath
+#
+# Xul modules
+from xul.log import setup_logger_console
 
 
 __version_info__ = ('2', '1', '1')

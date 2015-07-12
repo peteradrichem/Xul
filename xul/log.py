@@ -55,7 +55,6 @@ def setup_logger(log_level='debug', name='', propagate=True):
         console handler (die aan de root logger hangt)
 
         Log records worden door handlers verwerkt:
-        - file logging via add_logfile()
         - console logging zie setup_logger_console()
     """
     logging.getLogger(name).setLevel(lvl_name2num(log_level))
@@ -105,47 +104,3 @@ def setup_logger_console(log_level='info', log_format='%(message)s'):
 
     # Geef de console handler terug
     return console_handler
-
-
-def add_logfile(log_file, log_level, name=''):
-    """ Koppel een log file (FileHandler) aan de root/name logger
-        - log_file: log file voor de FileHandler
-        - log_level: log level voor de FileHandler
-        - name: naam van de logger [default: root logger]
-
-        Controleer of er in de log file geschreven kan worden.
-        Als dat lukt geef dan de FileHandler terug; anders None
-            https://docs.python.org/library/logging.handlers.html#filehandler
-    """
-    # Log file
-    try:
-        file_obj = open(log_file, 'a')
-    # Vang (IO|OS)Error exceptions af
-    except EnvironmentError as e:
-        logger.error("OS error %s writing to log file %s:", e.errno, log_file)
-        logger.error(e.strerror)
-        return None
-    # geen finally, want alleen als try open() lukt is .close() nodig
-    else:
-        file_obj.close()
-
-    # Configureer FileHandler (log message handler)
-    file_hndlr = customize_handler(
-        logging.FileHandler(log_file), log_level,
-        '%(asctime)s %(levelname)s - %(message)s')
-
-    # Koppel de FileHandler aan de root/name logger
-    logging.getLogger(name).addHandler(file_hndlr)
-
-    # Geef de file_hndlr terug
-    return file_hndlr
-
-
-def remove_logfile(file_hndlr, name=''):
-    """ Verwijder een FileHandler van de root/name logger
-        - file_hndlr: logging.FileHandler object
-        - name: naam van de logger [default: root logger]
-    """
-    file_hndlr.close()
-    logging.getLogger(name).removeHandler(file_hndlr)
-    return True
