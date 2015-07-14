@@ -1,11 +1,10 @@
 # coding=utf-8
 
-"""Setup script for building XML scripts."""
-
+"""Setup script for building XML Utilities."""
 
 import codecs
 from os import path
-from setuptools import setup
+from setuptools import setup, find_packages
 
 here = path.abspath(path.dirname(__file__))
 
@@ -15,13 +14,10 @@ def long_description():
         return f.read()
 
 setup(
-    name="XML_scripts",
+    name="Xul",
     version="2.0.0",
-    description="XML (XPath, XSD, XSLT) scripts",
-    author='Peter Adrichem',
-    author_email='Peter.Adrichem@gmail.com',
-    url='http://docu.npoict.nl/applicatiebeheer/documentatie/xml_scripts',
 
+    packages=find_packages(),
     scripts=['prettyprint.py', 'transform.py', 'validate.py', 'xpath.py'],
     zip_safe=False,
     install_requires=[
@@ -29,6 +25,8 @@ setup(
         "lxml>=2.0"
     ],
 
+    author='Peter Adrichem',
+    author_email='Peter.Adrichem@gmail.com',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
@@ -44,10 +42,12 @@ setup(
         'Topic :: Text Processing :: Markup :: XML',
         'Topic :: Utilities'
     ],
+    description="XML (XPath, XSD, XSLT) Utilities",
     keywords='xml xpath xslt xsd dtd',
     license='MIT',
-    platforms='CPython',
     long_description=long_description(),
-    download_url='https://bitbucket.org/peteradrichem/xml-scripts',
-    bugtrack_url='https://bitbucket.org/peteradrichem/xml-scripts/issues'
+    platforms='CPython',
+    url='https://bitbucket.org/peteradrichem/xul',
+    download_url='https://bitbucket.org/peteradrichem/xul',
+    bugtrack_url='https://bitbucket.org/peteradrichem/xul/issues'
 )
