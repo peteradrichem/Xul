@@ -8,11 +8,9 @@
 from optparse import OptionParser
 from sys import stderr
 #
-# TAB modules
-from tab.xml import build_xml_tree, build_xml_schema, build_dtd
-#
 # Xul modules
 from xul.log import setup_logger_console
+from xul.dom import build_etree, build_xml_schema, build_dtd
 
 
 __version_info__ = ('2', '0', '0')
@@ -73,8 +71,8 @@ if __name__ == '__main__':
         stderr.write("No XML file(s) to operate on\n")
         exit(0)
     for xml_f in xml_files:
-        # Opm: build_xml_tree rapporteert XML fouten in xml_f
-        xml_tree = build_xml_tree(xml_f)
+        # Opm: build_etree rapporteert XML fouten in xml_f
+        xml_tree = build_etree(xml_f)
         if xml_tree:
             # Probeer de ElementTree te valideren
             if validator.validate(xml_tree):

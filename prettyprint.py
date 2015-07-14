@@ -12,11 +12,9 @@ from sys import stdout, stderr, stdin
 # lxml ElementTree <http://lxml.de/>
 from lxml.etree import XMLParser, tostring, parse
 #
-# TAB modules
-from tab.xml import build_xml_tree
-#
 # Xul modules
 from xul.log import setup_logger_console
+from xul.dom import build_etree
 
 
 __version_info__ = ('1', '1', '0')
@@ -73,8 +71,8 @@ if __name__ == '__main__':
 
     # Pretty print XML files
     for xml_f in xml_files:
-        # Opm: build_xml_tree rapporteert XML fouten in xml_f
-        xml_tree = build_xml_tree(xml_f, parser=parser)
+        # Opm: build_etree rapporteert XML fouten in xml_f
+        xml_tree = build_etree(xml_f, parser=parser)
         if xml_tree:
             try:
                 prettyprint(xml_tree)

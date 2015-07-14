@@ -1,28 +1,25 @@
 # coding=utf-8
 
-""" XML etree module
+"""XML Document Object Model.
 
-XML functies om een ElementTree (etree) te bouwen en te gebruiken
+Document Object Model / ElementTree
+
+W3C Document Object Model
+    http://www.w3.org/DOM/
 
 The ElementTree XML API
-    http://docs.python.org/library/xml.etree.elementtree.html
+    https://docs.python.org/library/xml.etree.elementtree.html
 
 ElementTree Overview
     http://effbot.org/zone/element-index.htm
-
-lxml.etree
-    http://lxml.de/
-
-The XML C parser and toolkit of Gnome (libxml2)
-    http://xmlsoft.org/
 """
 
 
-# Import standaard Python modules
+# Standard Python
 from logging import getLogger
 from os.path import isfile
 #
-# Import etree van lxml
+# lxml ElementTree <http://lxml.de/>
 from lxml import etree
 
 
@@ -30,14 +27,14 @@ from lxml import etree
 logger = getLogger(__name__)
 
 
-def build_xml_tree(xml_file, parser=None, lenient=True):
-    """ Bouw (parse) een XML Document Object Model (ElementTree)
+def build_etree(xml_file, parser=None, lenient=True):
+    """ Bouw (parse) een XML Document Object Model
         op uit een XML bestand
         - xml_file: XML bestand
         - parser: lxml.etree.XMLParser object (optioneel)
         - lenient: geeft warnings i.p.v. errors bij (leverancier) `XML' trouble
 
-        Geeft XML Document Object Model (ElementTree) terug.
+        Geeft XML Document Object Model terug.
         Bij problemen:
             - XML fouten worden gelogd als warnings (lenient) of als errors
             - als resultaat wordt None teruggegeven
@@ -106,7 +103,7 @@ def build_xsl_transform(xslt_file):
             http://www.w3.org/Style/XSL/
     """
     # XSLT bestand dient valide XML te zijn
-    xslt_tree = build_xml_tree(xslt_file, lenient=False)
+    xslt_tree = build_etree(xslt_file, lenient=False)
     if not xslt_tree:
         return None
 
@@ -134,12 +131,12 @@ def build_xsl_transform(xslt_file):
 
 def etree_transformer(xml_dom, transformer, **params):
     """ Transformeer een ElementTree via een XSL transformer
-        - xml_dom: XML Document Object Model (ElementTree)
+        - xml_dom: XML Document Object Model
         - transformer: XSL Transformer (lxml.etree.XSLT)
         - params: XSL parameters (optioneel)
             http://lxml.de/xpathxslt.html#stylesheet-parameters
 
-        Het resultaat is een XML Document Object Model (ElementTree) bij succes
+        Het resultaat is een XML Document Object Model bij succes
         en None bij problemen
 
         Transformatie fouten worden gelogd als warnings
@@ -171,11 +168,11 @@ def xml_transformer(xml_file, transformer):
         - xml_file: XML bestand
         - transformer: XSL Transformer (lxml.etree.XSLT)
 
-        Het resultaat is een XML Document Object Model (ElementTree) bij succes
+        Het resultaat is een XML Document Object Model bij succes
         en None bij problemen
     """
-    # Maak XML Document Object Model (ElementTree) van het XML bestand
-    xml_dom = build_xml_tree(xml_file, lenient=False)
+    # Maak XML Document Object Model van het XML bestand
+    xml_dom = build_etree(xml_file, lenient=False)
     if not xml_dom:
         return None
 
@@ -205,7 +202,7 @@ def build_xml_schema(xsd_file):
             http://lxml.de/api/lxml.etree.XMLSchema-class.html
     """
     # XSD bestand dient valide XML bestand te zijn
-    xsd_tree = build_xml_tree(xsd_file, lenient=False)
+    xsd_tree = build_etree(xsd_file, lenient=False)
     if not xsd_tree:
         return None
 
@@ -275,8 +272,8 @@ def xml_validator(xml_file, validator):
         Geeft een tuple terug met het resultaat van de validatie (True/False)
         en string met status tekst
     """
-    # Maak XML Document Object Model (ElementTree) van het XML bestand
-    xml_dom = build_xml_tree(xml_file)
+    # Maak XML Document Object Model van het XML bestand
+    xml_dom = build_etree(xml_file)
     if not xml_dom:
         return (False, "Not a XML file")
 
@@ -325,7 +322,7 @@ def build_xpath(xpath_exp, ns_map=None):
 
 def etree_xpath(xml_dom, xpath_obj):
     """ Pas XPath instantie toe op XML DOM
-        - xml_dom: XML Document Object Model (ElementTree)
+        - xml_dom: XML Document Object Model
         - xpath_obj: lxml.etree.XPath instantie
 
         Het resultaat is afhankelijk van opgegeven `xpath_exp':
@@ -362,8 +359,8 @@ def call_xpath(xml_file, xpath_obj):
             - lijst met elementen:  "element"
             - Boolean: "element/text() = 'string'"
     """
-    # Maak XML Document Object Model (ElementTree) van het XML bestand
-    xml_dom = build_xml_tree(xml_file, lenient=False)
+    # Maak XML Document Object Model van het XML bestand
+    xml_dom = build_etree(xml_file, lenient=False)
     if not xml_dom:
         # Geen XML bestand
         return None

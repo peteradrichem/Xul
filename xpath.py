@@ -12,11 +12,9 @@ from sys import stderr, stdin
 # lxml ElementTree <http://lxml.de/>
 from lxml.etree import XPathEvalError, iselement, tostring, XMLParser, parse
 #
-# TAB modules
-from tab.xml import build_xml_tree, build_xpath, etree_xpath
-#
 # Xul modules
 from xul.log import setup_logger_console
+from xul.dom import build_etree, build_xpath, etree_xpath
 
 
 __version_info__ = ('2', '1', '1')
@@ -369,7 +367,7 @@ if __name__ == '__main__':
     for xml_f in xml_files:
         print "\nFile: %s" % xml_f
         # Bouw XML DOM (Document Object Model) Node Tree (ElementTree)
-        xml_dom_node_tree = build_xml_tree(
+        xml_dom_node_tree = build_etree(
             xml_f,
             parser=xml_parser,
             lenient=False)

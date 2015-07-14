@@ -20,10 +20,7 @@ setup(
     packages=find_packages(),
     scripts=['prettyprint.py', 'transform.py', 'validate.py', 'xpath.py'],
     zip_safe=False,
-    install_requires=[
-        "TAB>=0.9.19",
-        "lxml>=2.0"
-    ],
+    install_requires=["lxml>=2.0"],
 
     author='Peter Adrichem',
     author_email='Peter.Adrichem@gmail.com',

@@ -8,11 +8,9 @@
 from optparse import OptionParser
 from sys import stdout, stderr
 #
-# TAB modules
-from tab.xml import build_xsl_transform, xml_transformer
-#
 # Xul modules
 from xul.log import setup_logger_console
+from xul.dom import build_xsl_transform, xml_transformer
 
 
 __version_info__ = ('2', '0', '0')
