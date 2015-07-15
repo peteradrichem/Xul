@@ -23,7 +23,7 @@ from os.path import isfile
 from lxml import etree
 
 
-# Module logging initialisatie
+# Module logging
 logger = getLogger(__name__)
 
 
@@ -65,7 +65,7 @@ def build_etree(xml_file, parser=None, lenient=True):
                 xmllogger = logger.warning
             else:
                 xmllogger = logger.error
-            xmllogger("File '%s' is not a XML file:", xml_file)
+            xmllogger("File '%s' is not an XML file:", xml_file)
             # http://lxml.de/parsing.html#error-log
             # [http://lxml.de/api/lxml.etree._LogEntry-class.html]
             for e in inst.error_log:
@@ -275,7 +275,7 @@ def xml_validator(xml_file, validator):
     # Maak XML Document Object Model van het XML bestand
     xml_dom = build_etree(xml_file)
     if not xml_dom:
-        return (False, "Not a XML file")
+        return (False, "Not an XML file")
 
     # Probeer de XML DOM (ElementTree) te valideren
     if validator.validate(xml_dom):

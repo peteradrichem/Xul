@@ -356,7 +356,7 @@ if __name__ == '__main__':
         # lxml.ElementTree.xpath method
         xpath_dom = et_xpath_dom
     else:
-        # Default: lxml.etree.XPath class
+        # lxml.etree.XPath class (default)
         xpath_dom = class_xpath_dom
 
     # Initialise XML parser

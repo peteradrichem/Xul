@@ -1,7 +1,7 @@
 #!/usr/local/bin/python -t
 # coding=utf-8
 
-"""Transform XML file(s) with a XSL file."""
+"""Transform XML file(s) with an XSL file."""
 
 
 # Standard Python
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     # Command-line
     (options, xml_files) = parse_cl()
 
-    # Build a XSL Transformer (XSLT) from an XSL file
+    # Build an XSL Transformer (XSLT) from an XSL file
     if options.xsl_file:
         transformer = build_xsl_transform(options.xsl_file)
     else:

@@ -1,7 +1,7 @@
 #!/usr/local/bin/python -t
 # coding=utf-8
 
-"""Validate XML files with a XSD or DTD file."""
+"""Validate XML file(s) with an XSD or DTD file."""
 
 
 # Standard Python

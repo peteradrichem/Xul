@@ -15,7 +15,7 @@ Python logging URLs:
 import logging
 
 
-# Module logger initialisatie
+# Module logging
 logger = logging.getLogger(__name__)
 
 # Logging level names
