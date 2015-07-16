@@ -14,7 +14,8 @@ from lxml.etree import XPathEvalError, iselement, tostring, XMLParser, parse
 #
 # Xul modules
 from xul.log import setup_logger_console
-from xul.dom import build_etree, build_xpath, etree_xpath
+from xul.dom import build_etree
+from xul.xpath import build_xpath, etree_xpath
 
 
 __version_info__ = ('2', '1', '1')
