@@ -55,7 +55,7 @@ def parse_cl():
 
 def class_xpath_dom(xml_dom):
     """XPath with lxml.etree.XPath class."""
-    ns_map = xml_namespaces(xml_dom)
+    ns_map = dom_namespaces(xml_dom)
     xpath_obj = build_xpath(options.xpath_exp, ns_map)
     if not xpath_obj:
         return None
@@ -67,7 +67,7 @@ def et_xpath_dom(xml_dom):
     """XPath with lxml.etree.ElementTree.xpath method."""
     try:
         xp_result = xml_dom.xpath(
-            options.xpath_exp, namespaces=xml_namespaces(xml_dom))
+            options.xpath_exp, namespaces=dom_namespaces(xml_dom))
     except XPathEvalError as e:
         stderr.write(
             "XPath '%s' evaluation error: %s\n" % (options.xpath_exp, e))
@@ -224,7 +224,7 @@ def print_result_list(result_list, xml_dom):
             print node
 
 
-def update_namespace(ns_map, elm, none_prefix='r'):
+def update_ns_map(ns_map, elm, none_prefix='r'):
     """Update ns_map with elm.nsmap.
 
        Default namespace (None prefix): elm.nsmap[None].
@@ -234,6 +234,7 @@ def update_namespace(ns_map, elm, none_prefix='r'):
         * The empty namespace prefix is not supported in XPath;
           ns_map.update(elm.nsmap) will fail.
         * No protection against namespace prefix collisions.
+          First occurrence wins.
     """
     for key in elm.nsmap:
         if not key:
@@ -243,7 +244,7 @@ def update_namespace(ns_map, elm, none_prefix='r'):
             ns_map[key] = elm.nsmap[key]
 
 
-def xml_namespaces(xml_dom):
+def dom_namespaces(xml_dom):
     """XML namespaces in XML DOM.
 
        xml_dom -- XML DOM (ElementTree)
@@ -257,12 +258,12 @@ def xml_namespaces(xml_dom):
         # Find XML namespaces (xmlns) in elements
         for elm in xml_dom.iter('*'):
             if elm.nsmap:
-                update_namespace(ns_map, elm)
+                update_ns_map(ns_map, elm)
     # XML namespaces (xmlns) in root element
     elif root.nsmap:
         options.namespaces = True
         print "root:\t%s" % root.tag
-        update_namespace(ns_map, root)
+        update_ns_map(ns_map, root)
 
     if options.namespaces:
         print "XML namespaces:"
