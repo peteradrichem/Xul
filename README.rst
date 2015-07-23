@@ -1,12 +1,12 @@
-XML scripts
-===========
+XML Utilities
+=============
 
 Python scripts for XML files.
 
 Pretty print XML files in human readable form,
 transform XML files with XSL,
-validate XML files with a XSD or DTD
-or use XPath expression to select nodes in a XML file.
+validate XML files with an XSD or DTD
+or use XPath expression to select nodes in an XML file.
 
 Scripts
 -------
@@ -25,7 +25,6 @@ W3C
 Requirements
 ------------
 - `lxml <http://lxml.de/>`_
-- `TAB <https://bitbucket.org/peteradrichem/tab>`_
 - `Pygments <http://pygments.org/>`_ (optional)
 
 Installation
@@ -34,7 +33,7 @@ Installation
 
 .. code:: tcsh
 
-        pip install hg+https://bitbucket.org/peteradrichem/xml-scripts
+        pip install hg+https://bitbucket.org/peteradrichem/xul
 
 
 .. _prettyprint.py:
@@ -49,7 +48,7 @@ Pretty print
 
         Usage:  prettyprint.py [-n] xml_file_1 ... xml_file_n
 
-        Pretty print XML files
+        Pretty print XML files.
 
         Options:
           --version       show program's version number and exit
@@ -69,13 +68,13 @@ Transform
 
         Usage: transform.py -x xslt_file xml_file ...
 
-        Transform XML file(s) with XSLT file
+        Transform XML file(s) with an XSL file.
 
         Options:
           --version             show program's version number and exit
           -h, --help            show this help message and exit
-          -x XSLT_FILE, --xslt=XSLT_FILE
-                                XSLT file to transform XML file(s)
+          -x XSL_FILE, --xsl=XSL_FILE
+                                XSL file to transform XML file(s)
 
 
 .. _validate.py:
@@ -91,7 +90,7 @@ Validate
         Usage:  validate.py -x xsd_file xml_file_1 ... xml_file_n
                 validate.py -d dtd_file xml_file_1 ... xml_file_n
 
-        Validate XML files with a XSD or DTD file
+        Validate XML file(s) with an XSD or DTD file.
 
         Options:
           --version             show program's version number and exit
@@ -120,7 +119,7 @@ XPath
           --version             show program's version number and exit
           -h, --help            show this help message and exit
           -x XPATH_EXP, --xpath=XPATH_EXP
-                                XPath expression
+                                XML Path Language (XPath) expression
           -n, --namespace       enable XML namespace prefixes
           -p, --print-xpath     print the absolute XPath of a result (or parent)
                                 element
