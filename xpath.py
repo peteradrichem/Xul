@@ -26,8 +26,6 @@ def parse_cl():
     parser = OptionParser(
         usage="%prog [options] -x xpath xml_file_1 ... xml_file_n",
         description=__doc__,
-        epilog="Documentation: " +
-        "http://docu.npoict.nl/applicatiebeheer/documentatie/xml_scripts",
         version="%prog " + __version__)
     parser.add_option(
         "-x", "--xpath",

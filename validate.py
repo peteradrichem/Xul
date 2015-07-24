@@ -22,8 +22,6 @@ def parse_cl():
         usage="""\t%prog -x xsd_file xml_file_1 ... xml_file_n
 \t%prog -d dtd_file xml_file_1 ... xml_file_n""",
         description=__doc__,
-        epilog="Documentation: " +
-        "http://docu.npoict.nl/applicatiebeheer/documentatie/xml_scripts",
         version="%prog " + __version__)
     parser.add_option(
         "-x", "--xsd",

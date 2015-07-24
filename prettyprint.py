@@ -25,8 +25,6 @@ def parse_cl():
     cl_parser = OptionParser(
         usage="\t%prog [-n] xml_file_1 ... xml_file_n",
         description=__doc__,
-        epilog="Documentation: " +
-        "http://docu.npoict.nl/applicatiebeheer/documentatie/xml_scripts",
         version="%prog " + __version__)
     cl_parser.add_option(
         "-n", "--no-color", action="store_false", default=True,
