@@ -223,21 +223,29 @@ def print_result_list(result_list, xml_dom):
 
 
 def update_ns_map(ns_map, elm, none_prefix='r'):
-    """Update ns_map with elm.nsmap.
+    """Update XPath namespace prefix mapping with element namespaces.
 
-       Default namespace (None prefix): elm.nsmap[None].
-       Element namespace URL: elm.nsmap.get(elm.prefix).
+    ns_map -- an XML namespace prefix mapping
+    elm -- element with namespaces
+    none_prefix -- prefix for the default namespace in XPath
 
-       Remarks:
-        * The empty namespace prefix is not supported in XPath;
-          ns_map.update(elm.nsmap) will fail.
-        * No protection against namespace prefix collisions.
-          First occurrence wins.
+    Element namespaces:
+    - xmlns, default namespace (None prefix) URI: elm.nsmap[None]
+    - xmlns:prefix, namespace URI: elm.nsmap[elm.prefix]
+
+    Remarks:
+     * XPath does not have a notion of a default namespace.
+       The empty namespace prefix is not supported in XPath (TypeError).
+     * No protection against namespace prefix (none_prefix) collisions.
+       First occurrence (ns_map) wins.
+
+    http://lxml.de/xpathxslt.html#namespaces-and-prefixes
     """
     for key in elm.nsmap:
         if not key:
-            # Prefix voor de default namespace t.b.v XPath
-            ns_map[none_prefix] = elm.nsmap[key]
+            # XPath prefix for element default namespace
+            if not none_prefix in ns_map:
+                ns_map[none_prefix] = elm.nsmap[key]
         elif not key in ns_map:
             ns_map[key] = elm.nsmap[key]
 
