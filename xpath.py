@@ -236,7 +236,7 @@ def update_ns_map(ns_map, elm, none_prefix='r'):
     Remarks:
      * XPath does not have a notion of a default namespace.
        The empty namespace prefix is not supported in XPath (TypeError).
-     * No protection against namespace prefix (none_prefix) collisions.
+     * No protection against namespace prefix collisions.
        First occurrence (ns_map) wins.
 
     http://lxml.de/xpathxslt.html#namespaces-and-prefixes
@@ -247,7 +247,9 @@ def update_ns_map(ns_map, elm, none_prefix='r'):
             if not none_prefix in ns_map:
                 ns_map[none_prefix] = elm.nsmap[key]
         elif not key in ns_map:
-            ns_map[key] = elm.nsmap[key]
+            # Protect the XPath default namespace prefix
+            if not key == none_prefix:
+                ns_map[key] = elm.nsmap[key]
 
 
 def dom_namespaces(xml_dom):
