@@ -36,6 +36,10 @@ def parse_cl():
         action="store_true", default=False, dest="namespaces",
         help="enable XML namespace prefixes")
     parser.add_option(
+        "-d", "--default-prefix",
+        action="store", type="string", default="r", dest="default_prefix",
+        help="set the prefix for the default namespace in XPath")
+    parser.add_option(
         "-p", "--print-xpath",
         action="store_true", default=False, dest="print_xpath",
         help="print the absolute XPath of a result (or parent) element")
@@ -222,7 +226,7 @@ def print_result_list(result_list, xml_dom):
             print node
 
 
-def update_ns_map(ns_map, elm, none_prefix='r'):
+def update_ns_map(ns_map, elm, none_prefix='default'):
     """Update XPath namespace prefix mapping with element namespaces.
 
     ns_map -- an XML namespace prefix mapping
@@ -266,12 +270,12 @@ def dom_namespaces(xml_dom):
         # Find XML namespaces (xmlns) in elements
         for elm in xml_dom.iter('*'):
             if elm.nsmap:
-                update_ns_map(ns_map, elm)
+                update_ns_map(ns_map, elm, none_prefix=options.default_prefix)
     # XML namespaces (xmlns) in root element
     elif root.nsmap:
         options.namespaces = True
         print "root:\t%s" % root.tag
-        update_ns_map(ns_map, root)
+        update_ns_map(ns_map, root, none_prefix=options.default_prefix)
 
     if options.namespaces:
         print "XML namespaces:"
