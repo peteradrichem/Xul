@@ -26,8 +26,9 @@ The XPath result depends on the XPath expression used.
 
 # Standard Python
 from logging import getLogger
+# pylint: disable=no-name-in-module
 # lxml ElementTree <http://lxml.de/>
-from lxml import etree
+from lxml.etree import XPath, XPathSyntaxError, XPathEvalError
 
 # Import my own modules
 from .dom import build_etree
@@ -50,10 +51,10 @@ def build_xpath(xpath_exp, ns_map=None):
     if not ns_map:
         ns_map = {}
     try:
-        xpath_obj = etree.XPath(xpath_exp, namespaces=ns_map)
+        xpath_obj = XPath(xpath_exp, namespaces=ns_map)
     # Handle (parsing) errors in XPath expression
     #   http://lxml.de/xpathxslt.html#error-handling
-    except etree.XPathSyntaxError as e:
+    except XPathSyntaxError as e:
         logger.error("Invalid XPath '%s'", xpath_exp)
         logger.error("XPathSyntaxError: %s", e)
         return None
@@ -71,7 +72,7 @@ def etree_xpath(xml_dom, xpath_obj):
         xpath_result = xpath_obj(xml_dom)
     # Handle errors in evaluating an XPath expression
     #   http://lxml.de/xpathxslt.html#error-handling
-    except etree.XPathEvalError as e:
+    except XPathEvalError as e:
         logger.error("Invalid XPath '%s'", xpath_obj)
         logger.error("XPathEvalError: %s", e)
         return None
