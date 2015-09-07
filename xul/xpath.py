@@ -146,3 +146,36 @@ def update_ns_map(ns_map, elm, none_prefix='default'):
             # Protect the XPath default namespace prefix
             if not key == none_prefix:
                 ns_map[key] = elm.nsmap[key]
+
+
+def dom_namespaces(xml_dom, collect=True, none_prefix='default'):
+    """XML namespaces in XML DOM.
+
+    xml_dom -- XML DOM (ElementTree)
+    collect -- collect XML namespaces (xmlns) in elements
+    none_prefix -- prefix for the default namespace in XPath
+
+    Return XML namespaces (xmlns) 'prefix: URI' dict.
+
+    http://lxml.de/tutorial.html#namespaces
+    """
+    ns_map = {'re': "http://exslt.org/regular-expressions"}
+    # root element -- /*
+    root = xml_dom.getroot()
+    if collect:
+        # Find XML namespaces (xmlns) in elements
+        for elm in xml_dom.iter('*'):
+            if elm.nsmap:
+                update_ns_map(ns_map, elm, none_prefix=none_prefix)
+    # XML namespaces (xmlns) in root element
+    elif root.nsmap:
+        update_ns_map(ns_map, root, none_prefix=none_prefix)
+
+    if root.nsmap:
+        print "root:\t%s" % root.tag
+    if collect or root.nsmap:
+        print "XML namespaces:"
+        for key in ns_map:
+            print "\t%s: %s" % (key, ns_map[key])
+
+    return ns_map

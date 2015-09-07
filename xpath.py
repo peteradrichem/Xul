@@ -15,7 +15,7 @@ from lxml.etree import XPathEvalError, iselement, tostring, XMLParser, parse
 # Xul modules
 from xul.log import setup_logger_console
 from xul.dom import build_etree
-from xul.xpath import build_xpath, etree_xpath, update_ns_map
+from xul.xpath import build_xpath, etree_xpath, dom_namespaces
 
 
 __version_info__ = ('2', '1', '1')
@@ -57,7 +57,7 @@ def parse_cl():
 
 def class_xpath_dom(xml_dom):
     """XPath with lxml.etree.XPath class."""
-    ns_map = dom_namespaces(xml_dom)
+    ns_map = dom_namespaces(xml_dom, options.namespaces, options.default_ns_prefix)
     xpath_obj = build_xpath(options.xpath_exp, ns_map)
     if not xpath_obj:
         return None
@@ -69,7 +69,9 @@ def et_xpath_dom(xml_dom):
     """XPath with lxml.etree.ElementTree.xpath method."""
     try:
         xp_result = xml_dom.xpath(
-            options.xpath_exp, namespaces=dom_namespaces(xml_dom))
+            options.xpath_exp,
+            namespaces=dom_namespaces(
+                xml_dom, options.namespaces, options.default_ns_prefix))
     except XPathEvalError as e:
         stderr.write(
             "XPath '%s' evaluation error: %s\n" % (options.xpath_exp, e))
@@ -224,35 +226,6 @@ def print_result_list(result_list, xml_dom):
             print "**DEBUG fallback**"
             print type(node)
             print node
-
-
-def dom_namespaces(xml_dom):
-    """XML namespaces in XML DOM.
-
-       xml_dom -- XML DOM (ElementTree)
-
-       Return XML namespaces (xmlns) 'prefix: URI' dict.
-    """
-    ns_map = {'re': "http://exslt.org/regular-expressions"}
-    # root element -- /*
-    root = xml_dom.getroot()
-    if options.namespaces:
-        # Find XML namespaces (xmlns) in elements
-        for elm in xml_dom.iter('*'):
-            if elm.nsmap:
-                update_ns_map(ns_map, elm, none_prefix=options.default_ns_prefix)
-    # XML namespaces (xmlns) in root element
-    elif root.nsmap:
-        options.namespaces = True
-        print "root:\t%s" % root.tag
-        update_ns_map(ns_map, root, none_prefix=options.default_ns_prefix)
-
-    if options.namespaces:
-        print "XML namespaces:"
-        for key in ns_map:
-            print "\t%s: %s" % (key, ns_map[key])
-
-    return ns_map
 
 
 def print_result_header(list_result):
