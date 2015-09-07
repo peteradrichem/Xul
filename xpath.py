@@ -37,8 +37,8 @@ def parse_cl():
         help="enable XML namespace prefixes")
     parser.add_option(
         "-d", "--default-prefix",
-        action="store", type="string", default="r", dest="default_prefix",
-        help="set the prefix for the default namespace in XPath")
+        action="store", type="string", default="d", dest="default_ns_prefix",
+        help="set the prefix for the default namespace in XPath [default: '%default']")
     parser.add_option(
         "-p", "--print-xpath",
         action="store_true", default=False, dest="print_xpath",
@@ -270,12 +270,12 @@ def dom_namespaces(xml_dom):
         # Find XML namespaces (xmlns) in elements
         for elm in xml_dom.iter('*'):
             if elm.nsmap:
-                update_ns_map(ns_map, elm, none_prefix=options.default_prefix)
+                update_ns_map(ns_map, elm, none_prefix=options.default_ns_prefix)
     # XML namespaces (xmlns) in root element
     elif root.nsmap:
         options.namespaces = True
         print "root:\t%s" % root.tag
-        update_ns_map(ns_map, root, none_prefix=options.default_prefix)
+        update_ns_map(ns_map, root, none_prefix=options.default_ns_prefix)
 
     if options.namespaces:
         print "XML namespaces:"
