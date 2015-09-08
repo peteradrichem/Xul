@@ -159,23 +159,17 @@ def dom_namespaces(xml_dom, collect=True, none_prefix='default'):
 
     http://lxml.de/tutorial.html#namespaces
     """
+    # EXSLT - Regular Expressions <http://exslt.org/regexp/>
     ns_map = {'re': "http://exslt.org/regular-expressions"}
     # root element -- /*
     root = xml_dom.getroot()
     if collect:
-        # Find XML namespaces (xmlns) in elements
+        # Collect XML namespaces (xmlns) in all elements
         for elm in xml_dom.iter('*'):
             if elm.nsmap:
                 update_ns_map(ns_map, elm, none_prefix=none_prefix)
-    # XML namespaces (xmlns) in root element
+    # Always collect XML namespaces in the root element
     elif root.nsmap:
         update_ns_map(ns_map, root, none_prefix=none_prefix)
-
-    if root.nsmap:
-        print "root:\t%s" % root.tag
-    if collect or root.nsmap:
-        print "XML namespaces:"
-        for key in ns_map:
-            print "\t%s: %s" % (key, ns_map[key])
 
     return ns_map

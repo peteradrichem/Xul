@@ -55,30 +55,38 @@ def parse_cl():
     return parser.parse_args()
 
 
-def class_xpath_dom(xml_dom):
+def print_xmlns(ns_map, root, all_xmlns=True):
+    """Print XML namespaces."""
+    if root.nsmap:
+        # Print {namespace URI} root tag
+        print "root tag:\t%s" % root.tag
+    if all_xmlns:
+        # Print all XML namespaces -- prefix: namespace URI
+        print "XML namespaces:"
+        for key in ns_map:
+            print "\t%s: %s" % (key, ns_map[key])
+
+
+def class_xpath_dom(xml_dom, xpath_exp, ns_map):
     """XPath with lxml.etree.XPath class."""
-    ns_map = dom_namespaces(xml_dom, options.namespaces, options.default_ns_prefix)
-    xpath_obj = build_xpath(options.xpath_exp, ns_map)
+    xpath_obj = build_xpath(xpath_exp, ns_map)
     if not xpath_obj:
         return None
     else:
         return etree_xpath(xml_dom, xpath_obj)
 
 
-def et_xpath_dom(xml_dom):
+def et_xpath_dom(xml_dom, xpath_exp, ns_map):
     """XPath with lxml.etree.ElementTree.xpath method."""
     try:
-        xp_result = xml_dom.xpath(
-            options.xpath_exp,
-            namespaces=dom_namespaces(
-                xml_dom, options.namespaces, options.default_ns_prefix))
+        xp_result = xml_dom.xpath(xpath_exp, namespaces=ns_map)
     except XPathEvalError as e:
         stderr.write(
-            "XPath '%s' evaluation error: %s\n" % (options.xpath_exp, e))
+            "XPath '%s' evaluation error: %s\n" % (xpath_exp, e))
         return None
     # TypeError bij aanroepen EXSLT functie met onjuist aantal argumenten
     except TypeError as e:
-        stderr.write("XPath '%s' type error: %s\n" % (options.xpath_exp, e))
+        stderr.write("XPath '%s' type error: %s\n" % (xpath_exp, e))
         return None
     else:
         return xp_result
@@ -251,8 +259,11 @@ def print_xpath_result(xml_dom):
     XPath return values:
         http://lxml.de/xpathxslt.html#xpath-return-values
     """
+    # XML namespaces
+    ns_map = dom_namespaces(xml_dom, options.namespaces, options.default_ns_prefix)
+    print_xmlns(ns_map, xml_dom.getroot(), options.namespaces)
     # Use XPath expression on XML DOM
-    xp_result = xpath_dom(xml_dom)
+    xp_result = xpath_dom(xml_dom, options.xpath_exp, ns_map)
     if xp_result is None:
         stderr.write("XPath failed\n")
         return
