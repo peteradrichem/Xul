@@ -21,6 +21,7 @@ W3C
 - `XML Schema <http://www.w3.org/standards/xml/schema>`_
 - `XSL Transformations <http://www.w3.org/TR/xslt/>`_
 - `XML Path Language <http://www.w3.org/TR/xpath/>`_
+- `Namespaces in XML 1.0 <http://www.w3.org/TR/xml-names/>`_
 
 Requirements
 ------------
@@ -120,8 +121,11 @@ XPath
           -h, --help            show this help message and exit
           -x XPATH_EXP, --xpath=XPATH_EXP
                                 XML Path Language (XPath) expression
-          -n, --namespace       enable XML namespace prefixes
+          -e, --exslt           add EXSLT XML namespace prefixes
+          -d DEFAULT_NS_PREFIX, --default-prefix=DEFAULT_NS_PREFIX
+                                set the prefix for the default namespace in XPath
+                                [default: 'd']
           -p, --print-xpath     print the absolute XPath of a result (or parent)
                                 element
-          -e, --element-tree    print the XML tree of a result element
+          -t, --element-tree    print the XML tree of a result element
           -m, --method          use ElementTree.xpath method instead of XPath class

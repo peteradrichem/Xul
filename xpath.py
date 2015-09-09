@@ -32,9 +32,9 @@ def parse_cl():
         action="store", type="string", dest="xpath_exp",
         help="XML Path Language (XPath) expression")
     parser.add_option(
-        "-n", "--namespace",
-        action="store_true", default=False, dest="namespaces",
-        help="enable XML namespace prefixes")
+        "-e", "--exslt",
+        action="store_true", default=False, dest="exslt",
+        help="add EXSLT XML namespace prefixes")
     parser.add_option(
         "-d", "--default-prefix",
         action="store", type="string", default="d", dest="default_ns_prefix",
@@ -44,7 +44,7 @@ def parse_cl():
         action="store_true", default=False, dest="print_xpath",
         help="print the absolute XPath of a result (or parent) element")
     parser.add_option(
-        "-e", "--element-tree",
+        "-t", "--element-tree",
         action="store_true", default=False, dest="element_tree",
         help="print the XML tree of a result element")
     parser.add_option(
@@ -55,12 +55,12 @@ def parse_cl():
     return parser.parse_args()
 
 
-def print_xmlns(ns_map, root, all_xmlns=True):
+def print_xmlns(ns_map, root):
     """Print XML namespaces."""
     if root.nsmap:
         # Print {namespace URI} root tag
         print "root tag:\t%s" % root.tag
-    if all_xmlns:
+    if ns_map:
         # Print all XML namespaces -- prefix: namespace URI
         print "XML namespaces:"
         for key in ns_map:
@@ -260,8 +260,8 @@ def print_xpath_result(xml_dom):
         http://lxml.de/xpathxslt.html#xpath-return-values
     """
     # XML namespaces
-    ns_map = dom_namespaces(xml_dom, options.namespaces, options.default_ns_prefix)
-    print_xmlns(ns_map, xml_dom.getroot(), options.namespaces)
+    ns_map = dom_namespaces(xml_dom, options.exslt, options.default_ns_prefix)
+    print_xmlns(ns_map, xml_dom.getroot())
     # Use XPath expression on XML DOM
     xp_result = xpath_dom(xml_dom, options.xpath_exp, ns_map)
     if xp_result is None:

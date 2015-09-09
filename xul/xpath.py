@@ -148,28 +148,35 @@ def update_ns_map(ns_map, elm, none_prefix='default'):
                 ns_map[key] = elm.nsmap[key]
 
 
-def dom_namespaces(xml_dom, collect=True, none_prefix='default'):
-    """XML namespaces in XML DOM.
+def dom_namespaces(xml_dom, exslt=False, none_prefix='default'):
+    """Collect all XML namespaces (xmlns) in the XML DOM
 
     xml_dom -- XML DOM (ElementTree)
-    collect -- collect XML namespaces (xmlns) in elements
+    exslt -- add EXSLT XML namespace prefixes (libxslt 1.1.25 and newer)
     none_prefix -- prefix for the default namespace in XPath
 
     Return XML namespaces (xmlns) 'prefix: URI' dict.
 
     http://lxml.de/tutorial.html#namespaces
     """
-    # EXSLT - Regular Expressions <http://exslt.org/regexp/>
-    ns_map = {'re': "http://exslt.org/regular-expressions"}
-    # root element -- /*
-    root = xml_dom.getroot()
-    if collect:
-        # Collect XML namespaces (xmlns) in all elements
-        for elm in xml_dom.iter('*'):
-            if elm.nsmap:
-                update_ns_map(ns_map, elm, none_prefix=none_prefix)
-    # Always collect XML namespaces in the root element
-    elif root.nsmap:
-        update_ns_map(ns_map, root, none_prefix=none_prefix)
+    if exslt:
+        # EXSLT <http://exslt.org/>
+        ns_map = {
+            'date': "http://exslt.org/dates-and-times",
+            'dyn': "http://exslt.org/dynamic",
+            'exsl': "http://exslt.org/common",
+            'func': "http://exslt.org/functions",
+            'math': "http://exslt.org/math",
+            'random': "http://exslt.org/random",
+            're': "http://exslt.org/regular-expressions",
+            'set': "http://exslt.org/sets",
+            'str': "http://exslt.org/strings"}
+    else:
+        ns_map = {}
+
+    # Collect XML namespaces (xmlns) in all elements
+    for elm in xml_dom.iter('*'):
+        if elm.nsmap:
+            update_ns_map(ns_map, elm, none_prefix=none_prefix)
 
     return ns_map
