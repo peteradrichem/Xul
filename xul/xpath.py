@@ -29,6 +29,7 @@ from logging import getLogger
 # pylint: disable=no-name-in-module
 # lxml ElementTree <http://lxml.de/>
 from lxml.etree import XPath, XPathSyntaxError, XPathEvalError
+from lxml.etree import LIBXSLT_COMPILED_VERSION
 
 # Import my own modules
 from .dom import build_etree
@@ -160,6 +161,11 @@ def dom_namespaces(xml_dom, exslt=False, none_prefix='default'):
     http://lxml.de/tutorial.html#namespaces
     """
     if exslt:
+        if LIBXSLT_COMPILED_VERSION < (1, 1, 25):
+            logger.warning(
+                "EXSLT requires libxslt 1.1.25 or higher. " +
+                "lxml is compiled against libxslt %s",
+                '.'.join(str(n) for n in LIBXSLT_COMPILED_VERSION))
         # EXSLT <http://exslt.org/>
         ns_map = {
             'date': "http://exslt.org/dates-and-times",
