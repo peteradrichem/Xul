@@ -17,8 +17,8 @@ ElementTree Overview
 
 # Standard Python
 from logging import getLogger
-from os.path import isfile
 #
+# pylint: disable=no-member
 # lxml ElementTree <http://lxml.de/>
 from lxml import etree
 
@@ -27,67 +27,57 @@ from lxml import etree
 logger = getLogger(__name__)
 
 
-def build_etree(xml_file, parser=None, lenient=True):
-    """ Bouw (parse) een XML Document Object Model
-        op uit een XML bestand
-        - xml_file: XML bestand
-        - parser: lxml.etree.XMLParser object (optioneel)
-        - lenient: geeft warnings i.p.v. errors bij (leverancier) `XML' trouble
+def build_etree(file_obj, parser=None, lenient=True):
+    """Parse XML Document Object Model from a file object.
+       - file_obj: file object
+       - parser: lxml.etree.XMLParser object (optional)
+       - lenient: log XMLSyntaxError as warnings instead of errors
 
-        Geeft XML Document Object Model terug.
-        Bij problemen:
-            - XML fouten worden gelogd als warnings (lenient) of als errors
-            - als resultaat wordt None teruggegeven
+       Return XML Document Object Model on success.
+       Return None on error.
 
-        Extensible Markup Language (XML)
-            http://www.w3.org/XML/
+       Extensible Markup Language (XML)
+           http://www.w3.org/XML/
 
-        Gebruikt lxml.etree.parse en lxml.etree.XMLParser
-            http://lxml.de/parsing.html
-            http://effbot.org/elementtree/elementtree-xmlparser.htm
-            http://effbot.org/zone/element.htm#reading-and-writing-xml-files
+       Gebruikt lxml.etree.parse en lxml.etree.XMLParser
+           http://lxml.de/parsing.html
+           http://effbot.org/elementtree/elementtree-xmlparser.htm
+           http://effbot.org/zone/element.htm#reading-and-writing-xml-files
     """
-    # Check of het bestand bestaat
-    if isfile(xml_file):
-        # XML parser object preparation
-        #   http://lxml.de/parsing.html#parser-options
-        if not parser:
-            parser = etree.XMLParser(ns_clean=True)
+    # XML parser object preparation.
+    #   http://lxml.de/parsing.html#parser-options
+    if not parser:
+        parser = etree.XMLParser(ns_clean=True)
 
-        # Probeer een ElementTree object op te bouwen (parse XML file)
-        try:
-            xml_dom = etree.parse(xml_file, parser)
-        # Vang XML fouten af
-        #   http://lxml.de/api.html#error-handling-on-exceptions
-        except etree.XMLSyntaxError as inst:
-            if lenient:
-                # Error is onnodig luid bij leverancier `XML' trouble
-                xmllogger = logger.warning
-            else:
-                xmllogger = logger.error
-            xmllogger("File '%s' is not an XML file:", xml_file)
-            # http://lxml.de/parsing.html#error-log
-            # [http://lxml.de/api/lxml.etree._LogEntry-class.html]
-            for e in inst.error_log:
-                # Bijv. e.level_name: "FATAL", e.domain_name: "PARSER",
-                # e.type_name: "ERR_DOCUMENT_EMPTY"
-                if e.line == 0:
-                    logger.error(e.message)
-                else:
-                    xmllogger("line %i, column %i: %s", e.line, e.column, e.message)
-            return None
-        # Vang (IO|OS)Error exceptions af (indien niet etree exceptions):
-        #   file system trouble geeft "failed to load external entity" (etree exception)
-        except EnvironmentError as e:
-            logger.error("OS error %s reading file '%s':", e.errno, xml_file)
-            logger.error(e.strerror)
-            return None
+    # Parse file object into an XML Document Object Model (ElementTree).
+    try:
+        xml_dom = etree.parse(file_obj, parser)
+    # Catch XML exceptions.
+    #   http://lxml.de/api.html#error-handling-on-exceptions
+    except etree.XMLSyntaxError as inst:
+        if lenient:
+            xmllogger = logger.warning
         else:
-            return xml_dom
-    else:
-        # Aanroep fout: niet bestaand bestand
-        logger.error("'%s' is not a valid file", xml_file)
+            xmllogger = logger.error
+        xmllogger("%s is not an XML object:", file_obj)
+        # http://lxml.de/parsing.html#error-log
+        # [http://lxml.de/api/lxml.etree._LogEntry-class.html]
+        for e in inst.error_log:
+            # For example: e.level_name: "FATAL", e.domain_name: "PARSER",
+            # e.type_name: "ERR_DOCUMENT_EMPTY"
+            if e.line == 0:
+                logger.error(e.message)
+            else:
+                xmllogger("line %i, column %i: %s", e.line, e.column, e.message)
         return None
+    # Catch (IO|OS)Error exceptions, for example:
+    #   "failed to load external entity" (lxml.etree._raiseParseError)
+    except EnvironmentError as e:
+        logger.error("OS error %s reading object '%s':", e.errno, file_obj)
+        logger.error(e.strerror)
+        return None
+    else:
+        return xml_dom
 
 
 def build_xsl_transform(xslt_file):

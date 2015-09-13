@@ -84,5 +84,6 @@ if __name__ == '__main__':
 
     # Read from standard input when no XML files are specified
     if not xml_files:
-        xml_tree = parse(stdin, parser)
-        prettyprint(xml_tree)
+        xml_tree = build_etree(stdin, parser=parser)
+        if xml_tree:
+            prettyprint(xml_tree)
