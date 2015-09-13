@@ -70,11 +70,10 @@ def build_etree(file_obj, parser=None, lenient=True):
             else:
                 xmllogger("line %i, column %i: %s", e.line, e.column, e.message)
         return None
-    # Catch (IO|OS)Error exceptions, for example:
+    # Catch EnvironmentError (IOError) exceptions, for example:
     #   "failed to load external entity" (lxml.etree._raiseParseError)
     except EnvironmentError as e:
-        logger.error("OS error %s reading object '%s':", e.errno, file_obj)
-        logger.error(e.strerror)
+        logger.error(e)
         return None
     else:
         return xml_dom
