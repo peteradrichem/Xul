@@ -10,7 +10,7 @@ from sys import stdout, stderr, stdin
 #
 # pylint: disable=no-name-in-module
 # lxml ElementTree <http://lxml.de/>
-from lxml.etree import XMLParser, tostring, parse
+from lxml.etree import XMLParser, tostring
 #
 # Xul modules
 from xul.log import setup_logger_console
@@ -33,17 +33,18 @@ def parse_cl():
     return cl_parser.parse_args()
 
 
-def prettyprint(etree):
-    """Pretty print XML ElementTree in optional (Pygments) color."""
-    if options.color:
-        xml_str = tostring(
-            etree, encoding='UTF-8',
-            xml_declaration=True, pretty_print=True)
-        print highlight(xml_str, lexer, formatter)
-    else:
-        etree.write(
-            stdout, encoding='UTF-8',
-            xml_declaration=True, pretty_print=True)
+def pyg_pprint(etree):
+    """Pretty print XML ElementTree in (Pygments) color."""
+    xml_str = tostring(
+        etree, encoding='UTF-8',
+        xml_declaration=True, pretty_print=True)
+    print highlight(xml_str, lexer, formatter)
+
+def no_pyg_pprint(etree):
+    """Pretty print XML ElementTree."""
+    etree.write(
+        stdout, encoding='UTF-8',
+        xml_declaration=True, pretty_print=True)
 
 
 if __name__ == '__main__':
@@ -56,12 +57,16 @@ if __name__ == '__main__':
     if options.color:
         try:
             from pygments.lexers import get_lexer_by_name
-            lexer = get_lexer_by_name('xml', encoding='utf-8')
             from pygments.formatters.terminal256 import Terminal256Formatter
-            formatter = Terminal256Formatter(encoding='utf-8', nobold=True)
             from pygments import highlight
         except ImportError:
-            options.color = False
+            prettyprint = no_pyg_pprint
+        else:
+            lexer = get_lexer_by_name('xml', encoding='utf-8')
+            formatter = Terminal256Formatter(encoding='utf-8', nobold=True)
+            prettyprint = pyg_pprint
+    else:
+        prettyprint = no_pyg_pprint
 
     # Initialise XML parser and remove blank text for 'pretty_print' formatting
     #   http://lxml.de/FAQ.html#parsing-and-serialisation
