@@ -51,7 +51,7 @@ if __name__ == '__main__':
         xml_tree = build_etree(xml_f, parser=parser)
         if xml_tree:
             try:
-                prettyprint(xml_tree, options.color)
+                prettyprint(xml_tree, color=options.color, xml_declaration=True)
                 # Voorkom "close failed in file object destructor:" meldingen
                 # bij meerdere XML bestanden en 'Broken pipe'
                 stdout.flush()
@@ -64,4 +64,4 @@ if __name__ == '__main__':
     if not xml_files:
         xml_tree = build_etree(stdin, parser=parser)
         if xml_tree:
-            prettyprint(xml_tree, options.color)
+            prettyprint(xml_tree, color=options.color, xml_declaration=True)

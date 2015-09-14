@@ -11,11 +11,11 @@ from sys import stdout
 from lxml.etree import tostring
 
 
-def no_color_pp(etree):
+def no_color_pp(etree, xml_declaration=True):
     """Pretty print XML ElementTree without color."""
     etree.write(
         stdout, encoding='UTF-8',
-        xml_declaration=True, pretty_print=True)
+        xml_declaration=xml_declaration, pretty_print=True)
 
 
 try:
@@ -30,12 +30,12 @@ except ImportError:
 else:
     lexer = get_lexer_by_name('xml', encoding='utf-8')
     formatter = Terminal256Formatter(encoding='utf-8', nobold=True)
-    def prettyprint(etree, color=True):
+    def prettyprint(etree, color=True, xml_declaration=True):
         """Pretty print XML ElementTree in (Pygments) color."""
         if color:
             xml_str = tostring(
                 etree, encoding='UTF-8',
-                xml_declaration=True, pretty_print=True)
+                xml_declaration=xml_declaration, pretty_print=True)
             print highlight(xml_str, lexer, formatter)
         else:
-            return no_color_pp(etree)
+            return no_color_pp(etree, xml_declaration=xml_declaration)
