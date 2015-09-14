@@ -10,12 +10,13 @@ from sys import stderr, stdin
 #
 # pylint: disable=no-name-in-module
 # lxml ElementTree <http://lxml.de/>
-from lxml.etree import XPathEvalError, iselement, tostring, XMLParser, parse
+from lxml.etree import XPathEvalError, iselement, XMLParser, parse
 #
 # Xul modules
 from xul.log import setup_logger_console
 from xul.dom import build_etree
 from xul.xpath import build_xpath, etree_xpath, dom_namespaces
+from xul.ppxml import prettyprint
 
 
 __version_info__ = ('2', '1', '1')
@@ -126,15 +127,14 @@ def node_repr(node):
 def print_node(node):
     """Print node (UTF-8 encoded).
 
-       Print node, using node_repr(). When options.element_tree is True
-       use lxml.etree.tostring() to print the whole element tree.
+       If options.element_tree is True use prettyprint() to print
+       the whole element tree. Else, use node_repr().
     """
     if options.element_tree:
-        # Ignore tail text; often end-of-line (EOL)
-        node_string = "'%s'" % tostring(node, encoding='UTF-8', with_tail=False)
+        print "line %d:" % node.sourceline
+        prettyprint(node, xml_declaration=False)
     else:
-        node_string = node_repr(node)
-    print "%d:\t%s" % (node.sourceline, node_string)
+        print "%d:\t%s" % (node.sourceline, node_repr(node))
 
 
 def smart_with_parent(smart_string):
