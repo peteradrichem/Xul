@@ -6,11 +6,12 @@
 
 # Standard Python
 from optparse import OptionParser
-from sys import stdout, stderr
+from sys import stderr
 #
 # Xul modules
 from xul.log import setup_logger_console
 from xul.dom import build_xsl_transform, xml_transformer
+from xul.ppxml import prettyprint
 
 
 __version_info__ = ('2', '0', '0')
@@ -56,19 +57,8 @@ if __name__ == '__main__':
         # Opm: xml_transformer rapporteert XML fouten in xml_f etc.
         result = xml_transformer(xml_f, transformer)
         if result:
-            try:
-                # UTF-8 en pretty print (#xml.etree.ElementTree.ElementTree.write)
-                #   http://docs.python.org/2/library/xml.etree.elementtree.html
-                result.write(
-                    stdout, encoding='UTF-8',
-                    xml_declaration=True, pretty_print=True)
-                # Voorkom "close failed in file object destructor:" meldingen
-                # bij meerdere XML bestanden en 'Broken pipe'
-                stdout.flush()
-            except AssertionError:
-                # Text result instead of XML
+            if result.getroot() is None:
+                # XSLT result is not an ElementTree. Print as text
                 print result
-            except IOError as e:
-                # 'IOError: [Errno 32] Broken pipe'
-                if e.errno != 32:
-                    stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
+            else:
+                prettyprint(result, xml_declaration=True)

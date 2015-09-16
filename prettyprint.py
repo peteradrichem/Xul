@@ -6,7 +6,7 @@
 
 # Standard Python
 from optparse import OptionParser
-from sys import stdout, stderr, stdin
+from sys import stdin
 #
 # pylint: disable=no-name-in-module
 # lxml ElementTree <http://lxml.de/>
@@ -50,15 +50,7 @@ if __name__ == '__main__':
         # Opm: build_etree rapporteert XML fouten in xml_f
         xml_tree = build_etree(xml_f, parser=parser)
         if xml_tree:
-            try:
-                prettyprint(xml_tree, color=options.color, xml_declaration=True)
-                # Voorkom "close failed in file object destructor:" meldingen
-                # bij meerdere XML bestanden en 'Broken pipe'
-                stdout.flush()
-            except IOError as e:
-                # 'IOError: [Errno 32] Broken pipe' afvangen
-                if e.errno != 32:
-                    stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
+            prettyprint(xml_tree, color=options.color, xml_declaration=True)
 
     # Read from standard input when no XML files are specified
     if not xml_files:
