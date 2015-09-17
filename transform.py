@@ -9,13 +9,11 @@ from optparse import OptionParser
 from sys import stderr
 #
 # Xul modules
+from xul import __version__
 from xul.log import setup_logger_console
 from xul.dom import build_xsl_transform, xml_transformer
 from xul.ppxml import prettyprint
 
-
-__version_info__ = ('2', '0', '0')
-__version__ = '.'.join(__version_info__)
 
 def parse_cl():
     """Parse the command-line for options and XML files."""

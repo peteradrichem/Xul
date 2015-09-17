@@ -2,10 +2,11 @@
 
 """Setup script for building XML Utilities."""
 
+from setuptools import setup, find_packages
+from xul import __version__
+
 import codecs
 from os import path
-from setuptools import setup, find_packages
-
 here = path.abspath(path.dirname(__file__))
 
 def long_description():
@@ -15,7 +16,7 @@ def long_description():
 
 setup(
     name="Xul",
-    version="2.0.0",
+    version=__version__,
 
     packages=find_packages(),
     scripts=['prettyprint.py', 'transform.py', 'validate.py', 'xpath.py'],

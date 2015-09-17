@@ -13,14 +13,12 @@ from sys import stderr, stdin
 from lxml.etree import XPathEvalError, iselement, XMLParser, parse
 #
 # Xul modules
+from xul import __version__
 from xul.log import setup_logger_console
 from xul.dom import build_etree
 from xul.xpath import build_xpath, etree_xpath, dom_namespaces
 from xul.ppxml import prettyprint
 
-
-__version_info__ = ('2', '1', '1')
-__version__ = '.'.join(__version_info__)
 
 def parse_cl():
     """Parse the command-line for options and XML files."""
