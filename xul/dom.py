@@ -28,18 +28,18 @@ logger = getLogger(__name__)
 
 
 def build_etree(file_obj, parser=None, lenient=True):
-    """Parse XML Document Object Model from a file object.
+    """Parse file object into an XML Document Object Model (ElementTree).
        - file_obj: file object
-       - parser: lxml.etree.XMLParser object (optional)
+       - parser: (optional) lxml.etree.XMLParser object
        - lenient: log XMLSyntaxError as warnings instead of errors
 
        Return XML Document Object Model on success.
        Return None on error.
 
-       Extensible Markup Language (XML)
+       Extensible Markup Language (XML):
            http://www.w3.org/XML/
 
-       Gebruikt lxml.etree.parse en lxml.etree.XMLParser
+       Uses lxml.etree.parse and lxml.etree.XMLParser
            http://lxml.de/parsing.html
            http://effbot.org/elementtree/elementtree-xmlparser.htm
            http://effbot.org/zone/element.htm#reading-and-writing-xml-files
@@ -49,7 +49,6 @@ def build_etree(file_obj, parser=None, lenient=True):
     if not parser:
         parser = etree.XMLParser(ns_clean=True)
 
-    # Parse file object into an XML Document Object Model (ElementTree).
     try:
         xml_dom = etree.parse(file_obj, parser)
     # Catch XML exceptions.
@@ -119,30 +118,30 @@ def build_xsl_transform(xslt_file):
 
 
 def etree_transformer(xml_dom, transformer, **params):
-    """ Transformeer een ElementTree via een XSL transformer
-        - xml_dom: XML Document Object Model
-        - transformer: XSL Transformer (lxml.etree.XSLT)
-        - params: XSL parameters (optioneel)
+    """Transform an XML DOM (ElementTree) with an XSL Transformer.
+       - xml_dom: XML Document Object Model
+       - transformer: XSL Transformer (lxml.etree.XSLT)
+       - params: (optional) XSL parameters
             http://lxml.de/xpathxslt.html#stylesheet-parameters
 
-        Het resultaat is een XML Document Object Model bij succes
-        en None bij problemen
+       Return XML Document Object Model on success.
+       Return None on error.
 
-        Transformatie fouten worden gelogd als warnings
+       XSL file lines with errors are logged as warnings
     """
     try:
         if params:
             xml_result = transformer(xml_dom, **params)
         else:
             xml_result = transformer(xml_dom)
-    # Vang XSL Transformation fouten af
+    # Catch XSL Transformation errors
     except etree.XSLTApplyError as inst:
         if not inst.error_log:
             logger.error("XSLTApplyError: %s", inst)
         else:
             logger.error("XSLTApplyError on ElementTree")
         for e in inst.error_log:
-            # Bijv. e.level_name: "ERROR", e.domain_name: "XSLT", e.type_name: "ERR_OK"
+            # E.g. e.level_name: "ERROR", e.domain_name: "XSLT", e.type_name: "ERR_OK"
             if e.line == 0:
                 logger.error(e.message)
             else:
@@ -152,20 +151,19 @@ def etree_transformer(xml_dom, transformer, **params):
         return xml_result
 
 
-def xml_transformer(xml_file, transformer):
-    """ Transformeer een XML bestand via een XSL transformer
-        - xml_file: XML bestand
-        - transformer: XSL Transformer (lxml.etree.XSLT)
+def xml_transformer(xml_file, transformer, parser=None):
+    """Transform an XML file with an XSL Transformer.
+       - xml_file: XML file
+       - transformer: XSL Transformer (lxml.etree.XSLT)
+       - parser: (optional) lxml.etree.XMLParser object
 
-        Het resultaat is een XML Document Object Model bij succes
-        en None bij problemen
+       Return XML Document Object Model on success.
+       Return None on error.
     """
-    # Maak XML Document Object Model van het XML bestand
-    xml_dom = build_etree(xml_file, lenient=False)
+    xml_dom = build_etree(xml_file, parser=parser, lenient=False)
     if not xml_dom:
         return None
 
-    # Probeer de XML DOM (ElementTree) te transformeren
     xml_result = etree_transformer(xml_dom, transformer)
     if xml_result:
         return xml_result

@@ -8,6 +8,10 @@
 from optparse import OptionParser
 from sys import stderr
 #
+# pylint: disable=no-name-in-module
+# lxml ElementTree <http://lxml.de/>
+from lxml.etree import XMLParser
+#
 # Xul modules
 from xul import __version__
 from xul.log import setup_logger_console
@@ -17,16 +21,16 @@ from xul.ppxml import prettyprint
 
 def parse_cl():
     """Parse the command-line for options and XML files."""
-    parser = OptionParser(
+    cl_parser = OptionParser(
         usage="%prog -x xsl_file xml_file ...",
         description=__doc__,
         version="%prog " + __version__)
-    parser.add_option(
+    cl_parser.add_option(
         "-x", "--xsl",
         action="store", type="string", dest="xsl_file",
         help="XSL file to transform XML file(s)")
 
-    return parser.parse_args()
+    return cl_parser.parse_args()
 
 
 if __name__ == '__main__':
@@ -51,9 +55,11 @@ if __name__ == '__main__':
         stderr.write("Valid XSL file '%s'\n" % options.xsl_file)
         stderr.write("But no XML file(s) to operate on\n")
         exit(0)
+    # Initialise XML parser
+    parser = XMLParser()
     for xml_f in xml_files:
         # Opm: xml_transformer rapporteert XML fouten in xml_f etc.
-        result = xml_transformer(xml_f, transformer)
+        result = xml_transformer(xml_f, transformer, parser)
         if result:
             if result.getroot() is None:
                 # XSLT result is not an ElementTree. Print as text
