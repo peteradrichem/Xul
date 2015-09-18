@@ -6,7 +6,7 @@
 
 # Standard Python
 from optparse import OptionParser
-from sys import stderr
+from sys import stderr, stdin
 #
 # pylint: disable=no-name-in-module
 # lxml ElementTree <http://lxml.de/>
@@ -33,6 +33,22 @@ def parse_cl():
     return cl_parser.parse_args()
 
 
+def print_xslt(file_obj, transformer, parser):
+    """Print the XSL Transformation result of an XML file.
+
+    file_obj -- file object
+    transformer -- XSL Transformer (lxml.etree.XSLT)
+    parser -- XML parser (lxml.etree.XMLParser)
+    """
+    result = xml_transformer(file_obj, transformer, parser)
+    if result:
+        if result.getroot() is None:
+            # XSLT result is not an ElementTree. Print as text
+            print result
+        else:
+            prettyprint(result, xml_declaration=True)
+
+
 if __name__ == '__main__':
     # Logging to the console (TAB modules)
     setup_logger_console()
@@ -49,20 +65,13 @@ if __name__ == '__main__':
     if not transformer:
         stderr.write('Invalid XSL file specified\n')
         exit(105)
-
-    # Transform XML files with XSL
-    if not xml_files:
-        stderr.write("Valid XSL file '%s'\n" % options.xsl_file)
-        stderr.write("But no XML file(s) to operate on\n")
-        exit(0)
     # Initialise XML parser
     parser = XMLParser()
+
+    # Transform XML files with XSL
     for xml_f in xml_files:
-        # Opm: xml_transformer rapporteert XML fouten in xml_f etc.
-        result = xml_transformer(xml_f, transformer, parser)
-        if result:
-            if result.getroot() is None:
-                # XSLT result is not an ElementTree. Print as text
-                print result
-            else:
-                prettyprint(result, xml_declaration=True)
+        print_xslt(xml_f, transformer, parser)
+
+    # Read from standard input when no XML files are specified
+    if not xml_files:
+        print_xslt(stdin, transformer, parser)
