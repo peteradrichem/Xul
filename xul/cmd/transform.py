@@ -1,4 +1,3 @@
-#!/usr/local/bin/python -t
 # coding=utf-8
 
 """Transform XML file(s) with an XSL file."""
@@ -11,12 +10,12 @@ from sys import stderr, stdin
 # pylint: disable=no-name-in-module
 # lxml ElementTree <http://lxml.de/>
 from lxml.etree import XMLParser
-#
-# Xul modules
-from xul import __version__
-from xul.log import setup_logger_console
-from xul.dom import build_xsl_transform, xml_transformer
-from xul.ppxml import prettyprint
+
+# Import my own modules
+from .. import __version__
+from ..log import setup_logger_console
+from ..dom import build_xsl_transform, xml_transformer
+from ..ppxml import prettyprint
 
 
 def parse_cl():
@@ -29,18 +28,17 @@ def parse_cl():
         "-x", "--xsl",
         action="store", type="string", dest="xsl_file",
         help="XSL file to transform XML file(s)")
-
     return cl_parser.parse_args()
 
 
-def print_xslt(file_obj, transformer, parser):
-    """Print the XSL Transformation result of an XML file.
+def print_xslt(xml_source, transformer, parser):
+    """XSL Transform an XML file object and print the result.
 
-    file_obj -- file object
+    xml_source -- XML file or file-like object
     transformer -- XSL Transformer (lxml.etree.XSLT)
     parser -- XML parser (lxml.etree.XMLParser)
     """
-    result = xml_transformer(file_obj, transformer, parser)
+    result = xml_transformer(xml_source, transformer, parser)
     if result:
         if result.getroot() is None:
             # XSLT result is not an ElementTree. Print as text
@@ -49,8 +47,9 @@ def print_xslt(file_obj, transformer, parser):
             prettyprint(result, xml_declaration=True)
 
 
-if __name__ == '__main__':
-    # Logging to the console (TAB modules)
+def main():
+    """Main command line entry point."""
+    # Logging to the console
     setup_logger_console()
 
     # Command-line
