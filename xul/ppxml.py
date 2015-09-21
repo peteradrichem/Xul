@@ -10,6 +10,11 @@ from sys import stderr
 # lxml ElementTree <http://lxml.de/>
 from lxml.etree import tostring
 
+# Import my own modules
+from .dom import build_etree
+
+
+__all__ = ['prettyprint', 'pp_xml']
 
 def _private_pp(etree, color=True, xml_declaration=True):
     """Pretty print XML ElementTree in (optional) color.
@@ -46,3 +51,15 @@ else:
     def prettyprint(etree, color=True, xml_declaration=True):
         """Pretty print XML ElementTree in (optional) color."""
         return _private_pp(etree, color=color, xml_declaration=xml_declaration)
+
+
+def pp_xml(xml_source, parser=None, color=True):
+    """Pretty print an XML file.
+
+    xml_source -- XML file or file-like object
+    parser -- (optional) XML parser (lxml.etree.XMLParser)
+    color -- pretty print in color (or not)
+    """
+    xml_tree = build_etree(xml_source, parser=parser)
+    if xml_tree:
+        prettyprint(xml_tree, color=color, xml_declaration=True)

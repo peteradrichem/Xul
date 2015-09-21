@@ -15,8 +15,7 @@ from lxml.etree import XMLParser
 # Xul modules
 from xul import __version__
 from xul.log import setup_logger_console
-from xul.dom import build_etree
-from xul.ppxml import prettyprint
+from xul.ppxml import pp_xml
 
 
 def parse_cl():
@@ -33,7 +32,7 @@ def parse_cl():
 
 
 if __name__ == '__main__':
-    # Logging to the console (TAB modules)
+    # Logging to the console
     setup_logger_console()
 
     # Command-line
@@ -45,13 +44,8 @@ if __name__ == '__main__':
 
     # Pretty print XML files
     for xml_f in xml_files:
-        # Opm: build_etree rapporteert XML fouten in xml_f
-        xml_tree = build_etree(xml_f, parser=parser)
-        if xml_tree:
-            prettyprint(xml_tree, color=options.color, xml_declaration=True)
+        pp_xml(xml_f, parser=parser, color=options.color)
 
     # Read from standard input when no XML files are specified
     if not xml_files:
-        xml_tree = build_etree(stdin, parser=parser)
-        if xml_tree:
-            prettyprint(xml_tree, color=options.color, xml_declaration=True)
+        pp_xml(stdin, parser=parser, color=options.color)
