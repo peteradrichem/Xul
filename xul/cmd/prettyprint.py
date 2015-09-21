@@ -1,4 +1,3 @@
-#!/usr/local/bin/python -t
 # coding=utf-8
 
 """Pretty print XML files."""
@@ -11,11 +10,11 @@ from sys import stdin
 # pylint: disable=no-name-in-module
 # lxml ElementTree <http://lxml.de/>
 from lxml.etree import XMLParser
-#
-# Xul modules
-from xul import __version__
-from xul.log import setup_logger_console
-from xul.ppxml import pp_xml
+
+# Import my own modules
+from .. import __version__
+from ..log import setup_logger_console
+from ..ppxml import pp_xml
 
 
 def parse_cl():
@@ -27,11 +26,11 @@ def parse_cl():
     cl_parser.add_option(
         "-n", "--no-color", action="store_false", default=True,
         dest="color", help="disable colored output")
-
     return cl_parser.parse_args()
 
 
-if __name__ == '__main__':
+def main():
+    """Main command line entry point."""
     # Logging to the console
     setup_logger_console()
 

@@ -19,7 +19,7 @@ setup(
     version=__version__,
 
     packages=find_packages(),
-    scripts=['prettyprint.py', 'validate.py', 'xpath.py'],
+    scripts=['validate.py', 'xpath.py'],
     zip_safe=False,
     install_requires=["lxml>=2.0"],
 
@@ -49,6 +49,8 @@ setup(
     download_url='https://bitbucket.org/peteradrichem/xul',
     bugtrack_url='https://bitbucket.org/peteradrichem/xul/issues',
     entry_points={
-        'console_scripts': ['transform = xul.cmd.transform:main']
+        'console_scripts': [
+            'transform = xul.cmd.transform:main',
+            'prettyprint = xul.cmd.prettyprint:main']
     }
 )
