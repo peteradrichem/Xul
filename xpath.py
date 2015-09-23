@@ -10,7 +10,7 @@ from sys import stderr, stdin
 #
 # pylint: disable=no-name-in-module
 # lxml ElementTree <http://lxml.de/>
-from lxml.etree import XPathEvalError, iselement, XMLParser, parse
+from lxml.etree import XPathEvalError, iselement, XMLParser
 #
 # Xul modules
 from xul import __version__
@@ -251,12 +251,22 @@ def print_result_header(list_result):
             print "%d results on lines:" % xp_r_len
 
 
-def print_xpath_result(xml_dom):
-    """Print XPath results.
+def xpath_on_xml(xml_source, parser, xpath_dom, options):
+    """Apply XPath expression to XML source.
 
-    XPath return values:
-        http://lxml.de/xpathxslt.html#xpath-return-values
+    xml_source -- XML file or file-like object
+    parser -- XML parser (lxml.etree.XMLParser)
+    xpath_dom -- ElementTree.xpath method or XPath class
+    options -- Command-line options
     """
+    # XML DOM Node Tree (ElementTree)
+    xml_dom = build_etree(
+        xml_source,
+        parser=parser,
+        lenient=False)
+    if xml_dom is None:
+        return False
+
     # XML namespaces
     ns_map = dom_namespaces(xml_dom, options.exslt, options.default_ns_prefix)
     print_xmlns(ns_map, xml_dom.getroot())
@@ -264,8 +274,20 @@ def print_xpath_result(xml_dom):
     xp_result = xpath_dom(xml_dom, options.xpath_exp, ns_map)
     if xp_result is None:
         stderr.write("XPath failed\n")
-        return
+        return False
+    else:
+        return print_xp_result(xp_result, xml_dom)
 
+
+def print_xp_result(xp_result, xml_dom):
+    """Print XPath results.
+
+    xp_result -- XPath result
+    xml_dom -- XML DOM (ElementTree)
+
+    XPath return values:
+        http://lxml.de/xpathxslt.html#xpath-return-values
+    """
     # STRING - string (basestring) - smart string
     #   "string(/voorspellingen/@startdatum)"
     # Namespace URI
@@ -332,15 +354,8 @@ if __name__ == '__main__':
     # Use XPath on XML files
     for xml_f in xml_files:
         print "\nFile: %s" % xml_f
-        # Bouw XML DOM (Document Object Model) Node Tree (ElementTree)
-        xml_dom_node_tree = build_etree(
-            xml_f,
-            parser=xml_parser,
-            lenient=False)
-        if xml_dom_node_tree is None:
-            continue
-        print_xpath_result(xml_dom_node_tree)
+        xpath_on_xml(xml_f, xml_parser, xpath_dom, options)
 
     # Read from standard input when no XML files are specified
     if not xml_files:
-        print_xpath_result(parse(stdin, xml_parser))
+        xpath_on_xml(stdin, xml_parser, xpath_dom, options)
