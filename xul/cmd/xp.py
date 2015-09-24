@@ -1,4 +1,3 @@
-#!/usr/local/bin/python -t
 # coding=utf-8
 
 """Use XPath expression to select nodes in XML file(s)."""
@@ -11,13 +10,13 @@ from sys import stderr, stdin
 # pylint: disable=no-name-in-module
 # lxml ElementTree <http://lxml.de/>
 from lxml.etree import XPathEvalError, iselement, XMLParser
-#
-# Xul modules
-from xul import __version__
-from xul.log import setup_logger_console
-from xul.dom import build_etree
-from xul.xpath import build_xpath, etree_xpath, dom_namespaces
-from xul.ppxml import prettyprint
+
+# Import my own modules
+from .. import __version__
+from ..log import setup_logger_console
+from ..dom import build_etree
+from ..xpath import build_xpath, etree_xpath, dom_namespaces
+from ..ppxml import prettyprint
 
 
 def parse_cl():
@@ -94,10 +93,10 @@ def et_xpath_dom(xml_dom, xpath_exp, ns_map):
 def node_repr(node):
     """Return node representation (UTF-8 encoded).
 
-       Node examples:
-       - element node -- /path/el, //*
-       - comment node -- comment()
-       - PI: processing instruction -- //processing-instruction()
+    Node examples:
+     * element node -- /path/el, //*
+     * comment node -- comment()
+     * PI: processing instruction -- //processing-instruction()
     """
     # PI - lxml.etree._ProcessingInstruction -- node.target & node.tag()
     #   "/processing-instruction()"
@@ -122,13 +121,13 @@ def node_repr(node):
         return "<%s> is empty" % node.tag
 
 
-def print_node(node):
+def print_node(node, element_tree=False):
     """Print node (UTF-8 encoded).
 
-       If options.element_tree is True use prettyprint() to print
-       the whole element tree. Else, use node_repr().
+    If element_tree is True use prettyprint() to print the whole
+    element tree. Else, use node_repr().
     """
-    if options.element_tree:
+    if element_tree:
         print "line %d:" % node.sourceline
         prettyprint(node, xml_declaration=False)
     else:
@@ -138,11 +137,9 @@ def print_node(node):
 def smart_with_parent(smart_string):
     """Return lxml 'smart' string representation (UTF-8 encoded) with parent relation.
 
-       lxml 'smart' string is a text node (atomic value) or an attribute node:
-       - text node (tail, entity): contains text; never empty
-       - attribute node: contains the value of the attribute
-
-       http://lxml.de/xpathxslt.html#xpath-return-values
+    lxml 'smart' string is a text node (atomic value) or an attribute node:
+     * text node (tail, entity): contains text; never empty
+     * attribute node: contains the value of the attribute
     """
     smart_repr = None
     parent_rel = None
@@ -173,13 +170,14 @@ def smart_with_parent(smart_string):
     return (smart_repr, parent_rel)
 
 
-def print_smart_string(smart_string, xml_dom):
+def print_smart_string(smart_string, xml_dom, options):
     """Print lxml 'smart' string with parent element tag.
 
-       smart_string -- XPath string result that provides a getparent() method.
-          - string: lxml.etree._ElementStringResult
-          - Unicode: lxml.etree._ElementUnicodeResult
-       xml_dom -- XML DOM (ElementTree)
+    smart_string -- XPath string result that provides a getparent() method:
+     * string: lxml.etree._ElementStringResult
+     * Unicode: lxml.etree._ElementUnicodeResult
+    xml_dom -- XML DOM (ElementTree)
+    options -- Command-line options
     """
     # XPath result parent element
     par_el = smart_string.getparent()
@@ -199,20 +197,25 @@ def print_smart_string(smart_string, xml_dom):
         print "%d:\t%s %s %s" % (par_el.sourceline, smart_repr, parent_rel, par_el_str)
     else:
         print "**smart string DEBUG fallback**"
-        print_node(par_el)
+        print_node(par_el, element_tree=options.element_tree)
 
     # Print parent element XPath expression
     if options.print_xpath:
         print "\tParent XPath: %s" % xml_dom.getpath(par_el)
 
 
-def print_result_list(result_list, xml_dom):
-    """Print all nodes from the list of XPath results."""
+def print_result_list(result_list, xml_dom, options):
+    """Print all nodes from the list of XPath results.
+
+    result_list -- XPath result list
+    xml_dom -- XML DOM (ElementTree)
+    options -- Command-line options
+    """
     # Alle nodes -- //node()
     for node in result_list:
         # Een element inclusief comment, processing instruction (node.tag)
         if iselement(node):
-            print_node(node)
+            print_node(node, element_tree=options.element_tree)
             # Print node XPath expression
             if options.print_xpath:
                 print "\tXPath: %s" % xml_dom.getpath(node)
@@ -220,7 +223,7 @@ def print_result_list(result_list, xml_dom):
         # Een attribute, entity, text (atomic value)
         # Smart string -- .getparent()
         elif hasattr(node, "getparent"):
-            print_smart_string(node, xml_dom)
+            print_smart_string(node, xml_dom, options)
 
         # Namespaces -- namespace::
         elif isinstance(node, tuple):
@@ -276,14 +279,15 @@ def xpath_on_xml(xml_source, parser, xpath_dom, options):
         stderr.write("XPath failed\n")
         return False
     else:
-        return print_xp_result(xp_result, xml_dom)
+        return print_xp_result(xp_result, xml_dom, options)
 
 
-def print_xp_result(xp_result, xml_dom):
+def print_xp_result(xp_result, xml_dom, options):
     """Print XPath results.
 
     xp_result -- XPath result
     xml_dom -- XML DOM (ElementTree)
+    options -- Command-line options
 
     XPath return values:
         http://lxml.de/xpathxslt.html#xpath-return-values
@@ -293,13 +297,13 @@ def print_xp_result(xp_result, xml_dom):
     # Namespace URI
     #   "namespace-uri(*)"
     if isinstance(xp_result, basestring):
-        print_smart_string(xp_result, xml_dom)
+        print_smart_string(xp_result, xml_dom, options)
 
     # LIST - list - node-set
     elif isinstance(xp_result, list):
         print_result_header(xp_result)
         try:
-            print_result_list(xp_result, xml_dom)
+            print_result_list(xp_result, xml_dom, options)
         except IOError as e:
             # 'IOError: [Errno 32] Broken pipe' afvangen
             if e.errno != 32:
@@ -323,7 +327,8 @@ def print_xp_result(xp_result, xml_dom):
         print "Unknown XPath result: %s" % xp_result
 
 
-if __name__ == '__main__':
+def main():
+    """Main command line entry point."""
     # Logging to the console (TAB modules)
     setup_logger_console()
 

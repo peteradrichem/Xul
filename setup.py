@@ -19,7 +19,7 @@ setup(
     version=__version__,
 
     packages=find_packages(),
-    scripts=['validate.py', 'xpath.py'],
+    scripts=['validate.py'],
     zip_safe=False,
     install_requires=["lxml>=2.0"],
 
@@ -51,6 +51,7 @@ setup(
     entry_points={
         'console_scripts': [
             'transform = xul.cmd.transform:main',
-            'prettyprint = xul.cmd.prettyprint:main']
+            'prettyprint = xul.cmd.prettyprint:main',
+            'xp = xul.cmd.xp:main']
     }
 )
