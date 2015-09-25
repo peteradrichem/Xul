@@ -19,7 +19,6 @@ setup(
     version=__version__,
 
     packages=find_packages(),
-    scripts=['validate.py'],
     zip_safe=False,
     install_requires=["lxml>=2.0"],
 
@@ -52,6 +51,7 @@ setup(
         'console_scripts': [
             'transform = xul.cmd.transform:main',
             'prettyprint = xul.cmd.prettyprint:main',
-            'xp = xul.cmd.xp:main']
+            'xp = xul.cmd.xp:main',
+            'validate = xul.cmd.validate:main']
     }
 )

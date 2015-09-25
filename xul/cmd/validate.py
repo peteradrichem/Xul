@@ -1,4 +1,3 @@
-#!/usr/local/bin/python -t
 # coding=utf-8
 
 """Validate XML file(s) with an XSD or DTD file."""
@@ -7,11 +6,11 @@
 # Standard Python
 from optparse import OptionParser
 from sys import stderr
-#
-# Xul modules
-from xul import __version__
-from xul.log import setup_logger_console
-from xul.dom import build_etree, build_xml_schema, build_dtd
+
+# Import my own modules
+from .. import __version__
+from ..log import setup_logger_console
+from ..dom import build_etree, build_xml_schema, build_dtd
 
 
 def parse_cl():
@@ -33,7 +32,8 @@ def parse_cl():
     return parser.parse_args()
 
 
-if __name__ == '__main__':
+def main():
+    """Main command line entry point."""
     # Logging to the console (TAB modules)
     setup_logger_console()
 
