@@ -5,7 +5,7 @@
 
 # Standard Python
 from optparse import OptionParser
-from sys import stderr
+from sys import stderr, stdin
 
 # Import my own modules
 from .. import __version__
@@ -28,8 +28,30 @@ def parse_cl():
         "-d", "--dtd",
         action="store", type="string", dest="dtd_file",
         help="DTD file to validate XML file(s)")
-
     return parser.parse_args()
+
+
+def validate_xml(xml_source, validator, val_file):
+    """Validate XML source against an XSD or DTD validator.
+
+    xml_source -- XML file or file-like object
+    validator -- XMLSchema or DTD Validator
+    val_file -- Validator file (XSD or DTD)
+    """
+    xml_dom = build_etree(xml_source)
+    if xml_dom:
+        if hasattr(xml_source, "name"):
+            name = xml_source.name
+        else:
+            name = xml_source
+        if validator.validate(xml_dom):
+            print "'%s' validates against '%s'" % (name, val_file)
+        else:
+            stderr.write(
+                "'%s' does not validate against '%s':\n" % (name, val_file))
+            for e in validator.error_log:
+                stderr.write(
+                    "\tline %i, column %i: %s\n" % (e.line, e.column, e.message))
 
 
 def main():
@@ -62,19 +84,9 @@ def main():
         exit(105)
 
     # Validate XML files
-    if not xml_files:
-        stderr.write("Valid %s file '%s'\n" % (val_type, val_file))
-        stderr.write("No XML file(s) to operate on\n")
-        exit(0)
     for xml_f in xml_files:
-        xml_tree = build_etree(xml_f)
-        if xml_tree:
-            if validator.validate(xml_tree):
-                print "XML file '%s' validates against '%s'" % (xml_f, val_file)
-            else:
-                stderr.write(
-                    "XML file '%s' does not validate against '%s':\n" %
-                    (xml_f, val_file))
-                for e in validator.error_log:
-                    stderr.write(
-                        "\tline %i, column %i: %s\n" % (e.line, e.column, e.message))
+        validate_xml(xml_f, validator, val_file)
+
+    # Read from standard input when no XML files are specified
+    if not xml_files:
+        validate_xml(stdin, validator, val_file)
