@@ -34,7 +34,7 @@ def parse_cl():
 
 def main():
     """Main command line entry point."""
-    # Logging to the console (TAB modules)
+    # Logging to the console
     setup_logger_console()
 
     # Command-line
@@ -67,10 +67,8 @@ def main():
         stderr.write("No XML file(s) to operate on\n")
         exit(0)
     for xml_f in xml_files:
-        # Opm: build_etree rapporteert XML fouten in xml_f
         xml_tree = build_etree(xml_f)
         if xml_tree:
-            # Probeer de ElementTree te valideren
             if validator.validate(xml_tree):
                 print "XML file '%s' validates against '%s'" % (xml_f, val_file)
             else:

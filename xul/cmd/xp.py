@@ -329,7 +329,7 @@ def print_xp_result(xp_result, xml_dom, options):
 
 def main():
     """Main command line entry point."""
-    # Logging to the console (TAB modules)
+    # Logging to the console
     setup_logger_console()
 
     # Command-line
