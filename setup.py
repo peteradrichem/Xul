@@ -50,7 +50,7 @@ setup(
     entry_points={
         'console_scripts': [
             'transform = xul.cmd.transform:main',
-            'prettyprint = xul.cmd.prettyprint:main',
+            'ppx = xul.cmd.ppx:main',
             'xp = xul.cmd.xp:main',
             'validate = xul.cmd.validate:main']
     }
