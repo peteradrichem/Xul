@@ -253,7 +253,7 @@ def print_result_list(result_list, xml_dom, options):
             print node
 
 
-def print_result_header(list_result, line_with_xpath):
+def print_result_header(list_result):
     """Print header for list of XPath results."""
     xp_r_len = len(list_result)
     if xp_r_len == 0:
@@ -262,30 +262,36 @@ def print_result_header(list_result, line_with_xpath):
         if isinstance(list_result[0], tuple):
             print "Namespace result:"
         else:
-            if line_with_xpath:
-                print "1 result"
-            else:
-                print "1 result on line:"
+            print "1 result"
     else:
         if isinstance(list_result[0], tuple):
             print "%d namespace results:" % xp_r_len
         else:
-            if line_with_xpath:
-                print "%d results" % xp_r_len
-            else:
-                print "%d results on lines:" % xp_r_len
+            print "%d results" % xp_r_len
 
 
-def print_xp_result(xp_result, xml_dom, options):
+def print_xp_result(xp_result, xml_dom, ns_map, options):
     """Print XPath results.
 
     xp_result -- XPath result
     xml_dom -- XML DOM (ElementTree)
+    ns_map -- XML namespaces (xmlns) 'prefix: URI' dict
     options -- Command-line options
+
+    Prints:
+     * result header (multiple results)
+     * XML namespaces (if there are any)
+     * XPath result(s)
 
     XPath return values:
         http://lxml.de/xpathxslt.html#xpath-return-values
     """
+    if isinstance(xp_result, list):
+        print_result_header(xp_result)
+    else:
+        print "1 result"
+    print_xmlns(ns_map, xml_dom.getroot())
+
     # STRING - string (basestring) - smart string
     #   "string(/voorspellingen/@startdatum)"
     # Namespace URI
@@ -295,7 +301,6 @@ def print_xp_result(xp_result, xml_dom, options):
 
     # LIST - list - node-set
     elif isinstance(xp_result, list):
-        print_result_header(xp_result, options.print_xpath)
         try:
             print_result_list(xp_result, xml_dom, options)
         except IOError as e:
@@ -339,14 +344,13 @@ def xpath_on_xml(xml_source, parser, xpath_dom, options):
 
     # XML namespaces
     ns_map = dom_namespaces(xml_dom, options.exslt, options.default_ns_prefix)
-    print_xmlns(ns_map, xml_dom.getroot())
     # Use XPath expression on XML DOM
     xp_result = xpath_dom(xml_dom, options.xpath_exp, ns_map)
     if xp_result is None:
         stderr.write("XPath failed\n")
         return False
     else:
-        return print_xp_result(xp_result, xml_dom, options)
+        return print_xp_result(xp_result, xml_dom, ns_map, options)
 
 
 def main():
@@ -357,7 +361,7 @@ def main():
     # Command-line
     (options, xml_files) = parse_cl()
 
-    # XPath expression
+    # Check XPath expression
     if options.xpath_exp:
         if build_xpath(options.xpath_exp):
             print "XPath: %s" % options.xpath_exp
@@ -380,9 +384,13 @@ def main():
 
     # Use XPath on XML files
     for xml_f in xml_files:
-        print "\nFile: %s" % xml_f
+        print "\nFile: %s," % xml_f,
         xpath_on_xml(xml_f, xml_parser, xpath_dom, options)
 
     # Read from standard input when no XML files are specified
     if not xml_files:
-        xpath_on_xml(stdin, xml_parser, xpath_dom, options)
+        if not stdin.isatty():
+            print "\n<stdin>,",
+            xpath_on_xml(stdin, xml_parser, xpath_dom, options)
+        else:
+            stderr.write("XML not found\n")
