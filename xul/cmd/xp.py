@@ -276,34 +276,6 @@ def print_result_header(list_result, line_with_xpath):
                 print "%d results on lines:" % xp_r_len
 
 
-def xpath_on_xml(xml_source, parser, xpath_dom, options):
-    """Apply XPath expression to XML source.
-
-    xml_source -- XML file or file-like object
-    parser -- XML parser (lxml.etree.XMLParser)
-    xpath_dom -- ElementTree.xpath method or XPath class
-    options -- Command-line options
-    """
-    # XML DOM Node Tree (ElementTree)
-    xml_dom = build_etree(
-        xml_source,
-        parser=parser,
-        lenient=False)
-    if xml_dom is None:
-        return False
-
-    # XML namespaces
-    ns_map = dom_namespaces(xml_dom, options.exslt, options.default_ns_prefix)
-    print_xmlns(ns_map, xml_dom.getroot())
-    # Use XPath expression on XML DOM
-    xp_result = xpath_dom(xml_dom, options.xpath_exp, ns_map)
-    if xp_result is None:
-        stderr.write("XPath failed\n")
-        return False
-    else:
-        return print_xp_result(xp_result, xml_dom, options)
-
-
 def print_xp_result(xp_result, xml_dom, options):
     """Print XPath results.
 
@@ -347,6 +319,34 @@ def print_xp_result(xp_result, xml_dom, options):
         print "XPath test: %s" % xp_result
     else:
         print "Unknown XPath result: %s" % xp_result
+
+
+def xpath_on_xml(xml_source, parser, xpath_dom, options):
+    """Apply XPath expression to XML source.
+
+    xml_source -- XML file or file-like object
+    parser -- XML parser (lxml.etree.XMLParser)
+    xpath_dom -- ElementTree.xpath method or XPath class
+    options -- Command-line options
+    """
+    # XML DOM Node Tree (ElementTree)
+    xml_dom = build_etree(
+        xml_source,
+        parser=parser,
+        lenient=False)
+    if xml_dom is None:
+        return False
+
+    # XML namespaces
+    ns_map = dom_namespaces(xml_dom, options.exslt, options.default_ns_prefix)
+    print_xmlns(ns_map, xml_dom.getroot())
+    # Use XPath expression on XML DOM
+    xp_result = xpath_dom(xml_dom, options.xpath_exp, ns_map)
+    if xp_result is None:
+        stderr.write("XPath failed\n")
+        return False
+    else:
+        return print_xp_result(xp_result, xml_dom, options)
 
 
 def main():
