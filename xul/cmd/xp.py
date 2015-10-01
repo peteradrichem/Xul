@@ -121,17 +121,25 @@ def node_repr(node):
         return "<%s> is empty" % node.tag
 
 
-def print_node(node, element_tree=False):
+def print_node(node, element_tree=False, xpath_exp=None):
     """Print node (UTF-8 encoded).
 
-    If element_tree is True use prettyprint() to print the whole
-    element tree. Else, use node_repr().
+    element_tree -- True: use prettyprint() to print the whole element tree.
+                    False: use node_repr().
+    xpath_exp -- print XPath expression (optional)
     """
     if element_tree:
-        print "line %d:" % node.sourceline
+        if xpath_exp:
+            print "line %d, XPath %s" % (node.sourceline, xpath_exp)
+        else:
+            print "line %d:" % node.sourceline
         prettyprint(node, xml_declaration=False)
     else:
-        print "%d:\t%s" % (node.sourceline, node_repr(node))
+        if xpath_exp:
+            print "line %d, XPath %s" % (node.sourceline, xpath_exp)
+            print "\t%s" % node_repr(node)
+        else:
+            print "%d:\t%s" % (node.sourceline, node_repr(node))
 
 
 def smart_with_parent(smart_string):
@@ -179,7 +187,7 @@ def print_smart_string(smart_string, xml_dom, options):
     xml_dom -- XML DOM (ElementTree)
     options -- Command-line options
     """
-    # XPath result parent element
+    # Parent element
     par_el = smart_string.getparent()
     # string() and concat() results do not have an origin
     if par_el is None:
@@ -192,16 +200,20 @@ def print_smart_string(smart_string, xml_dom, options):
     else:
         par_el_str = "<%s>" % par_el.tag
 
+    # Print 'smart' string
     smart_repr, parent_rel = smart_with_parent(smart_string)
     if smart_repr:
-        print "%d:\t%s %s %s" % (par_el.sourceline, smart_repr, parent_rel, par_el_str)
+        # Print the absolute XPath expression of the parent element
+        if options.print_xpath:
+            print "line %d, parent XPath %s" % (
+                par_el.sourceline, xml_dom.getpath(par_el))
+            print "\t%s %s %s" % (smart_repr, parent_rel, par_el_str)
+        else:
+            print "%d:\t%s %s %s" % (
+                par_el.sourceline, smart_repr, parent_rel, par_el_str)
     else:
         print "**smart string DEBUG fallback**"
         print_node(par_el, element_tree=options.element_tree)
-
-    # Print parent element XPath expression
-    if options.print_xpath:
-        print "\tParent XPath: %s" % xml_dom.getpath(par_el)
 
 
 def print_result_list(result_list, xml_dom, options):
@@ -215,10 +227,14 @@ def print_result_list(result_list, xml_dom, options):
     for node in result_list:
         # Een element inclusief comment, processing instruction (node.tag)
         if iselement(node):
-            print_node(node, element_tree=options.element_tree)
-            # Print node XPath expression
+            # Print the absolute XPath expression of the result element
             if options.print_xpath:
-                print "\tXPath: %s" % xml_dom.getpath(node)
+                print_node(
+                    node,
+                    element_tree=options.element_tree,
+                    xpath_exp=xml_dom.getpath(node))
+            else:
+                print_node(node, element_tree=options.element_tree)
 
         # Een attribute, entity, text (atomic value)
         # Smart string -- .getparent()
@@ -237,7 +253,7 @@ def print_result_list(result_list, xml_dom, options):
             print node
 
 
-def print_result_header(list_result):
+def print_result_header(list_result, line_with_xpath):
     """Print header for list of XPath results."""
     xp_r_len = len(list_result)
     if xp_r_len == 0:
@@ -246,12 +262,18 @@ def print_result_header(list_result):
         if isinstance(list_result[0], tuple):
             print "Namespace result:"
         else:
-            print "1 result on line:"
+            if line_with_xpath:
+                print "1 result"
+            else:
+                print "1 result on line:"
     else:
         if isinstance(list_result[0], tuple):
             print "%d namespace results:" % xp_r_len
         else:
-            print "%d results on lines:" % xp_r_len
+            if line_with_xpath:
+                print "%d results" % xp_r_len
+            else:
+                print "%d results on lines:" % xp_r_len
 
 
 def xpath_on_xml(xml_source, parser, xpath_dom, options):
@@ -301,7 +323,7 @@ def print_xp_result(xp_result, xml_dom, options):
 
     # LIST - list - node-set
     elif isinstance(xp_result, list):
-        print_result_header(xp_result)
+        print_result_header(xp_result, options.print_xpath)
         try:
             print_result_list(xp_result, xml_dom, options)
         except IOError as e:
