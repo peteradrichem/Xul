@@ -57,12 +57,12 @@ def print_xmlns(ns_map, root):
     """Print XML namespaces."""
     if root.nsmap:
         # Print {namespace URI} root tag
-        print "root tag:\t%s" % root.tag
+        print "root tag: %s" % root.tag
     if ns_map:
         # Print all XML namespaces -- prefix: namespace URI
         print "XML namespaces:"
         for key in ns_map:
-            print "\t%s: %s" % (key, ns_map[key])
+            print "%8s: %s" % (key, ns_map[key])
 
 
 def class_xpath_dom(xml_dom, xpath_exp, ns_map):
@@ -244,7 +244,7 @@ def print_result_list(result_list, xml_dom, options):
         # Namespaces -- namespace::
         elif isinstance(node, tuple):
             # Geen regel nummer
-            print "\tprefix: %s,\tURI: %s" % node
+            print "prefix: %-8s URI: %s" % node
 
         # ?
         else:
@@ -260,12 +260,12 @@ def print_result_header(list_result):
         print "no result (empy list)"
     elif xp_r_len == 1:
         if isinstance(list_result[0], tuple):
-            print "Namespace result:"
+            print "1 XML namespace result"
         else:
             print "1 result"
     else:
         if isinstance(list_result[0], tuple):
-            print "%d namespace results:" % xp_r_len
+            print "%d XML namespace results" % xp_r_len
         else:
             print "%d results" % xp_r_len
 
@@ -279,7 +279,7 @@ def print_xp_result(xp_result, xml_dom, ns_map, options):
     options -- Command-line options
 
     Prints:
-     * result header (multiple results)
+     * result header
      * XML namespaces (if there are any)
      * XPath result(s)
 
