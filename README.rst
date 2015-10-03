@@ -1,55 +1,46 @@
-XML Utilities
-=============
+Xul -- XML Utilities
+====================
 
-Python scripts for XML files.
+XML scripts in Python.
 
-Pretty print XML files in human readable form,
-transform XML files with XSL,
-validate XML files with an XSD or DTD
-or use XPath expression to select nodes in an XML file.
-
-Scripts
--------
-- prettyprint.py_: print XML files in human readable form
-- transform.py_: transform XML files with XSL
-- validate.py_: validate XML with XSD or DTD
-- xpath.py_: use XPath expression to select nodes in XML
-
-W3C
----
-- `Extensible Markup Language <http://www.w3.org/TR/xml/>`_
-- `XML Schema <http://www.w3.org/standards/xml/schema>`_
-- `XSL Transformations <http://www.w3.org/TR/xslt/>`_
-- `XML Path Language <http://www.w3.org/TR/xpath/>`_
-- `Namespaces in XML 1.0 <http://www.w3.org/TR/xml-names/>`_
+- ppx_: pretty print XML
+- xp_: use XPath on XML
+- validate_: validate XML with an XSD or DTD
+- transform_: transform XML with XSL
 
 Requirements
 ------------
-- `lxml <http://lxml.de/>`_
-- `Pygments <http://pygments.org/>`_ (optional)
+
+Xul uses the excellent `lxml <http://lxml.de/>`_ XML toolkit.
+And `Pygments <http://pygments.org/>`_ for XML syntax highlighting (optional).
+
 
 Installation
 ------------
-**pip**
+
+Install the Xul scripts with **pip**:
 
 .. code:: tcsh
 
         pip install hg+https://bitbucket.org/peteradrichem/xul
 
 
-.. _prettyprint.py:
+.. _ppx:
 
-Pretty print
-------------
+ppx
+---
+
+Pretty print XML in human readable form.
+
 .. code:: tcsh
 
-        % prettyprint.py --help
+        ppx --help
 
 .. code::
 
-        Usage:  prettyprint.py [-n] xml_file_1 ... xml_file_n
+        Usage:  ppx [-n] xml_file_1 ... xml_file_n
 
-        Pretty print XML files.
+        Pretty Print XML.
 
         Options:
           --version       show program's version number and exit
@@ -57,62 +48,20 @@ Pretty print
           -n, --no-color  disable colored output
 
 
-.. _transform.py:
+.. _xp:
 
-Transform
----------
+xp
+--
+
+Use XPath expression to select nodes or node-sets in an XML document.
+
 .. code:: tcsh
 
-        % transform.py --help
+        xp --help
 
 .. code::
 
-        Usage: transform.py -x xslt_file xml_file ...
-
-        Transform XML file(s) with an XSL file.
-
-        Options:
-          --version             show program's version number and exit
-          -h, --help            show this help message and exit
-          -x XSL_FILE, --xsl=XSL_FILE
-                                XSL file to transform XML file(s)
-
-
-.. _validate.py:
-
-Validate
---------
-.. code:: tcsh
-
-        % validate.py --help
-
-.. code::
-
-        Usage:  validate.py -x xsd_file xml_file_1 ... xml_file_n
-                validate.py -d dtd_file xml_file_1 ... xml_file_n
-
-        Validate XML file(s) with an XSD or DTD file.
-
-        Options:
-          --version             show program's version number and exit
-          -h, --help            show this help message and exit
-          -x XSD_FILE, --xsd=XSD_FILE
-                                XSD file to validate XML file(s)
-          -d DTD_FILE, --dtd=DTD_FILE
-                                DTD file to validate XML file(s)
-
-
-.. _xpath.py:
-
-XPath
------
-.. code:: tcsh
-
-        % xpath.py --help
-
-.. code::
-
-        Usage: xpath.py [options] -x xpath xml_file_1 ... xml_file_n
+        Usage: xp [options] -x xpath xml_file_1 ... xml_file_n
 
         Use XPath expression to select nodes in XML file(s).
 
@@ -129,3 +78,66 @@ XPath
                                 element
           -t, --element-tree    print the XML tree of a result element
           -m, --method          use ElementTree.xpath method instead of XPath class
+
+
+.. _validate:
+
+validate
+--------
+
+Validate XML with an XSD or DTD.
+
+.. code:: tcsh
+
+        validate --help
+
+.. code::
+
+        Usage:  validate -x xsd_file xml_file_1 ... xml_file_n
+                validate -d dtd_file xml_file_1 ... xml_file_n
+
+        Validate XML file(s) with an XSD or DTD file.
+
+        Options:
+          --version             show program's version number and exit
+          -h, --help            show this help message and exit
+          -x XSD_FILE, --xsd=XSD_FILE
+                                XSD file to validate XML file(s)
+          -d DTD_FILE, --dtd=DTD_FILE
+                                DTD file to validate XML file(s)
+
+
+.. _transform:
+
+transform
+---------
+
+Transform XML with XSL.
+
+.. code:: tcsh
+
+        transform --help
+
+.. code::
+
+        Usage: transform -x xslt_file xml_file ...
+
+        Transform XML file(s) with an XSL file.
+
+        Options:
+          --version             show program's version number and exit
+          -h, --help            show this help message and exit
+          -x XSL_FILE, --xsl=XSL_FILE
+                                XSL file to transform XML file(s)
+
+
+W3C
+---
+
+W3C XML links:
+
+- `Extensible Markup Language <http://www.w3.org/TR/xml/>`_
+- `XML Schema <http://www.w3.org/standards/xml/schema>`_
+- `XSL Transformations <http://www.w3.org/TR/xslt/>`_
+- `XML Path Language <http://www.w3.org/TR/xpath/>`_
+- `Namespaces in XML 1.0 <http://www.w3.org/TR/xml-names/>`_
