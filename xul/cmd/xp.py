@@ -137,9 +137,9 @@ def print_node(node, element_tree=False, xpath_exp=None):
     else:
         if xpath_exp:
             print "line %d, XPath %s" % (node.sourceline, xpath_exp)
-            print "\t%s" % node_repr(node)
+            print "   %s" % node_repr(node)
         else:
-            print "%d:\t%s" % (node.sourceline, node_repr(node))
+            print "line %4d:   %s" % (node.sourceline, node_repr(node))
 
 
 def smart_with_parent(smart_string):
@@ -207,9 +207,9 @@ def print_smart_string(smart_string, xml_dom, options):
         if options.print_xpath:
             print "line %d, parent XPath %s" % (
                 par_el.sourceline, xml_dom.getpath(par_el))
-            print "\t%s %s %s" % (smart_repr, parent_rel, par_el_str)
+            print "   %s %s %s" % (smart_repr, parent_rel, par_el_str)
         else:
-            print "%d:\t%s %s %s" % (
+            print "line %4d:   %s %s %s" % (
                 par_el.sourceline, smart_repr, parent_rel, par_el_str)
     else:
         print "**smart string DEBUG fallback**"
@@ -286,10 +286,6 @@ def print_xp_result(xp_result, xml_dom, ns_map, options):
     XPath return values:
         http://lxml.de/xpathxslt.html#xpath-return-values
     """
-    if isinstance(xp_result, list):
-        print_result_header(xp_result)
-    else:
-        print "1 result"
     print_xmlns(ns_map, xml_dom.getroot())
 
     # STRING - string (basestring) - smart string
@@ -350,6 +346,10 @@ def xpath_on_xml(xml_source, parser, xpath_dom, options):
         stderr.write("XPath failed\n")
         return False
     else:
+        if isinstance(xp_result, list):
+            print_result_header(xp_result)
+        else:
+            print "1 result"
         return print_xp_result(xp_result, xml_dom, ns_map, options)
 
 
