@@ -16,7 +16,7 @@ from .dom import build_etree
 
 __all__ = ['prettyprint', 'pp_xml']
 
-def _private_pp(etree, color=True, xml_declaration=True):
+def _private_pp(etree, color=True, xml_declaration=None):
     """Pretty print XML ElementTree in (optional) color.
 
     http://lxml.de/api.html#serialisation
@@ -42,13 +42,13 @@ try:
     from pygments import highlight
 except ImportError:
     # pylint: disable=unused-argument
-    def prettyprint(etree, color=False, xml_declaration=True):
+    def prettyprint(etree, color=False, xml_declaration=None):
         """Plain pretty print XML ElementTree (without color)."""
         return _private_pp(etree, color=False, xml_declaration=xml_declaration)
 else:
     lexer = get_lexer_by_name('xml', encoding='utf-8')
     formatter = Terminal256Formatter(encoding='utf-8', nobold=True)
-    def prettyprint(etree, color=True, xml_declaration=True):
+    def prettyprint(etree, color=True, xml_declaration=None):
         """Pretty print XML ElementTree in (optional) color."""
         return _private_pp(etree, color=color, xml_declaration=xml_declaration)
 
