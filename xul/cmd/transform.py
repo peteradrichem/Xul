@@ -67,10 +67,13 @@ def main():
     # Initialise XML parser
     parser = XMLParser()
 
-    # Transform XML files with XSL
+    # Transform XML sources with XSL
     for xml_f in xml_files:
         print_xslt(xml_f, transformer, parser)
 
-    # Read from standard input when no XML files are specified
     if not xml_files:
-        print_xslt(stdin, transformer, parser)
+        # Read from a pipe when no XML is specified
+        if not stdin.isatty():
+            print_xslt(stdin, transformer, parser)
+        else:
+            stderr.write("Error: no XML is given\n")

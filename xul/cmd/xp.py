@@ -382,15 +382,15 @@ def main():
     xml_parser = XMLParser()
 
 
-    # Use XPath on XML files
+    # Use XPath on XML files and URLs
     for xml_f in xml_files:
-        print "\nFile: %s," % xml_f,
+        print "\nSource: %s," % xml_f,
         xpath_on_xml(xml_f, xml_parser, xpath_dom, options)
 
-    # Read from standard input when no XML files are specified
     if not xml_files:
+        # Read from a pipe when no XML is specified
         if not stdin.isatty():
             print "\n<stdin>,",
             xpath_on_xml(stdin, xml_parser, xpath_dom, options)
         else:
-            stderr.write("XML not found\n")
+            stderr.write("Error: no XML is given\n")

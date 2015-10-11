@@ -50,4 +50,4 @@ def main():
         if not stdin.isatty():
             pp_xml(stdin, parser=parser, color=options.color)
         else:
-            stderr.write("Need XML to Pretty Print\n")
+            stderr.write("Error: no XML is given\n")

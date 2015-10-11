@@ -79,14 +79,16 @@ def main():
         stderr.write('No XSD or DTD file specified\n')
         exit(105)
     elif not validator:
-        # Warnings via build_xml_schema of build_dtd
         stderr.write('Invalid %s file specified\n' % val_type)
         exit(105)
 
-    # Validate XML files
+    # Validate XML files and URLs
     for xml_f in xml_files:
         validate_xml(xml_f, validator, val_file)
 
-    # Read from standard input when no XML files are specified
     if not xml_files:
-        validate_xml(stdin, validator, val_file)
+        # Read from a pipe when no XML is specified
+        if not stdin.isatty():
+            validate_xml(stdin, validator, val_file)
+        else:
+            stderr.write("Error: no XML is given\n")
