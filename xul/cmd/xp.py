@@ -343,9 +343,12 @@ def xpath_on_xml(xml_source, parser, xpath_dom, options):
     # Use XPath expression on XML DOM
     xp_result = xpath_dom(xml_dom, options.xpath_exp, ns_map)
     if xp_result is None:
-        stderr.write("XPath failed\n")
         return False
     else:
+        if xml_source is stdin:
+            print "<stdin>,",
+        else:
+            print "Source: %s," % xml_source,
         if isinstance(xp_result, list):
             print_result_header(xp_result)
         else:
@@ -364,7 +367,7 @@ def main():
     # Check XPath expression
     if options.xpath_exp:
         if build_xpath(options.xpath_exp):
-            print "XPath: %s" % options.xpath_exp
+            print "XPath: %s\n" % options.xpath_exp
         else:
             exit(60)
     else:
@@ -384,13 +387,11 @@ def main():
 
     # Use XPath on XML files and URLs
     for xml_f in xml_files:
-        print "\nSource: %s," % xml_f,
         xpath_on_xml(xml_f, xml_parser, xpath_dom, options)
 
     if not xml_files:
         # Read from a pipe when no XML is specified
         if not stdin.isatty():
-            print "\n<stdin>,",
             xpath_on_xml(stdin, xml_parser, xpath_dom, options)
         else:
-            stderr.write("Error: no XML is given\n")
+            stderr.write("Error: no XML source is given\n")
