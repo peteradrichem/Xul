@@ -2,8 +2,12 @@
 
 """XML Utilities.
 
-lxml - XML and HTML with Python
-    http://lxml.de/
+XML scripts in Python.
+
+ * ppx: pretty print XML
+ * xp: use XPath on XML
+ * validate: validate XML with an XSD or DTD
+ * transform: transform XML with XSL
 """
 
 
