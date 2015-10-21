@@ -382,7 +382,11 @@ def main():
         xpath_dom = class_xpath_dom
 
     # Initialise XML parser
-    xml_parser = XMLParser()
+    if options.element_tree:
+        # Element tree pretty print preparation
+        xml_parser = XMLParser(remove_blank_text=True)
+    else:
+        xml_parser = XMLParser()
 
 
     # Use XPath on XML files and URLs
