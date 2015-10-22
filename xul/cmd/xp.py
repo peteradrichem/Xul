@@ -1,6 +1,6 @@
 # coding=utf-8
 
-"""Use XPath expression to select nodes in XML file(s)."""
+"""Use XPath expression to select nodes in XML source(s)."""
 
 
 # Standard Python
@@ -20,9 +20,9 @@ from ..ppxml import prettyprint
 
 
 def parse_cl():
-    """Parse the command-line for options and XML files."""
+    """Parse the command-line for options and XML sources."""
     parser = OptionParser(
-        usage="%prog [options] -x xpath xml_file_1 ... xml_file_n",
+        usage="%prog [options] -x xpath xml_source_1 ... xml_source_n",
         description=__doc__,
         version="%prog " + __version__)
     parser.add_option(
@@ -325,7 +325,7 @@ def print_xp_result(xp_result, xml_dom, ns_map, options):
 def xpath_on_xml(xml_source, parser, xpath_dom, options):
     """Apply XPath expression to XML source.
 
-    xml_source -- XML file or file-like object
+    xml_source -- XML file, file-like object or URL
     parser -- XML parser (lxml.etree.XMLParser)
     xpath_dom -- ElementTree.xpath method or XPath class
     options -- Command-line options
@@ -362,7 +362,7 @@ def main():
     setup_logger_console()
 
     # Command-line
-    (options, xml_files) = parse_cl()
+    (options, xml_sources) = parse_cl()
 
     # Check XPath expression
     if options.xpath_exp:
@@ -389,11 +389,11 @@ def main():
         xml_parser = XMLParser()
 
 
-    # Use XPath on XML files and URLs
-    for xml_f in xml_files:
+    # Use XPath on XML sources
+    for xml_f in xml_sources:
         xpath_on_xml(xml_f, xml_parser, xpath_dom, options)
 
-    if not xml_files:
+    if not xml_sources:
         # Read from a pipe when no XML is specified
         if not stdin.isatty():
             xpath_on_xml(stdin, xml_parser, xpath_dom, options)
