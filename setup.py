@@ -1,12 +1,12 @@
 # coding=utf-8
 
-"""Setup script for building XML scripts."""
+"""Setup script for building XML Utilities."""
 
+from setuptools import setup, find_packages
+from xul import __version__
 
 import codecs
 from os import path
-from setuptools import setup
-
 here = path.abspath(path.dirname(__file__))
 
 def long_description():
@@ -15,20 +15,15 @@ def long_description():
         return f.read()
 
 setup(
-    name="XML_scripts",
-    version="2.0.0",
-    description="XML (XPath, XSD, XSLT) scripts",
+    name="Xul",
+    version=__version__,
+
+    packages=find_packages(),
+    zip_safe=False,
+    install_requires=["lxml>=2.0"],
+
     author='Peter Adrichem',
     author_email='Peter.Adrichem@gmail.com',
-    url='http://docu.npoict.nl/applicatiebeheer/documentatie/xml_scripts',
-
-    scripts=['prettyprint.py', 'transform.py', 'validate.py', 'xpath.py'],
-    zip_safe=False,
-    install_requires=[
-        "TAB>=0.9.19",
-        "lxml>=2.0"
-    ],
-
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
@@ -44,10 +39,19 @@ setup(
         'Topic :: Text Processing :: Markup :: XML',
         'Topic :: Utilities'
     ],
+    description="XML (XPath, XSD, XSLT) Utilities",
     keywords='xml xpath xslt xsd dtd',
     license='MIT',
-    platforms='CPython',
     long_description=long_description(),
-    download_url='https://bitbucket.org/peteradrichem/xml-scripts',
-    bugtrack_url='https://bitbucket.org/peteradrichem/xml-scripts/issues'
+    platforms='CPython',
+    url='https://bitbucket.org/peteradrichem/xul',
+    download_url='https://bitbucket.org/peteradrichem/xul',
+    bugtrack_url='https://bitbucket.org/peteradrichem/xul/issues',
+    entry_points={
+        'console_scripts': [
+            'transform = xul.cmd.transform:main',
+            'ppx = xul.cmd.ppx:main',
+            'xp = xul.cmd.xp:main',
+            'validate = xul.cmd.validate:main']
+    }
 )

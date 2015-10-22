@@ -1,55 +1,46 @@
-XML scripts
-===========
+Xul -- XML Utilities
+====================
 
-Python scripts for XML files.
+XML scripts in Python.
 
-Pretty print XML files in human readable form,
-transform XML files with XSL,
-validate XML files with a XSD or DTD
-or use XPath expression to select nodes in a XML file.
-
-Scripts
--------
-- prettyprint.py_: print XML files in human readable form
-- transform.py_: transform XML files with XSL
-- validate.py_: validate XML with XSD or DTD
-- xpath.py_: use XPath expression to select nodes in XML
-
-W3C
----
-- `Extensible Markup Language <http://www.w3.org/TR/xml/>`_
-- `XML Schema <http://www.w3.org/standards/xml/schema>`_
-- `XSL Transformations <http://www.w3.org/TR/xslt/>`_
-- `XML Path Language <http://www.w3.org/TR/xpath/>`_
+- ppx_: pretty print XML
+- xp_: use XPath on XML
+- validate_: validate XML with an XSD or DTD
+- transform_: transform XML with XSL
 
 Requirements
 ------------
-- `lxml <http://lxml.de/>`_
-- `TAB <https://bitbucket.org/peteradrichem/tab>`_
-- `Pygments <http://pygments.org/>`_ (optional)
+
+Xul uses the excellent `lxml <http://lxml.de/>`_ XML toolkit.
+And `Pygments <http://pygments.org/>`_ for XML syntax highlighting (optional).
+
 
 Installation
 ------------
-**pip**
+
+Install the Xul scripts with **pip**:
 
 .. code:: tcsh
 
-        pip install hg+https://bitbucket.org/peteradrichem/xml-scripts
+        pip install hg+https://bitbucket.org/peteradrichem/xul
 
 
-.. _prettyprint.py:
+.. _ppx:
 
-Pretty print
-------------
+ppx
+---
+
+Pretty print XML in human readable form.
+
 .. code:: tcsh
 
-        % prettyprint.py --help
+        ppx --help
 
 .. code::
 
-        Usage:  prettyprint.py [-n] xml_file_1 ... xml_file_n
+        Usage:  ppx [-n] xml_file_1 ... xml_file_n
 
-        Pretty print XML files
+        Pretty Print XML.
 
         Options:
           --version       show program's version number and exit
@@ -57,41 +48,55 @@ Pretty print
           -n, --no-color  disable colored output
 
 
-.. _transform.py:
+.. _xp:
 
-Transform
----------
+xp
+--
+
+Use XPath expression to select nodes or node-sets in an XML document.
+
 .. code:: tcsh
 
-        % transform.py --help
+        xp --help
 
 .. code::
 
-        Usage: transform.py -x xslt_file xml_file ...
+        Usage: xp [options] -x xpath xml_file_1 ... xml_file_n
 
-        Transform XML file(s) with XSLT file
+        Use XPath expression to select nodes in XML file(s).
 
         Options:
           --version             show program's version number and exit
           -h, --help            show this help message and exit
-          -x XSLT_FILE, --xslt=XSLT_FILE
-                                XSLT file to transform XML file(s)
+          -x XPATH_EXP, --xpath=XPATH_EXP
+                                XML Path Language (XPath) expression
+          -e, --exslt           add EXSLT XML namespace prefixes
+          -d DEFAULT_NS_PREFIX, --default-prefix=DEFAULT_NS_PREFIX
+                                set the prefix for the default namespace in XPath
+                                [default: 'd']
+          -p, --print-xpath     print the absolute XPath of a result (or parent)
+                                element
+          -t, --element-tree    print the XML tree of a result element
+          -m, --method          use ElementTree.xpath method instead of XPath class
 
 
-.. _validate.py:
+.. _validate:
 
-Validate
+validate
 --------
+
+Validate XML with an XSD or DTD.
+
 .. code:: tcsh
 
-        % validate.py --help
+        validate --help
 
 .. code::
 
-        Usage:  validate.py -x xsd_file xml_file_1 ... xml_file_n
-                validate.py -d dtd_file xml_file_1 ... xml_file_n
+        Usage:  validate -x xsd_file xml_file_1 ... xml_file_n
+                validate -d dtd_file xml_file_1 ... xml_file_n
 
-        Validate XML files with a XSD or DTD file
+        Validate XML file(s) with an XSD or DTD file.
 
         Options:
           --version             show program's version number and exit
@@ -102,27 +107,37 @@ Validate
                                 DTD file to validate XML file(s)
 
 
-.. _xpath.py:
+.. _transform:
 
-XPath
------
+transform
+---------
+
+Transform XML with XSL.
+
 .. code:: tcsh
 
-        % xpath.py --help
+        transform --help
 
 .. code::
 
-        Usage: xpath.py [options] -x xpath xml_file_1 ... xml_file_n
+        Usage: transform -x xslt_file xml_file ...
 
-        Use XPath expression to select nodes in XML file(s).
+        Transform XML file(s) with an XSL file.
 
         Options:
           --version             show program's version number and exit
           -h, --help            show this help message and exit
-          -x XPATH_EXP, --xpath=XPATH_EXP
-                                XPath expression
-          -n, --namespace       enable XML namespace prefixes
-          -p, --print-xpath     print the absolute XPath of a result (or parent)
-                                element
-          -e, --element-tree    print the XML tree of a result element
-          -m, --method          use ElementTree.xpath method instead of XPath class
+          -x XSL_FILE, --xsl=XSL_FILE
+                                XSL file to transform XML file(s)
+
+
+W3C
+---
+
+W3C XML links:
+
+- `Extensible Markup Language <http://www.w3.org/TR/xml/>`_
+- `XML Schema <http://www.w3.org/standards/xml/schema>`_
+- `XSL Transformations <http://www.w3.org/TR/xslt/>`_
+- `XML Path Language <http://www.w3.org/TR/xpath/>`_
+- `Namespaces in XML 1.0 <http://www.w3.org/TR/xml-names/>`_
