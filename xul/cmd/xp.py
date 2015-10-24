@@ -1,6 +1,6 @@
 # coding=utf-8
 
-"""Use XPath expression to select nodes in XML source(s)."""
+"""Use XPath expression to select nodes in XML source."""
 
 
 # Standard Python
@@ -22,7 +22,7 @@ from ..ppxml import prettyprint
 def parse_cl():
     """Parse the command-line for options and XML sources."""
     parser = OptionParser(
-        usage="%prog [options] -x xpath xml_source_1 ... xml_source_n",
+        usage="\t%prog [options] -x xpath xml_source_1 ... xml_source_n",
         description=__doc__,
         version="%prog " + __version__)
     parser.add_option(
@@ -390,11 +390,11 @@ def main():
 
 
     # Use XPath on XML sources
-    for xml_f in xml_sources:
-        xpath_on_xml(xml_f, xml_parser, xpath_dom, options)
+    for xml_s in xml_sources:
+        xpath_on_xml(xml_s, xml_parser, xpath_dom, options)
 
     if not xml_sources:
-        # Read from a pipe when no XML is specified
+        # Read from a pipe when no XML source is specified
         if not stdin.isatty():
             xpath_on_xml(stdin, xml_parser, xpath_dom, options)
         else:
