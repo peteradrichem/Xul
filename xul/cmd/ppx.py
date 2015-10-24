@@ -1,6 +1,6 @@
 # coding=utf-8
 
-"""Pretty Print XML."""
+"""Pretty Print XML source in human readable form."""
 
 
 # Standard Python
@@ -18,15 +18,15 @@ from ..ppxml import pp_xml
 
 
 def parse_cl():
-    """Parse the command-line for options and XML."""
-    cl_parser = OptionParser(
-        usage="\t%prog [-n] xml_file_1 ... xml_file_n",
+    """Parse the command-line for options and XML sources."""
+    parser = OptionParser(
+        usage="\t%prog [-n] xml_source_1 ... xml_source_n",
         description=__doc__,
         version="%prog " + __version__)
-    cl_parser.add_option(
+    parser.add_option(
         "-n", "--no-color", action="store_false", default=True,
         dest="color", help="disable colored output")
-    return cl_parser.parse_args()
+    return parser.parse_args()
 
 
 def main():
@@ -35,19 +35,19 @@ def main():
     setup_logger_console()
 
     # Command-line
-    (options, xml_files) = parse_cl()
+    (options, xml_sources) = parse_cl()
 
     # Initialise XML parser and remove blank text for 'pretty_print' formatting
     #   http://lxml.de/FAQ.html#parsing-and-serialisation
     parser = XMLParser(remove_blank_text=True)
 
-    # Pretty print XML files and URLs
-    for xml_f in xml_files:
-        pp_xml(xml_f, parser=parser, color=options.color)
+    # Pretty print XML sources
+    for xml_s in xml_sources:
+        pp_xml(xml_s, parser=parser, color=options.color)
 
-    if not xml_files:
-        # Read from a pipe when no XML is specified
+    if not xml_sources:
+        # Read from a pipe when no XML source is specified
         if not stdin.isatty():
             pp_xml(stdin, parser=parser, color=options.color)
         else:
-            stderr.write("Error: no XML is given\n")
+            stderr.write("Error: no XML source is given\n")

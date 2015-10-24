@@ -56,7 +56,7 @@ else:
 def pp_xml(xml_source, parser=None, color=True):
     """Pretty print an XML file.
 
-    xml_source -- XML file or file-like object
+    xml_source -- XML file, file-like object or URL
     parser -- (optional) XML parser (lxml.etree.XMLParser)
     color -- pretty print in color (or not)
     """

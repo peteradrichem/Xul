@@ -28,7 +28,7 @@ logger = getLogger(__name__)
 def build_etree(xml_source, parser=None, lenient=True):
     """Parse XML source into an XML Document Object Model (ElementTree).
 
-    xml_source -- XML file or file-like object
+    xml_source -- XML file, file-like object or URL
     parser -- (optional) XML parser (lxml.etree.XMLParser)
     lenient -- log XMLSyntaxError as warnings instead of errors
 
@@ -163,7 +163,7 @@ def etree_transformer(xml_dom, transformer, **params):
 def xml_transformer(xml_source, transformer, parser=None):
     """Transform an XML file with an XSL Transformer.
 
-    xml_source -- XML file or file-like object
+    xml_source -- XML file, file-like object or URL
     transformer -- XSL Transformer (lxml.etree.XSLT)
     parser -- (optional) XML parser (lxml.etree.XMLParser)
 
