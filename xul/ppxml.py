@@ -16,8 +16,8 @@ from .dom import build_etree
 
 __all__ = ['prettyprint', 'pp_xml']
 
-def _private_pp(etree, color=True, xml_declaration=None):
-    """Pretty print XML ElementTree in (optional) color.
+def _private_pp(etree, syntax=True, xml_declaration=None):
+    """Pretty print XML ElementTree with (optional) syntax highlighting.
 
     http://lxml.de/api.html#serialisation
     http://lxml.de/api/lxml.etree-module.html#tostring
@@ -26,7 +26,7 @@ def _private_pp(etree, color=True, xml_declaration=None):
         etree_str = tostring(
             etree, encoding='UTF-8',
             xml_declaration=xml_declaration, pretty_print=True)
-        if color:
+        if syntax:
             print highlight(etree_str, lexer, formatter)
         else:
             print etree_str
@@ -42,24 +42,24 @@ try:
     from pygments import highlight
 except ImportError:
     # pylint: disable=unused-argument
-    def prettyprint(etree, color=False, xml_declaration=None):
-        """Plain pretty print XML ElementTree (without color)."""
-        return _private_pp(etree, color=False, xml_declaration=xml_declaration)
+    def prettyprint(etree, syntax=False, xml_declaration=None):
+        """Plain pretty print XML ElementTree (without syntax highlighting)."""
+        return _private_pp(etree, syntax=False, xml_declaration=xml_declaration)
 else:
     lexer = get_lexer_by_name('xml', encoding='utf-8')
     formatter = Terminal256Formatter(encoding='utf-8', nobold=True)
-    def prettyprint(etree, color=True, xml_declaration=None):
-        """Pretty print XML ElementTree in (optional) color."""
-        return _private_pp(etree, color=color, xml_declaration=xml_declaration)
+    def prettyprint(etree, syntax=True, xml_declaration=None):
+        """Pretty print XML ElementTree with (optional) syntax highlighting."""
+        return _private_pp(etree, syntax=syntax, xml_declaration=xml_declaration)
 
 
-def pp_xml(xml_source, parser=None, color=True):
-    """Pretty print an XML file.
+def pp_xml(xml_source, parser=None, syntax=True):
+    """Pretty Print XML source.
 
     xml_source -- XML file, file-like object or URL
     parser -- (optional) XML parser (lxml.etree.XMLParser)
-    color -- pretty print in color (or not)
+    syntax -- syntax highlighting (or not)
     """
     xml_tree = build_etree(xml_source, parser=parser)
     if xml_tree:
-        prettyprint(xml_tree, color=color, xml_declaration=True)
+        prettyprint(xml_tree, syntax=syntax, xml_declaration=True)

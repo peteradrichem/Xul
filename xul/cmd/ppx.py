@@ -43,11 +43,11 @@ def main():
 
     # Pretty print XML sources
     for xml_s in xml_sources:
-        pp_xml(xml_s, parser=parser, color=options.syntax)
+        pp_xml(xml_s, parser=parser, syntax=options.syntax)
 
     if not xml_sources:
         # Read from a pipe when no XML source is specified
         if not stdin.isatty():
-            pp_xml(stdin, parser=parser, color=options.syntax)
+            pp_xml(stdin, parser=parser, syntax=options.syntax)
         else:
             stderr.write("Error: no XML source is given\n")
