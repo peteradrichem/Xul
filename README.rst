@@ -43,6 +43,9 @@ Use the ``--help`` option to print a script's command-line parameters:
 .. code:: bash
 
         $ ppx --help
+
+.. code::
+
         Usage:  ppx [-n] xml_source_1 ... xml_source_n
 
         Pretty Print XML source in human readable form.
