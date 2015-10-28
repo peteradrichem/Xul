@@ -398,4 +398,4 @@ def main():
         if not stdin.isatty():
             xpath_on_xml(stdin, xml_parser, xpath_dom, options)
         else:
-            stderr.write("Error: no XML source is given\n")
+            stderr.write("Error: no XML source specified\n")

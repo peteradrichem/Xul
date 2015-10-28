@@ -4,10 +4,10 @@
 
 XML scripts in Python.
 
- * ppx: pretty print XML
- * xp: use XPath on XML
- * validate: validate XML with an XSD or DTD
- * transform: transform XML with XSL
+ * ppx: pretty print XML source in human readable form.
+ * xp: use XPath expression to select nodes in XML source.
+ * validate: validate XML source with XSD or DTD.
+ * transform: transform XML source with XSLT.
 """
 
 
