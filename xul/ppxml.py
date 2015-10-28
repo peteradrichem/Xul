@@ -53,13 +53,14 @@ else:
         return _private_pp(etree, syntax=syntax, xml_declaration=xml_declaration)
 
 
-def pp_xml(xml_source, parser=None, syntax=True):
+def pp_xml(xml_source, parser=None, syntax=True, xml_declaration=True):
     """Pretty Print XML source.
 
     xml_source -- XML file, file-like object or URL
     parser -- (optional) XML parser (lxml.etree.XMLParser)
     syntax -- syntax highlighting (or not)
+    xml_declaration -- print XML declaration (or not)
     """
     xml_tree = build_etree(xml_source, parser=parser)
     if xml_tree:
-        prettyprint(xml_tree, syntax=syntax, xml_declaration=True)
+        prettyprint(xml_tree, syntax=syntax, xml_declaration=xml_declaration)

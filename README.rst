@@ -51,9 +51,11 @@ Use the ``--help`` option to print a script's command-line parameters:
         Pretty Print XML source in human readable form.
 
         Options:
-          --version        show program's version number and exit
-          -h, --help       show this help message and exit
-          -n, --no-syntax  disable syntax highlighting
+          --version             show program's version number and exit
+          -h, --help            show this help message and exit
+          -n, --no-syntax       no syntax highlighting
+          -d, --disable-declaration
+                                disable XML declaration
 
 
 XML source

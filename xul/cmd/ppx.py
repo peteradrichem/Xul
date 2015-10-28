@@ -25,7 +25,10 @@ def parse_cl():
         version="%prog " + __version__)
     parser.add_option(
         "-n", "--no-syntax", action="store_false", default=True,
-        dest="syntax", help="disable syntax highlighting")
+        dest="syntax", help="no syntax highlighting")
+    parser.add_option(
+        "-d", "--disable-declaration", action="store_false", default=True,
+        dest="declaration", help="disable XML declaration")
     return parser.parse_args()
 
 
@@ -43,11 +46,17 @@ def main():
 
     # Pretty print XML sources
     for xml_s in xml_sources:
-        pp_xml(xml_s, parser=parser, syntax=options.syntax)
+        pp_xml(
+            xml_s, parser=parser,
+            syntax=options.syntax,
+            xml_declaration=options.declaration)
 
     if not xml_sources:
         # Read from a pipe when no XML source is specified
         if not stdin.isatty():
-            pp_xml(stdin, parser=parser, syntax=options.syntax)
+            pp_xml(
+                stdin, parser=parser,
+                syntax=options.syntax,
+                xml_declaration=options.declaration)
         else:
-            stderr.write("Error: no XML source is given\n")
+            stderr.write("Error: no XML source specified\n")
