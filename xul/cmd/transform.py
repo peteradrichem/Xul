@@ -1,6 +1,6 @@
 # coding=utf-8
 
-"""Transform XML file(s) with an XSL file."""
+"""Transform XML source with XSLT."""
 
 
 # Standard Python
@@ -19,29 +19,29 @@ from ..ppxml import prettyprint
 
 
 def parse_cl():
-    """Parse the command-line for options and XML files."""
+    """Parse the command-line for options and XML sources."""
     cl_parser = OptionParser(
-        usage="%prog -x xsl_file xml_file ...",
+        usage="%prog -x xslt_source xml_source ...",
         description=__doc__,
         version="%prog " + __version__)
     cl_parser.add_option(
-        "-x", "--xsl",
-        action="store", type="string", dest="xsl_file",
-        help="XSL file to transform XML file(s)")
+        "-x", "--xslt",
+        action="store", type="string", dest="xslt_source",
+        help="XSLT source for transforming XML source(s)")
     return cl_parser.parse_args()
 
 
 def print_xslt(xml_source, transformer, parser):
-    """XSL Transform an XML file object and print the result.
+    """Print the result of an XSL Transformation.
 
-    xml_source -- XML file or file-like object
+    xml_source -- XML file, file-like object or URL
     transformer -- XSL Transformer (lxml.etree.XSLT)
     parser -- XML parser (lxml.etree.XMLParser)
     """
     result = xml_transformer(xml_source, transformer, parser)
     if result:
         if result.getroot() is None:
-            # XSLT result is not an ElementTree. Print as text
+            # Result is not an ElementTree. Print as text
             print result
         else:
             prettyprint(result, xml_declaration=True)
@@ -53,27 +53,27 @@ def main():
     setup_logger_console()
 
     # Command-line
-    (options, xml_files) = parse_cl()
+    (options, xml_sources) = parse_cl()
 
-    # Build an XSL Transformer (XSLT) from an XSL file
-    if options.xsl_file:
-        transformer = build_xsl_transform(options.xsl_file)
+    if options.xslt_source:
+        # Build an XSL Transformer from an XSLT source
+        transformer = build_xsl_transform(options.xslt_source)
     else:
-        stderr.write('No XSL file specified\n')
+        stderr.write('No XSLT source specified\n')
         exit(105)
     if not transformer:
-        stderr.write('Invalid XSL file specified\n')
+        stderr.write('Invalid XSLT source specified\n')
         exit(105)
     # Initialise XML parser
     parser = XMLParser()
 
-    # Transform XML sources with XSL
-    for xml_f in xml_files:
-        print_xslt(xml_f, transformer, parser)
+    # Transform XML sources with XSL Transformer
+    for xml_s in xml_sources:
+        print_xslt(xml_s, transformer, parser)
 
-    if not xml_files:
-        # Read from a pipe when no XML is specified
+    if not xml_sources:
+        # Read from a pipe when no XML source is specified
         if not stdin.isatty():
             print_xslt(stdin, transformer, parser)
         else:
-            stderr.write("Error: no XML is given\n")
+            stderr.write("Error: no XML source specified\n")

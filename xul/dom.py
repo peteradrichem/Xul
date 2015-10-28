@@ -84,10 +84,10 @@ def build_etree(xml_source, parser=None, lenient=True):
         return xml_dom
 
 
-def build_xsl_transform(xslt_file):
-    """Parse an XSLT file into an XSL Transformer.
+def build_xsl_transform(xslt_source):
+    """Parse an XSLT source into an XSL Transformer.
 
-    xslt_file -- XSLT file (XML file)
+    xslt_source -- XSLT file, file-like object or URL
 
     Lines with XSLT parse errors are logged as warnings.
 
@@ -103,7 +103,7 @@ def build_xsl_transform(xslt_file):
     I/O access control in XSLT:
         http://lxml.de/resolvers.html#i-o-access-control-in-xslt
     """
-    xslt_etree = build_etree(xslt_file, lenient=False)
+    xslt_etree = build_etree(xslt_source, lenient=False)
     if not xslt_etree:
         return None
 
@@ -111,7 +111,7 @@ def build_xsl_transform(xslt_file):
         xsl_transform = etree.XSLT(xslt_etree)
     # Catch XSLT parse errors.
     except etree.XSLTParseError as inst:
-        logger.error("XML file '%s' is not a valid XSLT file", xslt_file)
+        logger.error("XML source '%s' is not a valid XSLT source", xslt_source)
         if not inst.error_log:
             logger.error("XSLTParseError: %s", inst)
         for e in inst.error_log:
@@ -133,7 +133,7 @@ def etree_transformer(xml_dom, transformer, **params):
     params -- (optional) XSL style sheet parameters:
         http://lxml.de/xpathxslt.html#stylesheet-parameters
 
-    XSL file lines with apply errors are logged as warnings.
+    XSLT lines with apply errors are logged as warnings.
 
     Return XML Document Object Model on success.
     Return None on error.
@@ -161,7 +161,7 @@ def etree_transformer(xml_dom, transformer, **params):
 
 
 def xml_transformer(xml_source, transformer, parser=None):
-    """Transform an XML file with an XSL Transformer.
+    """Transform an XML source with an XSL Transformer.
 
     xml_source -- XML file, file-like object or URL
     transformer -- XSL Transformer (lxml.etree.XSLT)

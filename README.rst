@@ -12,7 +12,7 @@ XML scripts
 - ``ppx``: pretty print XML source in human readable form.
 - ``xp``: use XPath expression to select nodes in XML source(s).
 - ``validate``: validate XML source with XSD or DTD.
-- ``transform``: transform XML source with XSL.
+- ``transform``: transform XML source with XSLT.
 
 Requirements
 ------------
