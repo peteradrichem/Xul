@@ -6,3 +6,4 @@ docs/
 *.egg-info/
 build/
 dist/
+Sphinx/_build/
