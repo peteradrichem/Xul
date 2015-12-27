@@ -1,22 +1,51 @@
-.. Xul documentation master file, created by
-   sphinx-quickstart on Sat Dec 26 21:30:12 2015.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+Xul documentation
+=================
 
-Welcome to Xul's documentation!
-===============================
+XML utilities written in Python.
 
-Contents:
+Current version: |release|
+
+
+Installing
+----------
+
+The Xul command-line scripts can be installed with pip:
+
+.. code:: bash
+
+   pip install Xul
+
+Install Pygments_ for XML syntax highlighting (optional).
+
+.. code:: bash
+
+   pip install Pygments
+
+Dependencies
+------------
+
+Xul uses the excellent lxml_ XML toolkit, a Pythonic binding for the C libraries
+libxml2_ and libxslt_.
+
+Source
+------
+
+The Xul source can be found on Bitbucket_.
+
 
 .. toctree::
    :maxdepth: 2
-
 
 
 Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
 
+
+.. _lxml: http://lxml.de/
+.. _libxml2: http://www.xmlsoft.org/
+.. _libxslt: http://xmlsoft.org/libxslt/
+.. _Pygments: http://pygments.org/
+.. _Bitbucket: https://bitbucket.org/peteradrichem/xul
