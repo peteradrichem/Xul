@@ -32,13 +32,17 @@ Source
 
 The Xul source can be found on Bitbucket_.
 
+Xul scripts
+-----------
 
 .. toctree::
    :maxdepth: 2
 
+   ppx
+
 
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
 * :ref:`search`
