@@ -13,10 +13,7 @@ White Space
 
 For greater readability ``ppx`` prints extra *white space*.
 However white space can be significant so don't use ``ppx`` to rewrite XML files
-unless you know what you are doing.
-
-W3C: `2.10 White Space Handling <http://www.w3.org/TR/xml/#sec-white-space>`_
-
+unless you know what you are doing [#]_.
 
 Options
 -------
@@ -25,9 +22,7 @@ Options
 
 .. code:: bash
 
-   ppx --help
-
-.. code::
+   $ ppx --help
 
    Usage:  ppx [-n] xml_source_1 ... xml_source_n
 
@@ -49,9 +44,7 @@ You can disable syntax highlighting with the ``--no-syntax`` option.
 XML declaration
 ---------------
 
-XML documents should begin with an XML declaration which specifies the version of XML being used.
-
-W3C `2.8 Prolog and Document Type Declaration <http://www.w3.org/TR/xml/#sec-prolog-dtd>`_
+XML documents should begin with an XML declaration which specifies the version of XML being used [#]_.
 
 By default ``ppx`` will print an (UTF-8) XML declaration.
 Disable XML declaration printing with the ``--disable-declaration`` option.
@@ -61,21 +54,29 @@ Examples
 
 Pretty print any local XML file:
 
-.. code::
+.. code:: bash
 
    ppx data_dump.xml
 
 RSS feed:
 
-.. code::
+.. code:: bash
 
    ppx http://feeds.feedburner.com/PythonInsider
 
 Redirect output (pipe) to ``ppx``:
 
-.. code::
+.. code:: bash
 
    curl -s https://www.python.org/dev/peps/peps.rss/ | ppx
 
 
 .. _Pygments: http://pygments.org/
+
+
+.. rubric:: Footnotes
+
+.. [#] Extensible Markup Language §2.10
+   `White Space Handling <http://www.w3.org/TR/xml/#sec-white-space>`_
+.. [#] Extensible Markup Language §2.8
+   `Prolog and Document Type Declaration <http://www.w3.org/TR/xml/#sec-prolog-dtd>`_
