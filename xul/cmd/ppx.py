@@ -20,15 +20,15 @@ from ..ppxml import pp_xml
 def parse_cl():
     """Parse the command-line for options and XML sources."""
     parser = OptionParser(
-        usage="\t%prog [-n] xml_source_1 ... xml_source_n",
+        usage="\t%prog [-nr] xml_source_1 ... xml_source_n",
         description=__doc__,
         version="%prog " + __version__)
     parser.add_option(
         "-n", "--no-syntax", action="store_false", default=True,
         dest="syntax", help="no syntax highlighting")
     parser.add_option(
-        "-d", "--disable-declaration", action="store_false", default=True,
-        dest="declaration", help="disable XML declaration")
+        "-r", "--remove-declaration", action="store_false", default=True,
+        dest="declaration", help="remove the XML declaration")
     return parser.parse_args()
 
 
