@@ -1,7 +1,7 @@
 Xul documentation
 =================
 
-XML utilities written in Python.
+XML_ utilities written in Python.
 
 Current version: |release|
 
@@ -32,6 +32,10 @@ Source
 
 The Xul source can be found on Bitbucket_.
 
+
+.. index::
+   single: scripts
+
 Xul scripts
 -----------
 
@@ -51,6 +55,7 @@ Indices and tables
 * :ref:`search`
 
 
+.. _XML: http://www.w3.org/TR/xml/
 .. _lxml: http://lxml.de/
 .. _libxml2: http://www.xmlsoft.org/
 .. _libxslt: http://xmlsoft.org/libxslt/

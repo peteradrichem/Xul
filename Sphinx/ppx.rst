@@ -1,3 +1,7 @@
+.. index::
+   single: ppx
+   single: scripts; ppx
+
 ppx -- Pretty Print XML
 =======================
 
@@ -9,6 +13,9 @@ Use ``ppx`` to pretty print an XML source in human readable form.
 
 
 .. _white_space:
+
+.. index::
+   single: white space
 
 White Space
 -----------
@@ -38,11 +45,19 @@ Options
      -r, --remove-declaration
                            remove the XML declaration
 
+
+.. index::
+   single: syntax highlighting
+
 Syntax Highlighting
 -------------------
 ``ppx`` will syntax highlight the XML source if you have Pygments_ installed.
 
 You can disable syntax highlighting with the ``--no-syntax`` option.
+
+
+.. index::
+   single: XML declaration
 
 XML declaration
 ---------------

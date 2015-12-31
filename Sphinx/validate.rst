@@ -1,3 +1,7 @@
+.. index::
+   single: validate
+   single: scripts; validate
+
 validate -- Validate an XML source
 ==================================
 
@@ -8,6 +12,10 @@ With an XSD file:
 .. code:: bash
 
    validate -x xsd.xml file.xml
+
+.. index::
+   single: DTD
+   single: Document Type Definition
 
 With a DTD file:
 
@@ -41,6 +49,10 @@ Options
 
 Examples
 --------
+
+.. index::
+   single: XSD
+   single: XML Schema Definition
 
 Validate `XML Schema <http://www.w3.org/XML/Schema>`_ with the XML Schema 1.0 XSD:
 

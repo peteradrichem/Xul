@@ -1,5 +1,13 @@
+.. index::
+   single: transform
+   single: scripts; transform
+
 transform -- Transform with XSLT
 ================================
+
+.. index::
+   single: XSLT
+   single: Extensible Stylesheet Language Transformations
 
 Use ``transform`` to transform an XML source with `XSLT <http://www.w3.org/TR/xslt/>`_.
 

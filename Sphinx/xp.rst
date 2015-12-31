@@ -1,5 +1,12 @@
+.. index::
+   single: xp
+   single: scripts; xp
+
 xp -- select nodes in XML source
 ================================
+
+.. index::
+   single: XPath
 
 Use `XPath expressions <http://www.w3.org/TR/xpath/>`_ to select nodes in XML source.
 
