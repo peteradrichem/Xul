@@ -39,6 +39,7 @@ Xul scripts
    :maxdepth: 2
 
    ppx
+   validate
 
 
 Indices and tables
