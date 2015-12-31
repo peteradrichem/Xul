@@ -8,12 +8,15 @@ Use ``ppx`` to pretty print an XML source in human readable form.
    ppx file.xml
 
 
+.. _white_space:
+
 White Space
 -----------
 
-For greater readability ``ppx`` prints extra *white space*.
-However white space can be significant so don't use ``ppx`` to rewrite XML files
-unless you know what you are doing [#]_.
+For greater readability ``ppx`` adds extra *white space*.
+
+.. note:: White space can be significant in an XML document [#]_.
+   So be careful with using ``ppx`` to rewrite XML files.
 
 Options
 -------
@@ -69,6 +72,12 @@ Redirect output (pipe) to ``ppx``:
 .. code:: bash
 
    curl -s https://www.python.org/dev/peps/peps.rss/ | ppx
+
+:ref:`Rewrite XML <white_space>`:
+
+.. code:: bash
+
+   ppx -n data_dump.xml > pp_data_dump.xml
 
 
 .. _Pygments: http://pygments.org/
