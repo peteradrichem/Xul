@@ -2,7 +2,7 @@
    single: xp
    single: scripts; xp
 
-xp -- select nodes in XML source
+xp -- Select nodes in XML source
 ================================
 
 .. index::

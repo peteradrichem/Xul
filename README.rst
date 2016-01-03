@@ -2,28 +2,21 @@
 Xul -- XML Utilities
 ====================
 
-XML command-line scripts written in Python.
+XML utilities written in Python.
 
 .. contents::
 
 XML scripts
 ===========
 
-- ``ppx``: pretty print XML source in human readable form.
-- ``xp``: use XPath expression to select nodes in XML source.
-- ``validate``: validate XML source with XSD or DTD.
-- ``transform``: transform XML source with XSLT.
-
-Requirements
-------------
-
-Xul uses the excellent lxml_ XML toolkit, a Pythonic binding for the C libraries
-libxml2_ and libxslt_.
+- ``ppx``: pretty print XML
+- ``xp``: select nodes in XML source
+- ``transform``: transform XML with XSLT
+- ``validate``: validate an XML source
 
 Installation
 ------------
-
-Install the Xul scripts with **pip**:
+The Xul command-line scripts can be installed with **pip**:
 
 .. code:: bash
 
@@ -35,18 +28,20 @@ Install Pygments_ for XML syntax highlighting (optional).
 
         $ pip install Pygments
 
+Dependencies
+------------
+Xul uses the excellent lxml_ XML toolkit, a Pythonic binding for the C libraries
+libxml2_ and libxslt_.
+
 Options
 -------
-
-Use the ``--help`` option to print a script's command-line parameters:
+Use the ``--help`` option to print a command line script's parameters:
 
 .. code:: bash
 
         $ ppx --help
 
-.. code::
-
-        Usage:  ppx [-n] xml_source_1 ... xml_source_n
+        Usage:  ppx [-nr] xml_source_1 ... xml_source_n
 
         Pretty Print XML source in human readable form.
 
@@ -54,14 +49,14 @@ Use the ``--help`` option to print a script's command-line parameters:
           --version             show program's version number and exit
           -h, --help            show this help message and exit
           -n, --no-syntax       no syntax highlighting
-          -d, --disable-declaration
-                                disable XML declaration
+          -r, --remove-declaration
+                                remove the XML declaration
 
 
 XML source
 ==========
 
-The XML source can be a local file, a pipe or an URL.
+An XML source can be a local file, an URL or a pipe.
 
 File
 ----
@@ -71,14 +66,6 @@ Pretty print any local XML file with ``ppx``:
 .. code::
 
         ppx data_dump.xml
-
-Pipe
-----
-Redirect output (pipe) to a Xul script:
-
-.. code::
-
-        curl -s https://www.python.org/dev/peps/peps.rss/ | ppx
 
 URL
 ---
@@ -91,6 +78,14 @@ For example, to pretty print an RSS feed:
 
 Loading XML through HTTPS is not supported and will result in an
 *failed to load external entity* error.
+
+Pipe
+----
+Redirect output (pipe) to a Xul script:
+
+.. code::
+
+        curl -s https://www.python.org/dev/peps/peps.rss/ | ppx
 
 
 XML standards

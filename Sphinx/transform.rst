@@ -2,8 +2,8 @@
    single: transform
    single: scripts; transform
 
-transform -- Transform with XSLT
-================================
+transform -- Transform XML with XSLT
+====================================
 
 .. index::
    single: XSLT
