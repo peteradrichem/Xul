@@ -2,12 +2,12 @@
 Xul -- XML Utilities
 ====================
 
-XML utilities written in Python.
-
 .. contents::
 
-XML scripts
+Xul scripts
 ===========
+
+XML utilities written in Python.
 
 - ``ppx``: pretty print XML
 - ``xp``: select nodes in XML source
@@ -37,7 +37,7 @@ Options
 -------
 Use the ``--help`` option to print a command line script's parameters:
 
-.. code:: bash
+.. code::
 
         $ ppx --help
 
