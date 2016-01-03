@@ -2,8 +2,8 @@
 syntax: glob
 *.pyc
 xml/
-docs/
+aanteks/
 *.egg-info/
 build/
 dist/
-Sphinx/_build/
+docs/_build/
