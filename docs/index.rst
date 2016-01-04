@@ -47,6 +47,13 @@ Xul scripts
    transform
    validate
 
+XML
+---
+.. toctree::
+   :maxdepth: 2
+
+   xml_source
+
 
 Indices and tables
 ------------------
