@@ -7,21 +7,17 @@ validate -- Validate an XML source
 
 Use ``validate`` to validate an XML source.
 
-With an XSD file:
+With an XSD [#]_ file:
 
 .. code:: bash
 
-   validate -x xsd.xml file.xml
+   validate -x schema.xsd file.xml
 
-.. index::
-   single: DTD
-   single: Document Type Definition
-
-With a DTD file:
+With a DTD [#]_ file:
 
 .. code:: bash
 
-   validate -d dtd.xml file.xml
+   validate -d doctype.dtd file.xml
 
 
 Options
@@ -51,6 +47,16 @@ Examples
 --------
 
 .. index::
+   single: DTD
+   single: Document Type Definition
+
+Validate XHTML with the XHTML 1.0 strict DTD:
+
+.. code:: bash
+
+   validate -d examples/dtd/xhtml1-strict.dtd http://www.w3.org/TR/xhtml1
+
+.. index::
    single: XSD
    single: XML Schema Definition
 
@@ -59,3 +65,9 @@ Validate `XML Schema <http://www.w3.org/XML/Schema>`_ with the XML Schema 1.0 XS
 .. code:: bash
 
    validate -x http://www.w3.org/2001/XMLSchema.xsd http://www.w3.org/2001/XMLSchema.xsd
+
+
+.. rubric:: Footnotes
+
+.. [#] `XML Schema 1.0 <http://www.w3.org/XML/Schema>`_
+.. [#] `XML document type declaration <http://www.w3.org/TR/xml/#dt-doctype>`_
