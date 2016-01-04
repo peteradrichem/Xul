@@ -1,7 +1,7 @@
 Xul documentation
 =================
 
-XML_ utilities written in Python.
+XML [#]_ utilities written in Python.
 
 Current version: |release|
 
@@ -62,9 +62,13 @@ Indices and tables
 * :ref:`search`
 
 
-.. _XML: http://www.w3.org/TR/xml/
 .. _lxml: http://lxml.de/
 .. _libxml2: http://www.xmlsoft.org/
 .. _libxslt: http://xmlsoft.org/libxslt/
 .. _Pygments: http://pygments.org/
 .. _Bitbucket: https://bitbucket.org/peteradrichem/xul
+
+
+.. rubric:: Footnotes
+
+.. [#] `Extensible Markup Language (XML) 1.0 <http://www.w3.org/TR/xml/>`_
