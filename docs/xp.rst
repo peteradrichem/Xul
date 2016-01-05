@@ -8,7 +8,7 @@ xp -- Select nodes with XPath
 .. index::
    single: XPath
 
-Use `XPath expressions <http://www.w3.org/TR/xpath/>`_ to select nodes in an XML source.
+Use XPath [#]_ expressions to select nodes in an XML source.
 
 
 Options
@@ -44,3 +44,8 @@ Examples
 .. code:: bash
 
    xp -x "//d:title/text()" http://feeds.feedburner.com/PythonInsider
+
+
+.. rubric:: Footnotes
+
+.. [#] `XML Path Language (XPath) 1.0 <http://www.w3.org/TR/xpath>`_

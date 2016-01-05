@@ -9,7 +9,7 @@ transform -- Transform XML with XSLT
    single: XSLT
    single: Extensible Stylesheet Language Transformations
 
-Use ``transform`` to transform an XML source with `XSLT <http://www.w3.org/TR/xslt/>`_.
+Use ``transform`` to transform an XML source with XSLT [#]_.
 
 
 Options
@@ -38,3 +38,8 @@ Examples
 .. code:: bash
 
    transform -x xslt.xml file.xml
+
+
+.. rubric:: Footnotes
+
+.. [#] `XSL Transformations (XSLT) 1.0 <http://www.w3.org/TR/xslt>`_
