@@ -5,7 +5,7 @@
 ppx -- Pretty Print XML
 =======================
 
-Use ``ppx`` to pretty print an XML source in human readable form.
+Use ``ppx`` to pretty print an :ref:`xml_source` in human readable form.
 
 .. code:: bash
 

@@ -5,7 +5,7 @@
 validate -- Validate an XML source
 ==================================
 
-Use ``validate`` to validate an XML source.
+Use ``validate`` to validate an :ref:`xml_source`.
 
 .. index::
    single: XSD

@@ -1,3 +1,8 @@
+.. index::
+   single: XML source
+
+.. _xml_source:
+
 XML source
 ==========
 

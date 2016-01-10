@@ -9,7 +9,7 @@ transform -- Transform XML with XSLT
    single: XSLT
    single: Extensible Stylesheet Language Transformations
 
-Use ``transform`` to transform an XML source with XSLT [#]_.
+Use ``transform`` to transform an :ref:`xml_source` with XSLT [#]_.
 
 
 Options

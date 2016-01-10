@@ -8,7 +8,7 @@ xp -- Select nodes with XPath
 .. index::
    single: XPath
 
-Use XPath [#]_ expressions to select nodes in an XML source.
+Use XPath [#]_ expressions to select nodes in an :ref:`xml_source`.
 
 
 Options
