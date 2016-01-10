@@ -7,11 +7,19 @@ validate -- Validate an XML source
 
 Use ``validate`` to validate an XML source.
 
+.. index::
+   single: XSD
+   single: XML Schema Definition
+
 With an XSD [#]_ file:
 
 .. code:: bash
 
    validate -x schema.xsd file.xml
+
+.. index::
+   single: DTD
+   single: Document Type Definition
 
 With a DTD [#]_ file:
 
@@ -46,9 +54,9 @@ Options
 Examples
 --------
 
-.. index::
-   single: DTD
-   single: Document Type Definition
+--------------
+XML Validation
+--------------
 
 Validate XHTML with the XHTML 1.0 strict DTD:
 
@@ -56,18 +64,42 @@ Validate XHTML with the XHTML 1.0 strict DTD:
 
    validate -d examples/dtd/xhtml1-strict.dtd http://www.w3.org/TR/xhtml1
 
-.. index::
-   single: XSD
-   single: XML Schema Definition
-
-Validate `XML Schema <http://www.w3.org/XML/Schema>`_ with the XML Schema 1.0 XSD:
+Validate XHTML with the XHTML 1.0 strict XSD:
 
 .. code:: bash
 
-   validate -x http://www.w3.org/2001/XMLSchema.xsd http://www.w3.org/2001/XMLSchema.xsd
+   validate -x examples/xsd/xhtml1-strict.xsd  http://www.w3.org/TR/xhtml1
+
+--------------
+XSD Validation
+--------------
+
+Validate an XSD file with the XML Schema schema document:
+
+.. code:: bash
+
+   validate -x examples/xsd/XMLSchema.xsd schema_file.xsd
+
+Validate the XML Schema XSD with the (identical) XML Schema schema document:
+
+.. code:: bash
+
+   validate -x examples/xsd/XMLSchema.xsd http://www.w3.org/2009/XMLSchema/XMLSchema.xsd
+
+And vice versa:
+
+.. code:: bash
+
+   validate -x http://www.w3.org/2009/XMLSchema/XMLSchema.xsd examples/xsd/XMLSchema.xsd
+
+Validate the XML Schema XSD with the DTD for XML Schema:
+
+.. code:: bash
+
+   validate -d examples/dtd/XMLSchema.dtd examples/xsd/XMLSchema.xsd
 
 
 .. rubric:: Footnotes
 
-.. [#] `XML Schema 1.0 <http://www.w3.org/XML/Schema>`_
-.. [#] `XML document type declaration <http://www.w3.org/TR/xml/#dt-doctype>`_
+.. [#] `XML Schema 1.0 and 1.1 <http://www.w3.org/XML/Schema>`_
+.. [#] `XML Document Type Definition <http://www.w3.org/TR/xml/#dtd>`_
