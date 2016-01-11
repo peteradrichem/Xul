@@ -25,18 +25,22 @@ def parse_cl():
         description=__doc__,
         version="%prog " + __version__)
     cl_parser.add_option(
+        "-o", "--omit-declaration", action="store_false", default=True,
+        dest="declaration", help="omit the XML declaration")
+    cl_parser.add_option(
         "-x", "--xslt",
         action="store", type="string", dest="xslt_source",
         help="XSLT source for transforming XML source(s)")
     return cl_parser.parse_args()
 
 
-def print_xslt(xml_source, transformer, parser):
+def print_xslt(xml_source, transformer, parser, options):
     """Print the result of an XSL Transformation.
 
     xml_source -- XML file, file-like object or URL
     transformer -- XSL Transformer (lxml.etree.XSLT)
     parser -- XML parser (lxml.etree.XMLParser)
+    options -- Command-line options
     """
     result = xml_transformer(xml_source, transformer, parser)
     if result:
@@ -44,7 +48,7 @@ def print_xslt(xml_source, transformer, parser):
             # Result is not an ElementTree. Print as text
             print result
         else:
-            prettyprint(result, xml_declaration=True)
+            prettyprint(result, xml_declaration=options.declaration)
 
 
 def main():
@@ -69,11 +73,11 @@ def main():
 
     # Transform XML sources with XSL Transformer
     for xml_s in xml_sources:
-        print_xslt(xml_s, transformer, parser)
+        print_xslt(xml_s, transformer, parser, options)
 
     if not xml_sources:
         # Read from a pipe when no XML source is specified
         if not stdin.isatty():
-            print_xslt(stdin, transformer, parser)
+            print_xslt(stdin, transformer, parser, options)
         else:
             stderr.write("Error: no XML source specified\n")
