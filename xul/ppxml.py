@@ -37,6 +37,7 @@ def _private_pp(etree, syntax=True, xml_declaration=None):
 
 
 try:
+    # pylint: disable=wrong-import-position
     from pygments.lexers import get_lexer_by_name
     from pygments.formatters.terminal256 import Terminal256Formatter
     from pygments import highlight
@@ -53,7 +54,7 @@ else:
         return _private_pp(etree, syntax=syntax, xml_declaration=xml_declaration)
 
 
-def pp_xml(xml_source, parser=None, syntax=True, xml_declaration=True):
+def pp_xml(xml_source, parser=None, syntax=True, xml_declaration=None):
     """Pretty Print XML source.
 
     xml_source -- XML file, file-like object or URL
