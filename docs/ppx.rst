@@ -34,7 +34,7 @@ Options
 
    $ ppx --help
 
-   Usage:  ppx [-nr] xml_source_1 ... xml_source_n
+   Usage:  ppx [-no] xml_source ...
 
    Pretty Print XML source in human readable form.
 
@@ -42,8 +42,8 @@ Options
      --version             show program's version number and exit
      -h, --help            show this help message and exit
      -n, --no-syntax       no syntax highlighting
-     -r, --remove-declaration
-                           remove the XML declaration
+     -o, --omit-declaration
+                           omit the XML declaration
 
 
 .. index::
@@ -65,7 +65,7 @@ XML declaration
 XML documents should begin with an XML declaration which specifies the version of XML being used [#]_.
 
 By default ``ppx`` will print an (UTF-8) XML declaration.
-Remove the XML declaration with the ``--remove-declaration`` option.
+Omit the XML declaration with the ``--omit-declaration`` option.
 
 Examples
 --------
