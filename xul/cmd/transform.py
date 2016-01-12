@@ -21,16 +21,16 @@ from ..ppxml import prettyprint
 def parse_cl():
     """Parse the command-line for options and XML sources."""
     cl_parser = OptionParser(
-        usage="%prog -x xslt_source xml_source ...",
+        usage="%prog [-o] -x xslt_source xml_source ...",
         description=__doc__,
         version="%prog " + __version__)
-    cl_parser.add_option(
-        "-o", "--omit-declaration", action="store_false", default=True,
-        dest="declaration", help="omit the XML declaration")
     cl_parser.add_option(
         "-x", "--xslt",
         action="store", type="string", dest="xslt_source",
         help="XSLT source for transforming XML source(s)")
+    cl_parser.add_option(
+        "-o", "--omit-declaration", action="store_false", default=True,
+        dest="declaration", help="omit the XML declaration")
     return cl_parser.parse_args()
 
 

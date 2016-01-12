@@ -21,17 +21,17 @@ Options
 
    $ transform --help
 
-   Usage: transform -x xslt_source xml_source ...
+   Usage: transform [-o] -x xslt_source xml_source ...
 
    Transform XML source with XSLT.
 
    Options:
      --version             show program's version number and exit
      -h, --help            show this help message and exit
-     -o, --omit-declaration
-                           omit the XML declaration
      -x XSLT_SOURCE, --xslt=XSLT_SOURCE
                            XSLT source for transforming XML source(s)
+     -o, --omit-declaration
+                           omit the XML declaration
 
 
 XML declaration
