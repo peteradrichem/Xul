@@ -43,7 +43,7 @@ Examples
 
 .. code:: bash
 
-   xp -x "//d:title/text()" http://feeds.feedburner.com/PythonInsider
+   xp -x "//d:entry/d:title/text()" http://feeds.feedburner.com/PythonInsider
 
 
 .. rubric:: Footnotes
