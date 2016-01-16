@@ -11,7 +11,9 @@ Use ``validate`` to validate an :ref:`xml_source`.
    single: XSD
    single: XML Schema Definition
 
-With an XSD [#]_ file:
+XSD
+---
+Validate an XML source with an XSD [#]_ file:
 
 .. code:: bash
 
@@ -21,7 +23,9 @@ With an XSD [#]_ file:
    single: DTD
    single: Document Type Definition
 
-With a DTD [#]_ file:
+DTD
+---
+Validate an XML source with a DTD [#]_ file:
 
 .. code:: bash
 
@@ -30,7 +34,6 @@ With a DTD [#]_ file:
 
 Options
 -------
-
 ``validate`` supports the following command-line options:
 
 .. code:: bash

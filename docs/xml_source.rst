@@ -11,7 +11,7 @@ An XML source can be a local file, an URL or a pipe.
 
 File
 ----
-With ``xp`` you can use an XPath expression on any local XML file:
+With ``xp`` you can select nodes in a local XML file with an XPath expression:
 
 .. code::
 
@@ -43,11 +43,23 @@ XHTML
 
 XHTML_ is also part of the family of XML markup languages.
 
+Examples
+--------
+Pretty print an XHTML document:
+
 .. code::
 
    ppx http://www.w3.org/TR/xhtml1
 
+Validate an XHTML document with the XHTML 1.0 DTD:
+
+.. code::
+
    validate -d examples/dtd/xhtml1-strict.dtd http://www.w3.org/TR/xhtml1
+
+Print the link destinations in an XHTML document:
+
+.. code::
 
    xp -d html -x "//html:link/@href" http://www.w3.org/1999/xhtml
 

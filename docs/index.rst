@@ -44,8 +44,8 @@ Xul scripts
 
    ppx
    xp
-   transform
    validate
+   transform
 
 XML
 ---

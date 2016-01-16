@@ -41,9 +41,17 @@ Options
 Examples
 --------
 
+The latest Python core development news and information:
+
 .. code:: bash
 
    xp -x "//d:entry/d:title/text()" http://feeds.feedburner.com/PythonInsider
+
+The newest Python PEPs:
+
+.. code:: bash
+
+   curl -s https://www.python.org/dev/peps/peps.rss/ | xp -x "//item/title"
 
 
 .. rubric:: Footnotes
