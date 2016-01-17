@@ -38,10 +38,14 @@ Redirect output (pipe) to a Xul script:
 
    curl -s https://developer.apple.com/news/rss/news.rss | ppx
 
+
+.. index::
+   single: XHTML
+
 XHTML
 =====
 
-XHTML_ is also part of the family of XML markup languages.
+XHTML [#]_ is part of the family of XML markup languages.
 
 Examples
 --------
@@ -63,6 +67,17 @@ Print the link destinations in an XHTML document:
 
    xp -d html -x "//html:link/@href" http://www.w3.org/1999/xhtml
 
+More XSDs and DTDs examples_ can be found in the Xul Bitbucket repository.
 
-.. _XHTML: http://www.w3.org/TR/xhtml1
+.. seealso:: Xul scripts: :doc:`ppx <ppx>`, :doc:`xp <xp>`,
+   :doc:`validate <validate>`, :doc:`transform <transform>`
+
+
+.. rubric:: Footnotes
+
+.. [#] `XHTML™ 1.0 The Extensible HyperText Markup Language
+   <http://www.w3.org/TR/xhtml1>`_
+
+
+.. _examples: https://bitbucket.org/peteradrichem/xul/src/tip/examples/
 .. _libxml2: http://www.xmlsoft.org/
