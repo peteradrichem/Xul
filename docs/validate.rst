@@ -61,13 +61,15 @@ Examples
 XML Validation
 --------------
 
-Validate XHTML with the XHTML 1.0 strict DTD:
+Validate XHTML with the
+:download:`XHTML 1.0 strict DTD <../examples/dtd/xhtml1-strict.dtd>`:
 
 .. code:: bash
 
    validate -d examples/dtd/xhtml1-strict.dtd http://www.w3.org/TR/xhtml1
 
-Validate XHTML with the XHTML 1.0 strict XSD:
+Validate XHTML with the
+:download:`XHTML 1.0 strict XSD <../examples/xsd/xhtml1-strict.xsd>`:
 
 .. code:: bash
 
@@ -77,7 +79,8 @@ Validate XHTML with the XHTML 1.0 strict XSD:
 XSD Validation
 --------------
 
-Validate an XSD file with the XML Schema schema document:
+Validate an XSD file with the
+:download:`XML Schema schema document <../examples/xsd/XMLSchema.xsd>`:
 
 .. code:: bash
 
@@ -95,7 +98,8 @@ And vice versa:
 
    validate -x http://www.w3.org/2009/XMLSchema/XMLSchema.xsd examples/xsd/XMLSchema.xsd
 
-Validate the XML Schema XSD with the DTD for XML Schema:
+Validate the XML Schema XSD with the
+:download:`DTD for XML Schema <../examples/dtd/XMLSchema.dtd>`:
 
 .. code:: bash
 

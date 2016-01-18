@@ -55,7 +55,8 @@ Pretty print an XHTML document:
 
    ppx http://www.w3.org/TR/xhtml1
 
-Validate an XHTML document with the XHTML 1.0 DTD:
+Validate an XHTML document with the
+:download:`XHTML 1.0 strict DTD <../examples/dtd/xhtml1-strict.dtd>`:
 
 .. code::
 
