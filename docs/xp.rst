@@ -10,6 +10,11 @@ xp -- Select nodes with XPath
 
 Use XPath [#]_ expressions to select nodes in an :ref:`xml_source`.
 
+List the latest Python PEPs:
+
+.. code:: bash
+
+   curl -s https://www.python.org/dev/peps/peps.rss/ | xp -x "//item/title/text()"
 
 Options
 -------
@@ -38,8 +43,28 @@ Options
      -t, --element-tree    print the XML tree of a result element
      -m, --method          use ElementTree.xpath method instead of XPath class
 
-Examples
---------
+Namespaces in XML
+-----------------
+
+.. index::
+   single: Namespaces
+
+The default namespace of the document element:
+
+.. code:: bash
+
+   xp -x 'namespace::*[name()=""]' file.xml
+
+There is no prefix for the default namespace.
+
+List all document element namespaces (prefix, URI):
+
+.. code:: bash
+
+   xp -x 'namespace::*' file.xml
+
+To select nodes in an XML namespace [#]_ XPath uses prefixed names (qualified names).
+``xp`` uses 'd' for the default namespace prefix.
 
 The latest Python core development news and information:
 
@@ -47,13 +72,19 @@ The latest Python core development news and information:
 
    xp -x "//d:entry/d:title/text()" http://feeds.feedburner.com/PythonInsider
 
-The newest Python PEPs:
+You can change the prefix for the default namespace with the ``--default-prefix`` option.
+
+Examples
+--------
+
+The five most recent Python Insider posts:
 
 .. code:: bash
 
-   curl -s https://www.python.org/dev/peps/peps.rss/ | xp -x "//item/title"
+   xp -x "descendant::d:entry[position()<=5]/d:title/text()" http://feeds.feedburner.com/PythonInsider
 
 
 .. rubric:: Footnotes
 
 .. [#] `XML Path Language (XPath) 1.0 <http://www.w3.org/TR/xpath>`_
+.. [#] `Namespaces in XML 1.0 <http://www.w3.org/TR/xml-names/>`_
