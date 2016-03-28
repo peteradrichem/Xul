@@ -152,15 +152,19 @@ def smart_with_parent(smart_string):
     smart_repr = None
     parent_rel = None
 
-    # TEXT node -- text() -- Python str.isdigit()
-    if smart_string.isdigit():
-        smart_repr = smart_string
-        parent_rel = "in"
+    # ATTRIBUTE node -- @ -- .is_attribute
+    if smart_string.is_attribute:
+        parent_rel = "of"
+        smart_repr = "@%s = '%s'" % (smart_string.attrname, smart_string)
     # TEXT node -- text() -- .is_text
     elif smart_string.is_text:
         parent_rel = "in"
+        # Python str.isspace()
         if smart_string.isspace():
             smart_repr = "whitespace"
+        # Python str.isdigit()
+        elif smart_string.isdigit():
+            smart_repr = smart_string
         else:
             smart_repr = "'%s'" % smart_string.encode('UTF-8', 'ignore')
     # TAIL node -- text() -- .is_tail
@@ -170,10 +174,6 @@ def smart_with_parent(smart_string):
             smart_repr = "tail whitespace"
         else:
             smart_repr = "tail '%s'" % smart_string.encode('UTF-8', 'ignore')
-    # ATTRIBUTE node -- @ -- .is_attribute
-    elif smart_string.is_attribute:
-        parent_rel = "of"
-        smart_repr = "@%s = '%s'" % (smart_string.attrname, smart_string)
 
     return (smart_repr, parent_rel)
 
