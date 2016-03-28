@@ -98,13 +98,13 @@ def node_repr(node):
      * comment node -- comment()
      * PI: processing instruction -- //processing-instruction()
     """
-    # PI - lxml.etree._ProcessingInstruction -- node.target & node.tag()
+    # PI - lxml.etree._ProcessingInstruction -- node.target -- node.tag(): <? ?>
     #   "/processing-instruction()"
     if hasattr(node, "target"):
-        return "processing-instruction('%s') = %s" % (
-            node.target, node.tag(node.text.encode('UTF-8', 'ignore')))
+        return "%s value: '%s'" % (
+            node.tag(node.target), node.text.encode('UTF-8', 'ignore'))
 
-    # COMMENT node - lxml.etree._Comment -- node.tag() == <!---->
+    # COMMENT node - lxml.etree._Comment -- node.tag(): <!-- -->
     elif not isinstance(node.tag, basestring):
         return node.tag(node.text.encode('UTF-8', 'ignore'))
 
