@@ -110,13 +110,13 @@ def node_repr(node):
 
     # ELEMENT - lxml.etree._Element -- node.tag
     elif node.text:
-        # node.text is a string; not a 'smart' string
-        if node.text.isdigit():
-            return "<%s> contains %s" % (node.tag, node.text)
-        elif not node.text.isspace():
-            return "<%s> contains '%s'" % (node.tag, node.text.encode('UTF-8', 'ignore'))
-        else:
+        # node.text is a Python string
+        if node.text.isspace():
             return "<%s> contains whitespace" % node.tag
+        elif node.text.isdigit():
+            return "<%s> contains %s" % (node.tag, node.text)
+        else:
+            return "<%s> contains '%s'" % (node.tag, node.text.encode('UTF-8', 'ignore'))
     else:
         return "<%s> is empty" % node.tag
 
