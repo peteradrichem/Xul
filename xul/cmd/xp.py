@@ -193,9 +193,14 @@ def print_smart_string(smart_string, xml_dom, options):
     if par_el is None:
         print "XPath string: '%s'" % smart_string
         return
-    # comment: tag is a method (lxml.etree._Comment)
+    # PI & comment: tag is a method
     if not isinstance(par_el.tag, basestring):
-        par_el_str = "comment"
+        if hasattr(par_el, "target"):
+            # PI (lxml.etree._ProcessingInstruction)
+            par_el_str = par_el.tag(par_el.target)
+        else:
+            # comment (lxml.etree._Comment)
+            par_el_str = "comment"
     # tag is a string (lxml.etree._Element)
     else:
         par_el_str = "<%s>" % par_el.tag
