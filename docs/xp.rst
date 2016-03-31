@@ -66,25 +66,44 @@ List all document element namespaces (prefix, URI):
 To select nodes in an XML namespace [#]_ XPath uses prefixed names (qualified names).
 ``xp`` uses 'd' for the default namespace prefix.
 
-The latest Python core development news and information:
-
-.. code:: bash
-
-   xp -x "//d:entry/d:title/text()" http://feeds.feedburner.com/PythonInsider
-
-You can change the prefix for the default namespace with the ``--default-prefix`` option.
-
-Examples
---------
-
 The five most recent Python Insider posts:
 
 .. code:: bash
 
    xp -x "descendant::d:entry[position()<=5]/d:title/text()" http://feeds.feedburner.com/PythonInsider
 
+You can change the prefix for the default namespace with the ``--default-prefix`` option.
+
+Extensions to XSLT
+------------------
+
+.. index::
+   single: EXSLT
+   single: Extensions to XSLT
+
+lxml has support for EXSLT [#]_ (requires libxslt 1.1.25 or higher).
+
+Python Insider posts published in 2015 (EXSLT ``date`` prefix):
+
+.. code:: bash
+
+   xp -ex "//d:entry[date:year(d:published) >= '2015']/d:title/text()" http://feeds.feedburner.com/PythonInsider
+
+Python Insider posts updated in December:
+
+.. code:: bash
+
+   xp -ex "//d:entry[date:month-name(d:updated) = 'December']/d:title/text()" http://feeds.feedburner.com/PythonInsider
+
+Python PEPs about "build" or "built" (EXSLT ``re`` prefix):
+
+.. code:: bash
+
+   curl -s https://www.python.org/dev/peps/peps.rss/ | xp -ex '//item/title/text()[re:match(., "buil(d|t)", "i")]'
+
 
 .. rubric:: Footnotes
 
 .. [#] `XML Path Language (XPath) 1.0 <http://www.w3.org/TR/xpath>`_
 .. [#] `Namespaces in XML 1.0 <http://www.w3.org/TR/xml-names/>`_
+.. [#] `Extensions to XSLT (EXSLT) <http://exslt.org/>`_
