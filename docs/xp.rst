@@ -25,7 +25,7 @@ Options
 
    $ xp --help
 
-   Usage:  xp [options] -x xpath xml_source_1 ... xml_source_n
+   Usage:  xp [options] -x xpath xml_source ...
 
    Use XPath expression to select nodes in XML source.
 

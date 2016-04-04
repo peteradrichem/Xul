@@ -22,7 +22,7 @@ from ..ppxml import prettyprint
 def parse_cl():
     """Parse the command-line for options and XML sources."""
     parser = OptionParser(
-        usage="\t%prog [options] -x xpath xml_source_1 ... xml_source_n",
+        usage="\t%prog [options] -x xpath xml_source ...",
         description=__doc__,
         version="%prog " + __version__)
     parser.add_option(
