@@ -40,7 +40,7 @@ def parse_cl():
     parser.add_option(
         "-p", "--print-xpath",
         action="store_true", default=False, dest="print_xpath",
-        help="print the absolute XPath of a result (or parent) element")
+        help="print the absolute XPath of a result (or its parent)")
     parser.add_option(
         "-t", "--element-tree",
         action="store_true", default=False, dest="element_tree",
@@ -96,7 +96,7 @@ def node_repr(node):
     Node examples:
      * element node -- /path/el, //*
      * comment node -- comment()
-     * PI: processing instruction -- //processing-instruction()
+     * PI: processing instruction node -- //processing-instruction()
     """
     # PI - lxml.etree._ProcessingInstruction -- node.target -- node.tag(): <? ?>
     #   "/processing-instruction()"
@@ -124,6 +124,7 @@ def node_repr(node):
 def print_node(node, element_tree=False, xpath_exp=None):
     """Print node (UTF-8 encoded).
 
+    node -- element, comment or processing instruction node; see node_repr()
     element_tree -- True: use prettyprint() to print the whole element tree.
                     False: use node_repr().
     xpath_exp -- print XPath expression (optional)
@@ -230,10 +231,9 @@ def print_result_list(result_list, xml_dom, options):
     """
     # Alle nodes -- //node()
     for node in result_list:
-        # Een element inclusief comment, processing instruction (node.tag)
         if iselement(node):
-            # Print the absolute XPath expression of the result element
             if options.print_xpath:
+                # Print the absolute XPath expression of the result node
                 print_node(
                     node,
                     element_tree=options.element_tree,
