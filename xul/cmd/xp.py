@@ -9,7 +9,8 @@ from sys import stderr, stdin
 #
 # pylint: disable=no-name-in-module
 # lxml ElementTree <http://lxml.de/>
-from lxml.etree import XPathEvalError, iselement, XMLParser
+from lxml.etree import XPathEvalError, XMLParser
+from lxml.etree import iselement, PI, Comment
 
 # Import my own modules
 from .. import __version__
@@ -93,23 +94,26 @@ def et_xpath_dom(xml_dom, xpath_exp, ns_map):
 def node_repr(node):
     """Return node representation (UTF-8 encoded).
 
-    Node examples:
+    node -- lxml.etree._Element instance -- iselement(node)
+
+    Node types:
      * element node -- /path/el, //*
      * comment node -- comment()
-     * PI: processing instruction node -- //processing-instruction()
+     * processing instruction node -- processing-instruction()
     """
-    # PI - lxml.etree._ProcessingInstruction -- node.target -- node.tag(): <? ?>
-    #   "/processing-instruction()"
-    if hasattr(node, "target"):
+    # node.tag is lxml.etree.PI (is lxml.etree.ProcessingInstruction)
+    if node.tag is PI:
+        # Processing instruction node - node.target -- node.tag(): <? ?>
         return "%s value: '%s'" % (
             node.tag(node.target), node.text.encode('UTF-8', 'ignore'))
 
-    # COMMENT node - lxml.etree._Comment -- node.tag(): <!-- -->
-    elif not isinstance(node.tag, basestring):
+    # node.tag is lxml.etree.Comment
+    if node.tag is Comment:
+        # Comment node - node.tag(): <!-- -->
         return node.tag(node.text.encode('UTF-8', 'ignore'))
 
-    # ELEMENT - lxml.etree._Element -- node.tag
-    elif node.text:
+    # node.tag: string
+    if node.text:
         # node.text is a Python string
         if node.text.isspace():
             return "<%s> contains whitespace" % node.tag
@@ -194,15 +198,11 @@ def print_smart_string(smart_string, xml_dom, options):
     if par_el is None:
         print "XPath string: '%s'" % smart_string
         return
-    # PI & comment: tag is a method
-    if not isinstance(par_el.tag, basestring):
-        if hasattr(par_el, "target"):
-            # PI (lxml.etree._ProcessingInstruction)
-            par_el_str = par_el.tag(par_el.target)
-        else:
-            # comment (lxml.etree._Comment)
-            par_el_str = "comment"
-    # tag is a string (lxml.etree._Element)
+    # Parent is a lxml.etree._Element instance; see node_repr()
+    if par_el.tag is PI:
+        par_el_str = par_el.tag(par_el.target)
+    elif par_el.tag is Comment:
+        par_el_str = par_el.tag(" comment ")
     else:
         par_el_str = "<%s>" % par_el.tag
 
