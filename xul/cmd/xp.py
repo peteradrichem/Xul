@@ -91,7 +91,7 @@ def et_xpath_dom(xml_dom, xpath_exp, ns_map):
         return xp_result
 
 
-def element_repr(node):
+def element_repr(node, content=True):
     """Return element representation (UTF-8 encoded).
 
     node -- lxml.etree._Element instance -- iselement(node)
@@ -101,6 +101,16 @@ def element_repr(node):
      * comment node -- comment()
      * processing instruction node -- processing-instruction()
     """
+    if not content:
+        # Return lxml.etree._Element representation without content
+        if node.tag is PI:
+            elem_str = node.tag(node.target)
+        elif node.tag is Comment:
+            elem_str = node.tag(" comment ")
+        else:
+            elem_str = "<%s>" % node.tag
+        return elem_str
+
     # node.tag is lxml.etree.PI (is lxml.etree.ProcessingInstruction)
     if node.tag is PI:
         # Processing instruction node - node.target -- node.tag(): <? ?>
@@ -116,11 +126,13 @@ def element_repr(node):
     if node.text:
         # node.text is a Python string
         if node.text.isspace():
-            return "<%s> contains whitespace" % node.tag
+            elem_str = "<%s> contains whitespace" % node.tag
         elif node.text.isdigit():
-            return "<%s> contains %s" % (node.tag, node.text)
+            elem_str = "<%s> contains %s" % (node.tag, node.text)
         else:
-            return "<%s> contains '%s'" % (node.tag, node.text.encode('UTF-8', 'ignore'))
+            elem_str = "<%s> contains '%s'" % (
+                node.tag, node.text.encode('UTF-8', 'ignore'))
+        return elem_str
     else:
         return "<%s> is empty" % node.tag
 
@@ -128,7 +140,8 @@ def element_repr(node):
 def print_elem(node, element_tree=False, xpath_exp=None):
     """Print element (UTF-8 encoded).
 
-    node -- element, comment or processing instruction node; see element_repr()
+    node -- lxml.etree._Element instance.
+            element, comment or processing instruction node; see element_repr()
     element_tree -- True: use prettyprint() to print the whole element tree.
                     False: use element_repr().
     xpath_exp -- print XPath expression (optional)
@@ -198,13 +211,8 @@ def print_smart_string(smart_string, xml_dom, options):
     if par_el is None:
         print "XPath string: '%s'" % smart_string
         return
-    # Parent is a lxml.etree._Element instance; see element_repr()
-    if par_el.tag is PI:
-        par_el_str = par_el.tag(par_el.target)
-    elif par_el.tag is Comment:
-        par_el_str = par_el.tag(" comment ")
-    else:
-        par_el_str = "<%s>" % par_el.tag
+    # Parent is an lxml.etree._Element instance
+    par_el_str = element_repr(par_el, content=False)
 
     # Print 'smart' string
     smart_repr, parent_rel = smart_with_parent(smart_string)
