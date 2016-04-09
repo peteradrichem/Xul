@@ -91,8 +91,8 @@ def et_xpath_dom(xml_dom, xpath_exp, ns_map):
         return xp_result
 
 
-def node_repr(node):
-    """Return node representation (UTF-8 encoded).
+def element_repr(node):
+    """Return element representation (UTF-8 encoded).
 
     node -- lxml.etree._Element instance -- iselement(node)
 
@@ -125,12 +125,12 @@ def node_repr(node):
         return "<%s> is empty" % node.tag
 
 
-def print_node(node, element_tree=False, xpath_exp=None):
-    """Print node (UTF-8 encoded).
+def print_elem(node, element_tree=False, xpath_exp=None):
+    """Print element (UTF-8 encoded).
 
-    node -- element, comment or processing instruction node; see node_repr()
+    node -- element, comment or processing instruction node; see element_repr()
     element_tree -- True: use prettyprint() to print the whole element tree.
-                    False: use node_repr().
+                    False: use element_repr().
     xpath_exp -- print XPath expression (optional)
     """
     if element_tree:
@@ -142,9 +142,9 @@ def print_node(node, element_tree=False, xpath_exp=None):
     else:
         if xpath_exp:
             print "line %d, XPath %s" % (node.sourceline, xpath_exp)
-            print "   %s" % node_repr(node)
+            print "   %s" % element_repr(node)
         else:
-            print "line %4d:   %s" % (node.sourceline, node_repr(node))
+            print "line %4d:   %s" % (node.sourceline, element_repr(node))
 
 
 def smart_with_parent(smart_string):
@@ -198,7 +198,7 @@ def print_smart_string(smart_string, xml_dom, options):
     if par_el is None:
         print "XPath string: '%s'" % smart_string
         return
-    # Parent is a lxml.etree._Element instance; see node_repr()
+    # Parent is a lxml.etree._Element instance; see element_repr()
     if par_el.tag is PI:
         par_el_str = par_el.tag(par_el.target)
     elif par_el.tag is Comment:
@@ -219,7 +219,7 @@ def print_smart_string(smart_string, xml_dom, options):
                 par_el.sourceline, smart_repr, parent_rel, par_el_str)
     else:
         print "**smart string DEBUG fallback**"
-        print_node(par_el, element_tree=options.element_tree)
+        print_elem(par_el, element_tree=options.element_tree)
 
 
 def print_result_list(result_list, xml_dom, options):
@@ -233,13 +233,13 @@ def print_result_list(result_list, xml_dom, options):
     for node in result_list:
         if iselement(node):
             if options.print_xpath:
-                # Print the absolute XPath expression of the result node
-                print_node(
+                # Print the absolute XPath expression of the result element
+                print_elem(
                     node,
                     element_tree=options.element_tree,
                     xpath_exp=xml_dom.getpath(node))
             else:
-                print_node(node, element_tree=options.element_tree)
+                print_elem(node, element_tree=options.element_tree)
 
         # Een attribute, entity, text (atomic value)
         # Smart string -- .getparent()
