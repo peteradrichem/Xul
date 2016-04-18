@@ -127,8 +127,6 @@ def element_repr(node, content=True):
         # node.text is a Python string
         if node.text.isspace():
             elem_str = "<%s> contains whitespace" % node.tag
-        elif node.text.isdigit():
-            elem_str = "<%s> contains %s" % (node.tag, node.text)
         else:
             elem_str = "<%s> contains '%s'" % (
                 node.tag, node.text.encode('UTF-8', 'ignore'))
@@ -180,9 +178,6 @@ def smart_with_parent(smart_string):
         # Python str.isspace()
         if smart_string.isspace():
             smart_repr = "whitespace"
-        # Python str.isdigit()
-        elif smart_string.isdigit():
-            smart_repr = smart_string
         else:
             smart_repr = "'%s'" % smart_string.encode('UTF-8', 'ignore')
     # TAIL node -- text() -- .is_tail
