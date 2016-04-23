@@ -56,9 +56,8 @@ def parse_cl():
 
 def print_xmlns(ns_map, root):
     """Print XML namespaces."""
-    if root.nsmap:
-        # Print {namespace URI} root tag
-        print "root tag: %s" % root.tag
+    if None in root.nsmap:
+        print "Default XML namespace URI: %s" % root.nsmap[None]
     if ns_map:
         # Print all XML namespaces -- prefix: namespace URI
         print "XML namespaces:"
@@ -398,7 +397,12 @@ def main():
 
 
     # Use XPath on XML sources
+    first = True
     for xml_s in xml_sources:
+        if first:
+            first = False
+        else:
+            print
         xpath_on_xml(xml_s, xml_parser, xpath_dom, options)
 
     if not xml_sources:
