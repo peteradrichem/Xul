@@ -43,9 +43,9 @@ def parse_cl():
         action="store_true", default=False, dest="print_xpath",
         help="print the absolute XPath of a result (or its parent)")
     parser.add_option(
-        "-t", "--element-tree",
-        action="store_true", default=False, dest="element_tree",
-        help="print the XML tree of a result element")
+        "-l", "--pretty-element",
+        action="store_true", default=False, dest="pretty_element",
+        help="pretty print the result element")
     parser.add_option(
         "-m", "--method",
         action="store_true", default=False, dest="lxml_method",
@@ -76,8 +76,8 @@ def xp_prepare(options):
         dom_xpath = class_dom_xpath
 
     # Initialise XML parser
-    if options.element_tree:
-        # Pretty print preparation
+    if options.pretty_element:
+        # Pretty print preparation (removes whitespace nodes!)
         xml_parser = XMLParser(remove_blank_text=True)
     else:
         xml_parser = XMLParser()
@@ -165,16 +165,16 @@ def element_repr(node, content=True):
         return "<%s> is empty" % node.tag
 
 
-def print_elem(node, element_tree=False, xpath_exp=None):
+def print_elem(node, pretty=False, xpath_exp=None):
     """Print element (UTF-8 encoded).
 
     node -- lxml.etree._Element instance.
             element, comment or processing instruction node; see element_repr()
-    element_tree -- True: use prettyprint() to print the whole element tree.
-                    False: use element_repr().
-    xpath_exp -- print XPath expression (optional)
+    pretty -- True: use prettyprint() to print an element.
+              False: use element_repr().
+    xpath_exp -- optional XPath expression
     """
-    if element_tree:
+    if pretty:
         if xpath_exp:
             print "line %d, XPath %s" % (node.sourceline, xpath_exp)
         else:
@@ -252,7 +252,7 @@ def print_smart_string(smart_string, xml_dom, options):
                 par_el.sourceline, smart_repr, parent_rel, par_el_str)
     else:
         print "**smart string DEBUG fallback**"
-        print_elem(par_el, element_tree=options.element_tree)
+        print_elem(par_el, pretty=options.pretty_element)
 
 
 def print_result_list(result_list, xml_dom, options):
@@ -269,10 +269,10 @@ def print_result_list(result_list, xml_dom, options):
                 # Print the absolute XPath expression of the result element
                 print_elem(
                     node,
-                    element_tree=options.element_tree,
+                    pretty=options.pretty_element,
                     xpath_exp=xml_dom.getpath(node))
             else:
-                print_elem(node, element_tree=options.element_tree)
+                print_elem(node, pretty=options.pretty_element)
 
         # Een attribute, entity, text (atomic value)
         # Smart string -- .getparent()

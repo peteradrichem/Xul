@@ -39,7 +39,7 @@ Options
                            set the prefix for the default namespace in XPath
                            [default: 'd']
      -p, --print-xpath     print the absolute XPath of a result (or its parent)
-     -t, --element-tree    print the XML tree of a result element
+     -l, --pretty-element  pretty print the result element
      -m, --method          use ElementTree.xpath method instead of XPath class
 
 Namespaces in XML
