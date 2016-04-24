@@ -54,6 +54,37 @@ def parse_cl():
     return parser.parse_args()
 
 
+def xp_prepare(options):
+    """Return DOM XPath function and XML parser.
+
+    options -- Command-line options
+    """
+    # Check XPath expression
+    if options.xpath_exp:
+        if build_xpath(options.xpath_exp):
+            print "XPath: %s\n" % options.xpath_exp
+        else:
+            exit(60)
+    else:
+        stderr.write('No XPath expression specified\n')
+        exit(50)
+
+    # ElementTree.xpath method or XPath class (default)
+    if options.lxml_method:
+        dom_xpath = et_dom_xpath
+    else:
+        dom_xpath = class_dom_xpath
+
+    # Initialise XML parser
+    if options.element_tree:
+        # Pretty print preparation
+        xml_parser = XMLParser(remove_blank_text=True)
+    else:
+        xml_parser = XMLParser()
+
+    return dom_xpath, xml_parser
+
+
 def print_xmlns(ns_map, root):
     """Print XML namespaces."""
     if None in root.nsmap:
@@ -65,7 +96,7 @@ def print_xmlns(ns_map, root):
             print "%8s: %s" % (key, ns_map[key])
 
 
-def class_xpath_dom(xml_dom, xpath_exp, ns_map):
+def class_dom_xpath(xml_dom, xpath_exp, ns_map):
     """XPath with lxml.etree.XPath class."""
     xpath_obj = build_xpath(xpath_exp, ns_map)
     if not xpath_obj:
@@ -74,7 +105,7 @@ def class_xpath_dom(xml_dom, xpath_exp, ns_map):
         return etree_xpath(xml_dom, xpath_obj)
 
 
-def et_xpath_dom(xml_dom, xpath_exp, ns_map):
+def et_dom_xpath(xml_dom, xpath_exp, ns_map):
     """XPath with lxml.etree.ElementTree.xpath method."""
     try:
         xp_result = xml_dom.xpath(xpath_exp, namespaces=ns_map)
@@ -329,12 +360,12 @@ def print_xp_result(xp_result, xml_dom, ns_map, options):
         print "Unknown XPath result: %s" % xp_result
 
 
-def xpath_on_xml(xml_source, parser, xpath_dom, options):
+def xpath_on_xml(xml_source, parser, dom_xpath, options):
     """Apply XPath expression to XML source.
 
     xml_source -- XML file, file-like object or URL
     parser -- XML parser (lxml.etree.XMLParser)
-    xpath_dom -- ElementTree.xpath method or XPath class
+    dom_xpath -- ElementTree.xpath method or XPath class
     options -- Command-line options
     """
     # XML DOM Node Tree (ElementTree)
@@ -348,7 +379,7 @@ def xpath_on_xml(xml_source, parser, xpath_dom, options):
     # XML namespaces
     ns_map = dom_namespaces(xml_dom, options.exslt, options.default_ns_prefix)
     # Use XPath expression on XML DOM
-    xp_result = xpath_dom(xml_dom, options.xpath_exp, ns_map)
+    xp_result = dom_xpath(xml_dom, options.xpath_exp, ns_map)
     if xp_result is None:
         return False
     else:
@@ -371,30 +402,8 @@ def main():
     # Command-line
     (options, xml_sources) = parse_cl()
 
-    # Check XPath expression
-    if options.xpath_exp:
-        if build_xpath(options.xpath_exp):
-            print "XPath: %s\n" % options.xpath_exp
-        else:
-            exit(60)
-    else:
-        stderr.write('No XPath expression specified\n')
-        exit(50)
-
-    if options.lxml_method:
-        # lxml.ElementTree.xpath method
-        xpath_dom = et_xpath_dom
-    else:
-        # lxml.etree.XPath class (default)
-        xpath_dom = class_xpath_dom
-
-    # Initialise XML parser
-    if options.element_tree:
-        # Element tree pretty print preparation
-        xml_parser = XMLParser(remove_blank_text=True)
-    else:
-        xml_parser = XMLParser()
-
+    # DOM XPath function and XML parser
+    (dom_xpath, xml_parser) = xp_prepare(options)
 
     # Use XPath on XML sources
     first = True
@@ -403,11 +412,11 @@ def main():
             first = False
         else:
             print
-        xpath_on_xml(xml_s, xml_parser, xpath_dom, options)
+        xpath_on_xml(xml_s, xml_parser, dom_xpath, options)
 
     if not xml_sources:
         # Read from a pipe when no XML source is specified
         if not stdin.isatty():
-            xpath_on_xml(stdin, xml_parser, xpath_dom, options)
+            xpath_on_xml(stdin, xml_parser, dom_xpath, options)
         else:
             stderr.write("Error: no XML source specified\n")
