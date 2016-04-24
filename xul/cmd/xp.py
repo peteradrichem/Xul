@@ -85,17 +85,6 @@ def xp_prepare(options):
     return dom_xpath, xml_parser
 
 
-def print_xmlns(ns_map, root):
-    """Print XML namespaces."""
-    if None in root.nsmap:
-        print "Default XML namespace URI: %s" % root.nsmap[None]
-    if ns_map:
-        # Print all XML namespaces -- prefix: namespace URI
-        print "XML namespaces:"
-        for key in ns_map:
-            print "%8s: %s" % (key, ns_map[key])
-
-
 def class_dom_xpath(xml_dom, xpath_exp, ns_map):
     """XPath with lxml.etree.XPath class."""
     xpath_obj = build_xpath(xpath_exp, ns_map)
@@ -119,6 +108,17 @@ def et_dom_xpath(xml_dom, xpath_exp, ns_map):
         return None
     else:
         return xp_result
+
+
+def print_xmlns(ns_map, root):
+    """Print XML namespaces."""
+    if None in root.nsmap:
+        print "Default XML namespace URI: %s" % root.nsmap[None]
+    if ns_map:
+        # Print all XML namespaces -- prefix: namespace URI
+        print "XML namespaces:"
+        for key in ns_map:
+            print "%8s: %s" % (key, ns_map[key])
 
 
 def element_repr(node, content=True):
