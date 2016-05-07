@@ -54,6 +54,12 @@ Syntax Highlighting
 -------------------
 ``ppx`` will syntax highlight the XML source if you have Pygments_ installed.
 
+Pretty print the XML Schema 1.0 schema document:
+
+.. sourcecode:: bash
+
+   ppx http://www.w3.org/2001/XMLSchema.xsd
+
 You can disable syntax highlighting with the ``--no-syntax`` option.
 
 
@@ -68,6 +74,10 @@ XML documents should begin with an XML declaration which specifies the version o
 
 By default ``ppx`` will print an (UTF-8) XML declaration.
 Omit the XML declaration with the ``--omit-declaration`` option.
+
+.. sourcecode:: bash
+
+   ppx --omit-declaration file.xml
 
 Examples
 --------

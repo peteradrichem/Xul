@@ -82,15 +82,15 @@ Validate an XSD file with the
 
    validate -x examples/xsd/XMLSchema.xsd schema_file.xsd
 
-Validate the XML Schema XSD with the (identical) XML Schema schema document:
+Validate the XML Schema 1.1 XSD with the (identical) XML Schema schema document:
 
-.. code:: bash
+.. sourcecode:: bash
 
    validate -x examples/xsd/XMLSchema.xsd http://www.w3.org/2009/XMLSchema/XMLSchema.xsd
 
 And vice versa:
 
-.. code:: bash
+.. sourcecode:: bash
 
    validate -x http://www.w3.org/2009/XMLSchema/XMLSchema.xsd examples/xsd/XMLSchema.xsd
 
