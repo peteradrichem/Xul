@@ -1,16 +1,13 @@
 .. index::
-   single: transform
+   single: transform script
    single: scripts; transform
+   single: XSLT
+   single: Extensible Stylesheet Language Transformations
 
 transform -- Transform XML with XSLT
 ====================================
 
-.. index::
-   single: XSLT
-   single: Extensible Stylesheet Language Transformations
-
 Use ``transform`` to transform an :ref:`xml_source` with XSLT [#]_.
-
 
 Options
 -------
@@ -33,6 +30,8 @@ Options
      -o, --omit-declaration
                            omit the XML declaration
 
+.. index::
+   single: XML declaration; transform
 
 XML declaration
 ---------------
@@ -41,7 +40,6 @@ XML documents should begin with an XML declaration which specifies the version o
 
 By default ``transform`` will print an (UTF-8) XML declaration.
 Omit the XML declaration with the ``--omit-declaration`` option.
-
 
 Examples
 --------

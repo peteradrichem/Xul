@@ -1,6 +1,7 @@
 .. index::
-   single: ppx
+   single: ppx script
    single: scripts; ppx
+   single: pretty print
 
 ppx -- Pretty Print XML
 =======================
@@ -58,6 +59,7 @@ You can disable syntax highlighting with the ``--no-syntax`` option.
 
 .. index::
    single: XML declaration
+   single: XML declaration; ppx
 
 XML declaration
 ---------------

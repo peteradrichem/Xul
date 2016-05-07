@@ -1,15 +1,13 @@
 .. index::
-   single: validate
+   single: validate script
    single: scripts; validate
+   single: XSD
+   single: XML Schema Definition
 
 validate -- Validate an XML source
 ==================================
 
 Use ``validate`` to validate an :ref:`xml_source`.
-
-.. index::
-   single: XSD
-   single: XML Schema Definition
 
 XSD
 ---
@@ -31,7 +29,6 @@ Validate an XML source with a DTD [#]_ file:
 
    validate -d doctype.dtd file.xml
 
-
 Options
 -------
 ``validate`` supports the following command-line options:
@@ -52,7 +49,6 @@ Options
                            XML Schema Definition (XSD) source
      -d DTD_SOURCE, --dtd=DTD_SOURCE
                            Document Type Definition (DTD) source
-
 
 Examples
 --------

@@ -1,12 +1,13 @@
 .. index::
-   single: xp
+   single: xp script
    single: scripts; xp
+   single: XPath
 
 xp -- Select nodes with XPath
 =============================
 
 .. index::
-   single: XPath
+   single: XPath expression
 
 Select nodes in an :ref:`xml_source` with XPath [#]_ expressions.
 
@@ -69,6 +70,7 @@ Namespaces in XML
 -----------------
 
 .. index::
+   single: XML Namespaces
    single: Namespaces
 
 List all the XML namespaces (prefix, URI) of the document element:

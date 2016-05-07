@@ -9,6 +9,10 @@ XML source
 The Xul scripts require an XML source to operate on.
 An XML source can be a local file, an URL or a pipe.
 
+
+.. index::
+   single: XML file
+
 File
 ----
 With ``xp`` you can select nodes in a local XML file with an XPath expression:
@@ -16,6 +20,10 @@ With ``xp`` you can select nodes in a local XML file with an XPath expression:
 .. code::
 
    xp -x 'node()' entity.xml
+
+
+.. index::
+   single: URL
 
 URL
 ---
@@ -29,6 +37,10 @@ For example, to pretty print an RSS feed:
 Loading XML through HTTPS is not supported and will result in an
 *failed to load external entity* error.
 
+
+.. index::
+   single: redirected output
+   single: pipe
 
 Pipe
 ----
