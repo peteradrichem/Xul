@@ -1,6 +1,6 @@
 # coding=utf-8
 
-"""Use XPath expression to select nodes in XML source."""
+"""Select nodes in an XML source with XPath expressions."""
 
 
 # Standard Python
@@ -41,7 +41,7 @@ def parse_cl():
     parser.add_option(
         "-p", "--print-xpath",
         action="store_true", default=False, dest="print_xpath",
-        help="print the absolute XPath of a result (or its parent)")
+        help="print the XPath expression of the result element (or its parent)")
     parser.add_option(
         "-l", "--pretty-element",
         action="store_true", default=False, dest="pretty_element",
@@ -242,8 +242,8 @@ def print_smart_string(smart_string, xml_dom, options):
     # Print 'smart' string
     smart_repr, parent_rel = smart_with_parent(smart_string)
     if smart_repr:
-        # Print the absolute XPath expression of the parent element
         if options.print_xpath:
+            # Print the absolute XPath expression of the parent element
             print "line %d, parent XPath %s" % (
                 par_el.sourceline, xml_dom.getpath(par_el))
             print "   %s %s %s" % (smart_repr, parent_rel, par_el_str)
@@ -266,7 +266,6 @@ def print_result_list(result_list, xml_dom, options):
     for node in result_list:
         if iselement(node):
             if options.print_xpath:
-                # Print the absolute XPath expression of the result element
                 print_elem(
                     node,
                     pretty=options.pretty_element,

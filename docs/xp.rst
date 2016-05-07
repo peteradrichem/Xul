@@ -8,8 +8,19 @@ xp -- Select nodes with XPath
 .. index::
    single: XPath
 
-Use XPath [#]_ expressions to select nodes in an :ref:`xml_source`.
+Select nodes in an :ref:`xml_source` with XPath [#]_ expressions.
 
+XPath expression
+----------------
+Set the XPath expression with the ``--xpath`` option.
+
+List all the attributes of an XML file:
+
+.. code:: bash
+
+   xp --xpath="//@*" file.xml
+
+Or use the short option ``-x``.
 List the latest Python PEPs:
 
 .. code:: bash
@@ -27,7 +38,7 @@ Options
 
    Usage:  xp [options] -x xpath xml_source ...
 
-   Use XPath expression to select nodes in XML source.
+   Select nodes in an XML source with XPath expressions.
 
    Options:
      --version             show program's version number and exit
@@ -38,9 +49,21 @@ Options
      -d DEFAULT_NS_PREFIX, --default-prefix=DEFAULT_NS_PREFIX
                            set the prefix for the default namespace in XPath
                            [default: 'd']
-     -p, --print-xpath     print the absolute XPath of a result (or its parent)
+     -p, --print-xpath     print the XPath expression of the result element (or
+                           its parent)
      -l, --pretty-element  pretty print the result element
      -m, --method          use ElementTree.xpath method instead of XPath class
+
+Print result's XPath
+--------------------
+Use the ``--print-xpath`` option to print the XPath expression of each result element.
+If the result is a text node ``xp`` will print the XPath expression of the parent element.
+The XPath expression will have an absolute location path.
+
+.. sourcecode:: bash
+
+   xp --print-xpath --xpath="//@*" file.xml
+   xp -px "//@*" file.xml
 
 Namespaces in XML
 -----------------
@@ -48,22 +71,22 @@ Namespaces in XML
 .. index::
    single: Namespaces
 
+List all the XML namespaces (prefix, URI) of the document element:
+
+.. code:: bash
+
+   xp -x 'namespace::*' file.xml
+
 The default namespace of the document element:
 
 .. code:: bash
 
    xp -x 'namespace::*[name()=""]' file.xml
 
-There is no prefix for the default namespace.
-
-List all document element namespaces (prefix, URI):
-
-.. code:: bash
-
-   xp -x 'namespace::*' file.xml
+The default namespace has no prefix (None).
 
 To select nodes in an XML namespace [#]_ XPath uses prefixed names (qualified names).
-``xp`` uses 'd' for the default namespace prefix.
+You can use 'd' for the default namespace prefix.
 
 The five most recent Python Insider posts:
 
@@ -71,7 +94,7 @@ The five most recent Python Insider posts:
 
    xp -x "descendant::d:entry[position()<=5]/d:title/text()" http://feeds.feedburner.com/PythonInsider
 
-You can change the prefix for the default namespace with the ``--default-prefix`` option.
+Change the prefix for the default namespace with the ``--default-prefix`` option.
 
 Extensions to XSLT
 ------------------
