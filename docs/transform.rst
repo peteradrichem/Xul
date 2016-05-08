@@ -9,6 +9,16 @@ transform -- Transform XML with XSLT
 
 Use ``transform`` to transform an :ref:`xml_source` with XSLT [#]_.
 
+.. code:: bash
+
+   transform --xslt=xslt.xml file.xml
+
+Transform an XML file and :doc:`pretty print <ppx>` the result:
+
+.. code:: bash
+
+   transform -x xslt.xml file.xml | ppx
+
 Options
 -------
 
@@ -39,14 +49,11 @@ XML declaration
 XML documents should begin with an XML declaration which specifies the version of XML being used [#]_.
 
 By default ``transform`` will print an (UTF-8) XML declaration.
-Omit the XML declaration with the ``--omit-declaration`` option.
-
-Examples
---------
+You can omit the XML declaration with the ``--omit-declaration`` option.
 
 .. code:: bash
 
-   transform -x xslt.xml file.xml
+   transform --omit-declaration -x xslt.xml file.xml
 
 
 .. rubric:: Footnotes
