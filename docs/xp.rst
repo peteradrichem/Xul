@@ -50,21 +50,21 @@ Options
      -d DEFAULT_NS_PREFIX, --default-prefix=DEFAULT_NS_PREFIX
                            set the prefix for the default namespace in XPath
                            [default: 'd']
-     -p, --print-xpath     print the XPath expression of the result element (or
+     -r, --result-xpath    print the XPath expression of the result element (or
                            its parent)
-     -l, --pretty-element  pretty print the result element
+     -p, --pretty-element  pretty print the result element
      -m, --method          use ElementTree.xpath method instead of XPath class
 
 Print result's XPath
 --------------------
-Use the ``--print-xpath`` option to print the XPath expression of each result element.
+Use the ``--result-xpath`` option to print the XPath expression of each result element.
 If the result is a text node ``xp`` will print the XPath expression of the parent element.
 The XPath expression will have an absolute location path.
 
 .. sourcecode:: bash
 
-   xp --print-xpath --xpath="//@*" file.xml
-   xp -px "//@*" file.xml
+   xp --result-xpath --xpath="//@*" file.xml
+   xp -rx "//@*" file.xml
 
 Namespaces in XML
 -----------------

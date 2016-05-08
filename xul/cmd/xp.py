@@ -39,11 +39,11 @@ def parse_cl():
         action="store", type="string", default="d", dest="default_ns_prefix",
         help="set the prefix for the default namespace in XPath [default: '%default']")
     parser.add_option(
-        "-p", "--print-xpath",
-        action="store_true", default=False, dest="print_xpath",
+        "-r", "--result-xpath",
+        action="store_true", default=False, dest="result_xpath",
         help="print the XPath expression of the result element (or its parent)")
     parser.add_option(
-        "-l", "--pretty-element",
+        "-p", "--pretty-element",
         action="store_true", default=False, dest="pretty_element",
         help="pretty print the result element")
     parser.add_option(
@@ -242,7 +242,7 @@ def print_smart_string(smart_string, xml_dom, options):
     # Print 'smart' string
     smart_repr, parent_rel = smart_with_parent(smart_string)
     if smart_repr:
-        if options.print_xpath:
+        if options.result_xpath:
             # Print the absolute XPath expression of the parent element
             print "line %d, parent XPath %s" % (
                 par_el.sourceline, xml_dom.getpath(par_el))
@@ -265,7 +265,7 @@ def print_result_list(result_list, xml_dom, options):
     # Alle nodes -- //node()
     for node in result_list:
         if iselement(node):
-            if options.print_xpath:
+            if options.result_xpath:
                 print_elem(
                     node,
                     pretty=options.pretty_element,
