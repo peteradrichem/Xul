@@ -22,11 +22,13 @@ List all the attributes of an XML file:
    xp --xpath="//@*" file.xml
 
 Or use the short option ``-x``.
+
 List the latest Python PEPs:
 
 .. code:: bash
 
-   curl -s https://www.python.org/dev/peps/peps.rss/ | xp -x "//item/title/text()"
+   curl -s https://www.python.org/dev/peps/peps.rss/ | \
+   xp -x "//item/title/text()"
 
 Options
 -------
@@ -58,12 +60,16 @@ Options
 Print result's XPath
 --------------------
 Use the ``--result-xpath`` option to print the XPath expression of each result element.
-If the result is a text node ``xp`` will print the XPath expression of the parent element.
-The XPath expression will have an absolute location path.
+The result XPath expression will have an absolute location path.
 
 .. sourcecode:: bash
 
-   xp --result-xpath --xpath="//@*" file.xml
+   xp --result-xpath --xpath="//title" file.xml
+
+If the result is a text or attribute node ``xp`` will print the XPath expression of the parent element.
+
+.. sourcecode:: bash
+
    xp -rx "//@*" file.xml
 
 Namespaces in XML
@@ -85,18 +91,24 @@ The default namespace of the document element:
 
    xp -x 'namespace::*[name()=""]' file.xml
 
-The default namespace has no prefix (None).
+The default XML namespace has no prefix (None) in an XML document.
 
 To select nodes in an XML namespace [#]_ XPath uses prefixed names (qualified names).
-You can use 'd' for the default namespace prefix.
+``xp`` will use 'd' as the prefix for the default XML namespace.
 
-The five most recent Python Insider posts:
+List the five most recent Python Insider posts:
 
 .. code:: bash
 
-   xp -x "descendant::d:entry[position()<=5]/d:title/text()" http://feeds.feedburner.com/PythonInsider
+   xp -x "descendant::d:entry[position()<=5]/d:title/text()" \
+   http://feeds.feedburner.com/PythonInsider
 
 Change the prefix for the default namespace with the ``--default-prefix`` option.
+
+.. code:: bash
+
+   xp -d p -x "descendant::p:entry[position()<=5]/p:title/text()" \
+   http://feeds.feedburner.com/PythonInsider
 
 Extensions to XSLT
 ------------------
@@ -111,19 +123,22 @@ Python Insider posts published in 2015 (EXSLT ``date`` prefix):
 
 .. code:: bash
 
-   xp -ex "//d:entry[date:year(d:published) >= '2015']/d:title/text()" http://feeds.feedburner.com/PythonInsider
+   xp -ex "//d:entry[date:year(d:published) >= '2015']/d:title/text()" \
+   http://feeds.feedburner.com/PythonInsider
 
 Python Insider posts updated in December:
 
 .. code:: bash
 
-   xp -ex "//d:entry[date:month-name(d:updated) = 'December']/d:title/text()" http://feeds.feedburner.com/PythonInsider
+   xp -ex "//d:entry[date:month-name(d:updated) = 'December']/d:title/text()" \
+   http://feeds.feedburner.com/PythonInsider
 
-Python PEPs about "build" or "built" (EXSLT ``re`` prefix):
+Python PEPs with "build" or "built" in the title (EXSLT ``re`` prefix):
 
 .. code:: bash
 
-   curl -s https://www.python.org/dev/peps/peps.rss/ | xp -ex '//item/title/text()[re:match(., "buil(d|t)", "i")]'
+   curl -s https://www.python.org/dev/peps/peps.rss/ | \
+   xp -ex '//item/title/text()[re:match(., "buil(d|t)", "i")]'
 
 
 .. rubric:: Footnotes
