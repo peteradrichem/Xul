@@ -9,13 +9,12 @@ from sys import stderr, stdin
 #
 # pylint: disable=no-name-in-module
 # lxml ElementTree <http://lxml.de/>
-from lxml.etree import XMLParser
+from lxml.etree import XMLParser, tostring
 
 # Import my own modules
 from .. import __version__
 from ..log import setup_logger_console
 from ..dom import build_xsl_transform, xml_transformer
-from ..ppxml import prettyprint
 
 
 def parse_cl():
@@ -48,7 +47,7 @@ def print_xslt(xml_source, transformer, parser, options):
             # Result is not an ElementTree. Print as text
             print result
         else:
-            prettyprint(result, xml_declaration=options.declaration)
+            print tostring(result, encoding='UTF-8', xml_declaration=options.declaration)
 
 
 def main():
