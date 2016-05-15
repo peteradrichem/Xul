@@ -51,7 +51,7 @@ Source
 The Xul source can be found on Bitbucket_.
 
 
-Indices and tables
+Indices and search
 ------------------
 * :ref:`genindex`
 * :ref:`search`

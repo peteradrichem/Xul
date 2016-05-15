@@ -32,7 +32,6 @@ List the latest Python PEPs:
 
 Options
 -------
-
 ``xp`` supports the following command-line options:
 
 .. code:: bash
@@ -72,14 +71,14 @@ If the result is a text or attribute node ``xp`` will print the XPath expression
 
    xp -rx "//@*" file.xml
 
-Namespaces in XML
------------------
 
 .. index::
    single: XML Namespaces
    single: Namespaces
 
-List all the XML namespaces (prefix, URI) of the document element:
+Namespaces in XML
+-----------------
+List all the XML namespaces [#]_ (prefix, URI) of the document element:
 
 .. code:: bash
 
@@ -91,9 +90,8 @@ The default namespace of the document element:
 
    xp -x 'namespace::*[name()=""]' file.xml
 
-The default XML namespace has no prefix (None) in an XML document.
-
-To select nodes in an XML namespace [#]_ XPath uses prefixed names (qualified names).
+The default XML namespace has no prefix (*None*) in an XML document.
+To select nodes in an XML namespace XPath uses prefixed names (qualified names).
 ``xp`` will use 'd' as the prefix for the default XML namespace.
 
 List the five most recent Python Insider posts:
@@ -103,23 +101,24 @@ List the five most recent Python Insider posts:
    xp -x "descendant::d:entry[position()<=5]/d:title/text()" \
    http://feeds.feedburner.com/PythonInsider
 
-Change the prefix for the default namespace with the ``--default-prefix`` option.
+Change the prefix for the default namespace with the ``--default-prefix`` option:
 
 .. code:: bash
 
    xp -d p -x "descendant::p:entry[position()<=5]/p:title/text()" \
    http://feeds.feedburner.com/PythonInsider
 
-Extensions to XSLT
-------------------
 
 .. index::
    single: EXSLT
    single: Extensions to XSLT
 
-lxml has support for EXSLT [#]_ (requires libxslt 1.1.25 or higher).
+Extensions to XSLT
+------------------
+lxml supports the EXSLT [#]_ extensions through libxslt (requires libxslt 1.1.25 or higher).
+``xp`` will add the EXSLT namespaces with the ``--exslt`` command-line option.
 
-Python Insider posts published in 2015 (EXSLT ``date`` prefix):
+Find Python Insider posts published in or after 2015 with EXSLT (``date`` prefix):
 
 .. code:: bash
 
@@ -133,12 +132,13 @@ Python Insider posts updated in December:
    xp -ex "//d:entry[date:month-name(d:updated) = 'December']/d:title/text()" \
    http://feeds.feedburner.com/PythonInsider
 
-Python PEPs with "build" or "built" in the title (EXSLT ``re`` prefix):
+Use the power of regular expression (``re`` prefix).
+Find Python PEPs with "build" or "built" in the title (case-insensitive):
 
 .. code:: bash
 
    curl -s https://www.python.org/dev/peps/peps.rss/ | \
-   xp -ex '//item/title/text()[re:match(., "buil(d|t)", "i")]'
+   xp -ex '//item/title[re:match(text(), "buil(d|t)", "i")]'
 
 
 .. rubric:: Footnotes
