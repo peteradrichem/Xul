@@ -140,6 +140,10 @@ Find Python PEPs with "build" or "built" in the title (case-insensitive):
    curl -s https://www.python.org/dev/peps/peps.rss/ | \
    xp -ex '//item/title[re:match(text(), "buil(d|t)", "i")]'
 
+Pretty print result
+-------------------
+A result element can be pretty printed with the ``--pretty-element`` command-line option.
+
 
 .. rubric:: Footnotes
 
