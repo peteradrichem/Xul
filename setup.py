@@ -2,11 +2,11 @@
 
 """Setup script for building XML Utilities."""
 
+import codecs
+from os import path
 from setuptools import setup, find_packages
 from xul import __version__
 
-import codecs
-from os import path
 here = path.abspath(path.dirname(__file__))
 
 def long_description():
