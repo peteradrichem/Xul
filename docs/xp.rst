@@ -15,13 +15,13 @@ XPath expression
 ----------------
 Set the XPath expression with the ``--xpath`` option.
 
-List all the attributes of an XML file:
+List all attributes of an XML file:
 
 .. code:: bash
 
    xp --xpath="//@*" file.xml
 
-Or use the short option ``-x``.
+Or use the short ``-x`` option.
 
 List the latest Python PEPs:
 
@@ -59,13 +59,14 @@ Options
 Print result's XPath
 --------------------
 Use the ``--result-xpath`` option to print the XPath expression of each result element.
-The result XPath expression will have an absolute location path.
+Each XPath expression will have an absolute location path.
 
 .. sourcecode:: bash
 
    xp --result-xpath --xpath="//title" file.xml
 
-If the result is a text or attribute node ``xp`` will print the XPath expression of the parent element.
+If a result is a text or attribute node ``xp`` will print the parent element's
+XPath expression.
 
 .. sourcecode:: bash
 
@@ -116,7 +117,7 @@ Change the prefix for the default namespace with the ``--default-prefix`` option
 Extensions to XSLT
 ------------------
 lxml supports the EXSLT [#]_ extensions through libxslt (requires libxslt 1.1.25 or higher).
-``xp`` will add the EXSLT namespaces with the ``--exslt`` command-line option.
+``xp`` will add EXSLT namespaces with the ``--exslt`` command-line option.
 
 Find Python Insider posts published in or after 2015 with EXSLT (``date`` prefix):
 
@@ -143,6 +144,12 @@ Find Python PEPs with "build" or "built" in the title (case-insensitive):
 Pretty print result
 -------------------
 A result element can be pretty printed with the ``--pretty-element`` command-line option.
+
+xpath method
+------------
+``xp`` uses `lxml.etree.XPath` class by default. You can choose the
+`lxml.etree.ElementTree.xpath` method with the ``--method`` command-line option.
+The results should be the same but error reporting can be different.
 
 
 .. rubric:: Footnotes
