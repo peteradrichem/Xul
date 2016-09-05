@@ -290,11 +290,15 @@ def print_result_list(result_list, xml_dom, options):
             print node
 
 
-def print_result_header(list_result):
-    """Print header for list of XPath results."""
+def print_result_header(xp_result):
+    """Print header for XPath result(s)."""
+    if isinstance(xp_result, list):
+        list_result = xp_result
+    else:
+        list_result = [xp_result]
     xp_r_len = len(list_result)
     if xp_r_len == 0:
-        print "no result (empy list)"
+        print "no results (empty list)"
     elif xp_r_len == 1:
         if isinstance(list_result[0], tuple):
             print "1 XML namespace result"
@@ -323,6 +327,7 @@ def print_xp_result(xp_result, xml_dom, ns_map, options):
     XPath return values:
         http://lxml.de/xpathxslt.html#xpath-return-values
     """
+    print_result_header(xp_result)
     print_xmlns(ns_map, xml_dom.getroot())
 
     # STRING - string (basestring) - smart string
@@ -386,10 +391,6 @@ def xpath_on_xml(xml_source, parser, dom_xpath, options):
             print "<stdin>,",
         else:
             print "Source: %s," % xml_source,
-        if isinstance(xp_result, list):
-            print_result_header(xp_result)
-        else:
-            print "1 result"
         return print_xp_result(xp_result, xml_dom, ns_map, options)
 
 
