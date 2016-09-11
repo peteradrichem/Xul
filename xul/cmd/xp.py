@@ -1,6 +1,6 @@
 # coding=utf-8
 
-"""Select nodes in an XML source with XPath expressions."""
+"""Select nodes in an XML source with an XPath expression."""
 
 
 # Standard Python
@@ -23,13 +23,9 @@ from ..ppxml import prettyprint
 def parse_cl():
     """Parse the command-line for options and XML sources."""
     parser = OptionParser(
-        usage="\t%prog [options] -x xpath xml_source ...",
+        usage="\t%prog xpath_expr [options] xml_source ...",
         description=__doc__,
         version="%prog " + __version__)
-    parser.add_option(
-        "-x", "--xpath",
-        action="store", type="string", dest="xpath_exp",
-        help="XML Path Language (XPath) expression")
     parser.add_option(
         "-e", "--exslt",
         action="store_true", default=False, dest="exslt",
@@ -59,16 +55,6 @@ def xp_prepare(options):
 
     options -- Command-line options
     """
-    # Check XPath expression
-    if options.xpath_exp:
-        if build_xpath(options.xpath_exp):
-            print "XPath: %s\n" % options.xpath_exp
-        else:
-            exit(60)
-    else:
-        stderr.write('No XPath expression specified\n')
-        exit(50)
-
     # ElementTree.xpath method or XPath class (default)
     if options.lxml_method:
         dom_xpath = et_dom_xpath
@@ -364,13 +350,14 @@ def print_xp_result(xp_result, xml_dom, ns_map, options):
         print "Unknown XPath result: %s" % xp_result
 
 
-def xpath_on_xml(xml_source, parser, dom_xpath, options):
+def xpath_on_xml(xml_source, parser, dom_xpath, options, xpath_expr):
     """Apply XPath expression to XML source.
 
     xml_source -- XML file, file-like object or URL
     parser -- XML parser (lxml.etree.XMLParser)
     dom_xpath -- ElementTree.xpath method or XPath class
     options -- Command-line options
+    xpath_expr -- XPath expression
     """
     # XML DOM Node Tree (ElementTree)
     xml_dom = build_etree(
@@ -383,7 +370,7 @@ def xpath_on_xml(xml_source, parser, dom_xpath, options):
     # XML namespaces
     ns_map = dom_namespaces(xml_dom, options.exslt, options.default_ns_prefix)
     # Use XPath expression on XML DOM
-    xp_result = dom_xpath(xml_dom, options.xpath_exp, ns_map)
+    xp_result = dom_xpath(xml_dom, xpath_expr, ns_map)
     if xp_result is None:
         return False
     else:
@@ -400,7 +387,19 @@ def main():
     setup_logger_console()
 
     # Command-line
-    (options, xml_sources) = parse_cl()
+    (options, args) = parse_cl()
+
+    # Check XPath expression
+    if args:
+        xpath_expr = args[0]
+        if build_xpath(xpath_expr):
+            print "XPath: %s\n" % xpath_expr
+            xml_sources = args[1:]
+        else:
+            exit(60)
+    else:
+        stderr.write('No XPath expression specified\n')
+        exit(50)
 
     # DOM XPath function and XML parser
     (dom_xpath, xml_parser) = xp_prepare(options)
@@ -412,11 +411,11 @@ def main():
             first = False
         else:
             print
-        xpath_on_xml(xml_s, xml_parser, dom_xpath, options)
+        xpath_on_xml(xml_s, xml_parser, dom_xpath, options, xpath_expr)
 
     if not xml_sources:
         # Read from a pipe when no XML source is specified
         if not stdin.isatty():
-            xpath_on_xml(stdin, xml_parser, dom_xpath, options)
+            xpath_on_xml(stdin, xml_parser, dom_xpath, options, xpath_expr)
         else:
             stderr.write("Error: no XML source specified\n")
