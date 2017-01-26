@@ -16,13 +16,13 @@ Transform an XML file:
 
 .. code:: bash
 
-   transform --xslt=xslt.xml file.xml
+   transform xsl_transform.xml file.xml
 
 Transform an XML file and :doc:`pretty print <ppx>` the result:
 
 .. code:: bash
 
-   transform -x xslt.xml file.xml | ppx
+   transform xsl_transform.xml file.xml | ppx
 
 Options
 -------
@@ -33,15 +33,13 @@ Options
 
    $ transform --help
 
-   Usage: transform [-o] -x xslt_source xml_source ...
+   Usage: transform xslt_source [-o] xml_source ...
 
    Transform XML source with XSLT.
 
    Options:
      --version             show program's version number and exit
      -h, --help            show this help message and exit
-     -x XSLT_SOURCE, --xslt=XSLT_SOURCE
-                           XSLT source for transforming XML source(s)
      -o, --omit-declaration
                            omit the XML declaration
 
@@ -58,7 +56,7 @@ You can omit the XML declaration with the ``--omit-declaration`` option.
 
 .. code:: bash
 
-   transform --omit-declaration -x xslt.xml file.xml
+   transform --omit-declaration xsl_transform.xml file.xml
 
 
 .. rubric:: Footnotes

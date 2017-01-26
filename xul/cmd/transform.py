@@ -18,15 +18,11 @@ from ..dom import build_xsl_transform, xml_transformer
 
 
 def parse_cl():
-    """Parse the command-line for options and XML sources."""
+    """Parse the command-line for XSLT source, options and XML sources."""
     cl_parser = OptionParser(
-        usage="%prog [-o] -x xslt_source xml_source ...",
+        usage="%prog xslt_source [-o] xml_source ...",
         description=__doc__,
         version="%prog " + __version__)
-    cl_parser.add_option(
-        "-x", "--xslt",
-        action="store", type="string", dest="xslt_source",
-        help="XSLT source for transforming XML source(s)")
     cl_parser.add_option(
         "-o", "--omit-declaration", action="store_false", default=True,
         dest="declaration", help="omit the XML declaration")
@@ -56,17 +52,21 @@ def main():
     setup_logger_console()
 
     # Command-line
-    (options, xml_sources) = parse_cl()
+    (options, args) = parse_cl()
 
-    if options.xslt_source:
+    # Check XSLT source
+    if args:
+        xslt_source = args[0]
         # Build an XSL Transformer from an XSLT source
-        transformer = build_xsl_transform(options.xslt_source)
+        transformer = build_xsl_transform(xslt_source)
+        if transformer:
+            xml_sources = args[1:]
+        else:
+            stderr.write('Invalid XSLT source specified\n')
+            exit(60)
     else:
         stderr.write('No XSLT source specified\n')
-        exit(105)
-    if not transformer:
-        stderr.write('Invalid XSLT source specified\n')
-        exit(105)
+        exit(50)
     # Initialise XML parser
     parser = XMLParser()
 
