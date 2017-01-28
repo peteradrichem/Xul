@@ -88,7 +88,7 @@ def et_dom_xpath(xml_dom, xpath_exp, ns_map):
         stderr.write(
             "XPath '%s' evaluation error: %s\n" % (xpath_exp, e))
         return None
-    # TypeError bij aanroepen EXSLT functie met onjuist aantal argumenten
+    # EXSLT function call errors (re:test positional arguments)
     except TypeError as e:
         stderr.write("XPath '%s' type error: %s\n" % (xpath_exp, e))
         return None
@@ -162,13 +162,13 @@ def print_elem(node, pretty=False, xpath_exp=None):
     """
     if pretty:
         if xpath_exp:
-            print "line %d, XPath %s" % (node.sourceline, xpath_exp)
+            print "XPath %s (line %d):" % (xpath_exp, node.sourceline)
         else:
             print "line %d:" % node.sourceline
         prettyprint(node, xml_declaration=False)
     else:
         if xpath_exp:
-            print "line %d, XPath %s" % (node.sourceline, xpath_exp)
+            print "XPath %s (line %d):" % (xpath_exp, node.sourceline)
             print "   %s" % element_repr(node)
         else:
             print "line %4d:   %s" % (node.sourceline, element_repr(node))
@@ -248,7 +248,9 @@ def print_result_list(result_list, xml_dom, options):
     xml_dom -- XML DOM (ElementTree)
     options -- Command-line options
     """
-    # Alle nodes -- //node()
+    if options.pretty_element:
+        print
+    # All nodes -- //node()
     for node in result_list:
         if iselement(node):
             if options.result_xpath:
@@ -259,14 +261,13 @@ def print_result_list(result_list, xml_dom, options):
             else:
                 print_elem(node, pretty=options.pretty_element)
 
-        # Een attribute, entity, text (atomic value)
-        # Smart string -- .getparent()
+        # Smart string -- .getparent() | attribute, entity, text (atomic value)
         elif hasattr(node, "getparent"):
             print_smart_string(node, xml_dom, options)
 
         # Namespaces -- namespace::
         elif isinstance(node, tuple):
-            # Geen regel nummer
+            # No line number
             print "prefix: %-8s URI: %s" % node
 
         # ?
@@ -284,17 +285,17 @@ def print_result_header(xp_result):
         list_result = [xp_result]
     xp_r_len = len(list_result)
     if xp_r_len == 0:
-        print "no results (empty list)"
+        print "no results."
     elif xp_r_len == 1:
         if isinstance(list_result[0], tuple):
             print "1 XML namespace result"
         else:
-            print "1 result"
+            print "1 result."
     else:
         if isinstance(list_result[0], tuple):
-            print "%d XML namespace results" % xp_r_len
+            print "%d XML namespace results." % xp_r_len
         else:
-            print "%d results" % xp_r_len
+            print "%d results." % xp_r_len
 
 
 def print_xp_result(xp_result, xml_dom, ns_map, options):
@@ -316,10 +317,7 @@ def print_xp_result(xp_result, xml_dom, ns_map, options):
     print_result_header(xp_result)
     print_xmlns(ns_map, xml_dom.getroot())
 
-    # STRING - string (basestring) - smart string
-    #   "string(/voorspellingen/@startdatum)"
-    # Namespace URI
-    #   "namespace-uri(*)"
+    # STRING - string (basestring) - smart string | Namespace URI
     if isinstance(xp_result, basestring):
         print_smart_string(xp_result, xml_dom, options)
 
@@ -328,13 +326,11 @@ def print_xp_result(xp_result, xml_dom, ns_map, options):
         try:
             print_result_list(xp_result, xml_dom, options)
         except IOError as e:
-            # 'IOError: [Errno 32] Broken pipe' afvangen
+            # Catch 'IOError: [Errno 32] Broken pipe'.
             if e.errno != 32:
                 stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
 
-    # FLOAT - float
-    #   "number(/html/nummer)"    "count(/nebo_xml)"
-    # Opm: nan == NaN == not a number
+    # FLOAT - float | nan == NaN == not a number
     elif hasattr(xp_result, "is_integer"):
         # Python float.is_integer()
         if xp_result.is_integer():
@@ -343,7 +339,6 @@ def print_xp_result(xp_result, xml_dom, ns_map, options):
             print "XPath number: %s" % xp_result
 
     # BOOLEAN - bool - boolean
-    #   true(), false(), not(), "count(/nebo_xml) = 1"
     elif isinstance(xp_result, bool):
         print "XPath test: %s" % xp_result
     else:
@@ -375,9 +370,9 @@ def xpath_on_xml(xml_source, parser, dom_xpath, options, xpath_expr):
         return False
     else:
         if xml_source is stdin:
-            print "<stdin>,",
+            print "<stdin>, XPath: %s," % xpath_expr,
         else:
-            print "Source: %s," % xml_source,
+            print "Source: %s, XPath: %s," % (xml_source, xpath_expr),
         return print_xp_result(xp_result, xml_dom, ns_map, options)
 
 
@@ -393,7 +388,6 @@ def main():
     if args:
         xpath_expr = args[0]
         if build_xpath(xpath_expr):
-            print "XPath: %s\n" % xpath_expr
             xml_sources = args[1:]
         else:
             exit(60)
