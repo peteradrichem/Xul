@@ -29,10 +29,8 @@ LOG_LEVELS = {
 
 def lvl_name2num(name):
     """Return the numeric value of the LOG_LEVELS `name` logging level.
-
     Log an error for nonexistent `name` and return `logging.NOTSET`.
-
-    https://docs.python.org/library/logging.html#levels
+        https://docs.python.org/library/logging.html#levels
     """
     try:
         levelno = LOG_LEVELS[name]
@@ -44,63 +42,55 @@ def lvl_name2num(name):
         return levelno
 
 
-def setup_logger(log_level='debug', name='', propagate=True):
-    """ Configureer het threshold log level van de root/name logger
-        - log_level: threshold log level van de logger
-        - name: naam van de logger [default: root logger]
+def setup_logger(log_level='debug', propagate=True):
+    """Configureer threshold log level van de root logger.
+        - log_level: threshold log level van de logger.
         - propagate: messages doorgeven naar boven [default: ja]
-
-        De `propagate' optie is alleen nuttig bij name loggers.
-        Merk op dat propagate=False ook gevolgen heeft voor de
-        console handler (die aan de root logger hangt)
 
         Log records worden door handlers verwerkt:
         - console logging zie setup_logger_console()
     """
-    logging.getLogger(name).setLevel(lvl_name2num(log_level))
+    # logger '' staat voor de root logger
+    logging.getLogger('').setLevel(lvl_name2num(log_level))
     if not propagate:
         # Er hoeft niet dubbel gelogd te worden
-        logging.getLogger(name).propagate = False
+        logging.getLogger('').propagate = False
 
 
-def customize_handler(handler, level, form='%(name)-12s: %(levelname)-8s - %(message)s'):
-    """ Configureer level en formattering van een log message handler
+def customize_handler(handler, level, fmt=None, datefmt=None):
+    """Configureer level en formatering van een log message handler.
         - handler: de log message handler (StreamHandler, FileHandler ...)
-        - level: log level voor de handler
-        - form: log formattering voor de handler (default t.b.v. console/cron)
+        - level: log level voor de handler.
+        - fmt: formatering voor LogRecord.
             https://docs.python.org/library/logging.html#logrecord-attributes
+        - datefmt: datum en tijd formatering.
 
-        Geeft de handler terug
+        Geeft log message handler terug.
     """
     # Configureer log level
     handler.setLevel(lvl_name2num(level))
-    # Log formattering aanpassen, indien gewenst
-    if form:
-        handler.setFormatter(logging.Formatter(form))
+    # Formatering aanpassen, indien gewenst.
+    if fmt or datefmt:
+        handler.setFormatter(logging.Formatter(fmt=fmt, datefmt=datefmt))
 
     return handler
 
 
-def setup_logger_console(log_level='info', log_format='%(message)s'):
-    """ Configureer threshold log level DEBUG voor de root logger.
-        Koppel console handler aan de root logger
+def setup_logger_console(log_level='info'):
+    """Setup de root logger en koppel de console handler.
         - log_level: console log level [default 'info']
-        - log_format: log formattering voor de console handler (default t.b.v. cli)
+        Logging op het console (sys.stderr) voor cli meldingen.
 
-        Logging op het console (sys.stderr) voor fout meldingen
-
-        Geeft console handler (StreamHandler) terug
+        Geeft console handler (StreamHandler) terug.
             https://docs.python.org/library/logging.handlers.html#streamhandler
     """
-    # Configureer threshold log level DEBUG voor de root logger (i.p.v. WARNING)
-    setup_logger('debug')
+    # Configureer threshold log level DEBUG voor de root logger (i.p.v. WARNING).
+    setup_logger()
 
-    # Configureer de console handler
-    console_handler = customize_handler(
-        logging.StreamHandler(), log_level, log_format)
-
-    # Koppel console handler aan de root logger
+    # Configureer de console handler.
+    console_handler = customize_handler(logging.StreamHandler(), log_level)
+    # Koppel console handler aan de root logger.
     logging.getLogger('').addHandler(console_handler)
 
-    # Geef de console handler terug
+    # Geef de console handler terug.
     return console_handler
