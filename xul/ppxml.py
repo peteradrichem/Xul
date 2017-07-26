@@ -4,7 +4,7 @@
 
 
 # Standard Python
-from sys import stderr
+from sys import stdout, stderr
 #
 # pylint: disable=no-name-in-module
 # lxml ElementTree <http://lxml.de/>
@@ -26,7 +26,7 @@ def _private_pp(etree, syntax=True, xml_declaration=None):
         etree_str = tostring(
             etree, encoding='UTF-8',
             xml_declaration=xml_declaration, pretty_print=True)
-        if syntax:
+        if stdout.isatty() and syntax:
             print highlight(etree_str, lexer, formatter)
         else:
             print etree_str
