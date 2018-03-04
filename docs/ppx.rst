@@ -94,6 +94,12 @@ RSS feed:
 
    ppx http://feeds.feedburner.com/PythonInsider
 
+Page XML file with less:
+
+.. code:: bash
+
+   ppx xml/large.xml | less -RX
+
 Redirect output (pipe) to ``ppx``:
 
 .. code:: bash
