@@ -52,7 +52,7 @@ Options
 
 Syntax Highlighting
 -------------------
-``ppx`` will syntax highlight the XML source on a terminal if you have Pygments_ installed.
+``ppx`` will syntax highlight the XML source if you have Pygments_ installed.
 
 Pretty print the XML Schema 1.0 schema document:
 
@@ -104,7 +104,7 @@ Redirect output (pipe) to ``ppx``:
 
 .. code:: bash
 
-   ppx data_dump.xml > pp_data_dump.xml
+   ppx -n data_dump.xml > pp_data_dump.xml
 
 
 .. _Pygments: http://pygments.org/
