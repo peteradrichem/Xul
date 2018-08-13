@@ -52,8 +52,10 @@ def build_etree(xml_source, parser=None, lenient=True):
     try:
         xml_dom = etree.parse(xml_source, parser)
     # Catch XML syntax errors.
-    #   http://lxml.de/api.html#error-handling-on-exceptions
-    except etree.XMLSyntaxError as inst:
+    #   https://lxml.de/api.html#error-handling-on-exceptions
+    # error log copy attached to the exception: global error log of all errors
+    # that occurred at the application level.
+    except etree.XMLSyntaxError:
         if lenient:
             xmllogger = logger.warning
         else:
@@ -65,9 +67,11 @@ def build_etree(xml_source, parser=None, lenient=True):
             name = xml_source
             xml_type = "file"
         xmllogger("%s is not a valid XML %s:", name, xml_type)
-        # http://lxml.de/parsing.html#error-log
-        # [http://lxml.de/api/lxml.etree._LogEntry-class.html]
-        for e in inst.error_log:
+
+        # Parsers have an error_log property that lists the errors and warnings
+        # of the last parser run.
+        #   https://lxml.de/parsing.html#error-log
+        for e in parser.error_log:
             # For example: e.level_name: "FATAL", e.domain_name: "PARSER",
             # e.type_name: "ERR_DOCUMENT_EMPTY"
             if e.line == 0:
