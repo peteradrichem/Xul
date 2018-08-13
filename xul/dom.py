@@ -278,14 +278,14 @@ def xml_validator(xml_file, validator):
     if validator.validate(xml_dom):
         logger.info("XML file '%s' validates", xml_file)
         return (True, "XML file validates")
-    else:
-        logger.warning("XML file '%s' does not validate:", xml_file)
-        for e in validator.error_log:
-            # E.g. DTD e.level_name: "ERROR", e.domain_name: "VALID",
-            # e.type_name: "DTD_UNKNOWN_ELEM"
-            # E.g. XSD e.level_name: "ERROR", e.domain_name: "SCHEMASV",
-            # e.type_name: "SCHEMAV_CVC_ELT_1"
-            logger.warning("line %i, column %i: %s", e.line, e.column, e.message)
-        # Return the first line with a validation error (status string)
-        e = validator.error_log[0]
-        return (False, "line %i, column %i: %s" % (e.line, e.column, e.message))
+
+    logger.warning("XML file '%s' does not validate:", xml_file)
+    for e in validator.error_log:
+        # E.g. DTD e.level_name: "ERROR", e.domain_name: "VALID",
+        # e.type_name: "DTD_UNKNOWN_ELEM"
+        # E.g. XSD e.level_name: "ERROR", e.domain_name: "SCHEMASV",
+        # e.type_name: "SCHEMAV_CVC_ELT_1"
+        logger.warning("line %i, column %i: %s", e.line, e.column, e.message)
+    # Return the first line with a validation error (status string)
+    e = validator.error_log[0]
+    return (False, "line %i, column %i: %s" % (e.line, e.column, e.message))
