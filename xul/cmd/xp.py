@@ -393,7 +393,12 @@ def main():
 
     # Check XPath expression
     if args:
-        xpath_expr = args[0]
+        if isinstance(args[0], bytes):
+            # Python 2
+            xpath_expr = args[0].decode("utf-8")
+        else:
+            # Python 3
+            xpath_expr = args[0]
         if build_xpath(xpath_expr):
             xml_sources = args[1:]
         else:
