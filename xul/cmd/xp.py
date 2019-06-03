@@ -3,6 +3,8 @@
 """Select nodes in an XML source with an XPath expression."""
 
 
+from __future__ import print_function
+
 # Standard Python
 from optparse import OptionParser
 from sys import stderr, stdin
@@ -99,12 +101,12 @@ def et_dom_xpath(xml_dom, xpath_exp, ns_map):
 def print_xmlns(ns_map, root):
     """Print XML namespaces."""
     if None in root.nsmap:
-        print "Default XML namespace URI: %s" % root.nsmap[None]
+        print("Default XML namespace URI: %s" % root.nsmap[None])
     if ns_map:
         # Print all XML namespaces -- prefix: namespace URI
-        print "XML namespaces:"
+        print("XML namespaces:")
         for key in ns_map:
-            print "%8s: %s" % (key, ns_map[key])
+            print("%8s: %s" % (key, ns_map[key]))
 
 
 def element_repr(node, content=True):
@@ -162,16 +164,16 @@ def print_elem(node, pretty=False, xpath_exp=None):
     """
     if pretty:
         if xpath_exp:
-            print "XPath %s (line %d):" % (xpath_exp, node.sourceline)
+            print("XPath %s (line %d):" % (xpath_exp, node.sourceline))
         else:
-            print "line %d:" % node.sourceline
+            print("line %d:" % node.sourceline)
         prettyprint(node, xml_declaration=False)
     else:
         if xpath_exp:
-            print "XPath %s (line %d):" % (xpath_exp, node.sourceline)
-            print "   %s" % element_repr(node)
+            print("XPath %s (line %d):" % (xpath_exp, node.sourceline))
+            print("   %s" % element_repr(node))
         else:
-            print "line %4d:   %s" % (node.sourceline, element_repr(node))
+            print("line %4d:   %s" % (node.sourceline, element_repr(node)))
 
 
 def smart_with_parent(smart_string):
@@ -220,7 +222,7 @@ def print_smart_string(smart_string, xml_dom, options):
     par_el = smart_string.getparent()
     # string() and concat() results do not have an origin
     if par_el is None:
-        print "XPath string: '%s'" % smart_string
+        print("XPath string: '%s'" % smart_string)
         return
     # Parent is an lxml.etree._Element instance
     par_el_str = element_repr(par_el, content=False)
@@ -230,14 +232,14 @@ def print_smart_string(smart_string, xml_dom, options):
     if smart_repr:
         if options.result_xpath:
             # Print the absolute XPath expression of the parent element
-            print "line %d, parent XPath %s" % (
-                par_el.sourceline, xml_dom.getpath(par_el))
-            print "   %s %s %s" % (smart_repr, parent_rel, par_el_str)
+            print("line %d, parent XPath %s" % (
+                par_el.sourceline, xml_dom.getpath(par_el)))
+            print("   %s %s %s" % (smart_repr, parent_rel, par_el_str))
         else:
-            print "line %4d:   %s %s %s" % (
-                par_el.sourceline, smart_repr, parent_rel, par_el_str)
+            print("line %4d:   %s %s %s" % (
+                par_el.sourceline, smart_repr, parent_rel, par_el_str))
     else:
-        print "**smart string DEBUG fallback**"
+        print("**smart string DEBUG fallback**")
         print_elem(par_el, pretty=options.pretty_element)
 
 
@@ -249,7 +251,7 @@ def print_result_list(result_list, xml_dom, options):
     options -- Command-line options
     """
     if options.pretty_element:
-        print
+        print()
     # All nodes -- //node()
     for node in result_list:
         if iselement(node):
@@ -268,13 +270,13 @@ def print_result_list(result_list, xml_dom, options):
         # Namespaces -- namespace::
         elif isinstance(node, tuple):
             # No line number
-            print "prefix: %-8s URI: %s" % node
+            print("prefix: %-8s URI: %s" % node)
 
         # ?
         else:
-            print "**DEBUG fallback**"
-            print type(node)
-            print node
+            print("**DEBUG fallback**")
+            print(type(node))
+            print(node)
 
 
 def print_result_header(xp_result):
@@ -285,17 +287,17 @@ def print_result_header(xp_result):
         list_result = [xp_result]
     xp_r_len = len(list_result)
     if xp_r_len == 0:
-        print "no results."
+        print("no results.")
     elif xp_r_len == 1:
         if isinstance(list_result[0], tuple):
-            print "1 XML namespace result"
+            print("1 XML namespace result")
         else:
-            print "1 result."
+            print("1 result.")
     else:
         if isinstance(list_result[0], tuple):
-            print "%d XML namespace results." % xp_r_len
+            print("%d XML namespace results." % xp_r_len)
         else:
-            print "%d results." % xp_r_len
+            print("%d results." % xp_r_len)
 
 
 def print_xp_result(xp_result, xml_dom, ns_map, options):
@@ -318,6 +320,11 @@ def print_xp_result(xp_result, xml_dom, ns_map, options):
     print_xmlns(ns_map, xml_dom.getroot())
 
     # STRING - string (basestring) - smart string | Namespace URI
+    try:
+        basestring
+    except NameError:
+        # Python 3
+        basestring = (str, bytes)
     if isinstance(xp_result, basestring):
         print_smart_string(xp_result, xml_dom, options)
 
@@ -334,15 +341,15 @@ def print_xp_result(xp_result, xml_dom, ns_map, options):
     elif hasattr(xp_result, "is_integer"):
         # Python float.is_integer()
         if xp_result.is_integer():
-            print "XPath number: %i" % xp_result
+            print("XPath number: %i" % xp_result)
         else:
-            print "XPath number: %s" % xp_result
+            print("XPath number: %s" % xp_result)
 
     # BOOLEAN - bool - boolean
     elif isinstance(xp_result, bool):
-        print "XPath test: %s" % xp_result
+        print("XPath test: %s" % xp_result)
     else:
-        print "Unknown XPath result: %s" % xp_result
+        print("Unknown XPath result: %s" % xp_result)
 
 
 def xpath_on_xml(xml_source, parser, dom_xpath, options, xpath_expr):
@@ -370,9 +377,9 @@ def xpath_on_xml(xml_source, parser, dom_xpath, options, xpath_expr):
         return False
     else:
         if xml_source is stdin:
-            print "<stdin>, XPath: %s," % xpath_expr,
+            print("<stdin>, XPath: %s," % xpath_expr, end=" ")
         else:
-            print "Source: %s, XPath: %s," % (xml_source, xpath_expr),
+            print("Source: %s, XPath: %s," % (xml_source, xpath_expr), end=" ")
         return print_xp_result(xp_result, xml_dom, ns_map, options)
 
 
@@ -404,7 +411,7 @@ def main():
         if first:
             first = False
         else:
-            print
+            print()
         xpath_on_xml(xml_s, xml_parser, dom_xpath, options, xpath_expr)
 
     if not xml_sources:

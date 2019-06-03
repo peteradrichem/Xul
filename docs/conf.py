@@ -49,7 +49,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Xul'
-copyright = u'2018, Peter Adrichem'
+copyright = u'2019, Peter Adrichem'
 author = u'Peter Adrichem'
 
 # The version info for the project you're documenting, acts as replacement for

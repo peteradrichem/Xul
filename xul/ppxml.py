@@ -3,6 +3,8 @@
 """Pretty print XML with UTF-8 encoding."""
 
 
+from __future__ import print_function
+
 # Standard Python
 from sys import stderr
 #
@@ -27,9 +29,9 @@ def _private_pp(etree, syntax=True, xml_declaration=None):
             etree, encoding='UTF-8',
             xml_declaration=xml_declaration, pretty_print=True)
         if syntax:
-            print highlight(etree_str, lexer, formatter)
+            print(highlight(etree_str, lexer, formatter))
         else:
-            print etree_str
+            print(etree_str)
     except IOError as e:
         # Catch 'IOError: [Errno 32] Broken pipe' (multiple etrees).
         if e.errno != 32:

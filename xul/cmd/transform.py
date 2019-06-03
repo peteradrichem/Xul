@@ -3,6 +3,8 @@
 """Transform XML source with XSLT."""
 
 
+from __future__ import print_function
+
 # Standard Python
 from optparse import OptionParser
 from sys import stderr, stdin
@@ -41,11 +43,11 @@ def print_xslt(xml_source, transformer, parser, options):
     if result:
         if result.getroot() is None:
             # Result is not an ElementTree. Print as text
-            print result
+            print(result)
         else:
             try:
-                print tostring(result, encoding='UTF-8',
-                               xml_declaration=options.declaration)
+                print(tostring(result, encoding='UTF-8',
+                               xml_declaration=options.declaration))
             except IOError as e:
                 # Catch 'IOError: [Errno 32] Broken pipe'.
                 if e.errno != 32:

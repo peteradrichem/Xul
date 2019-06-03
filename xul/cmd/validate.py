@@ -3,6 +3,8 @@
 """Validate XML source with XSD or DTD."""
 
 
+from __future__ import print_function
+
 # Standard Python
 from optparse import OptionParser
 from sys import stderr, stdin
@@ -45,7 +47,7 @@ def validate_xml(xml_source, validator, val_source):
         else:
             name = xml_source
         if validator.validate(xml_dom):
-            print "'%s' validates against '%s'" % (name, val_source)
+            print("'%s' validates against '%s'" % (name, val_source))
         else:
             stderr.write(
                 "'%s' does not validate against '%s':\n" % (name, val_source))
