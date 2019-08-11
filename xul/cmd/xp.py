@@ -78,8 +78,7 @@ def class_dom_xpath(xml_dom, xpath_exp, ns_map):
     xpath_obj = build_xpath(xpath_exp, ns_map)
     if not xpath_obj:
         return None
-    else:
-        return etree_xpath(xml_dom, xpath_obj)
+    return etree_xpath(xml_dom, xpath_obj)
 
 
 def et_dom_xpath(xml_dom, xpath_exp, ns_map):
@@ -149,8 +148,7 @@ def element_repr(node, content=True):
             elem_str = "<%s> contains '%s'" % (
                 node.tag, node.text.encode('UTF-8', 'ignore'))
         return elem_str
-    else:
-        return "<%s> is empty" % node.tag
+    return "<%s> is empty" % node.tag
 
 
 def print_elem(node, pretty=False, xpath_exp=None):
@@ -375,12 +373,12 @@ def xpath_on_xml(xml_source, parser, dom_xpath, options, xpath_expr):
     xp_result = dom_xpath(xml_dom, xpath_expr, ns_map)
     if xp_result is None:
         return False
+
+    if xml_source is stdin:
+        print("<stdin>, XPath: %s," % xpath_expr, end=" ")
     else:
-        if xml_source is stdin:
-            print("<stdin>, XPath: %s," % xpath_expr, end=" ")
-        else:
-            print("Source: %s, XPath: %s," % (xml_source, xpath_expr), end=" ")
-        return print_xp_result(xp_result, xml_dom, ns_map, options)
+        print("Source: %s, XPath: %s," % (xml_source, xpath_expr), end=" ")
+    return print_xp_result(xp_result, xml_dom, ns_map, options)
 
 
 def main():

@@ -181,13 +181,13 @@ def xml_transformer(xml_source, transformer, parser=None):
     xml_result = etree_transformer(xml_dom, transformer)
     if xml_result:
         return xml_result
+
+    if hasattr(xml_source, "name"):
+        name = xml_source.name
     else:
-        if hasattr(xml_source, "name"):
-            name = xml_source.name
-        else:
-            name = xml_source
-        logger.error("XSL transformation on '%s' failed", name)
-        return None
+        name = xml_source
+    logger.error("XSL transformation on '%s' failed", name)
+    return None
 
 
 def build_xml_schema(xsd_file):
