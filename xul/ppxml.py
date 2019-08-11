@@ -28,10 +28,12 @@ def _private_pp(etree, syntax=True, xml_declaration=None):
         etree_str = tostring(
             etree, encoding='UTF-8',
             xml_declaration=xml_declaration, pretty_print=True)
+
+        # Bytes => unicode string (Python 3). String => unicode (Python 2).
         if syntax:
-            print(highlight(etree_str, lexer, formatter))
+            print(highlight(etree_str, lexer, formatter).decode("utf-8"))
         else:
-            print(etree_str)
+            print(etree_str.decode("utf-8"))
     except IOError as e:
         # Catch 'IOError: [Errno 32] Broken pipe' (multiple etrees).
         if e.errno != 32:
