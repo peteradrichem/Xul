@@ -46,8 +46,9 @@ def print_xslt(xml_source, transformer, parser, options):
             print(result)
         else:
             try:
-                print(tostring(result, encoding='UTF-8',
-                               xml_declaration=options.declaration))
+                print(tostring(
+                    result, encoding='UTF-8', xml_declaration=options.declaration
+                ).decode("utf-8"))
             except IOError as e:
                 # Catch 'IOError: [Errno 32] Broken pipe'.
                 if e.errno != 32:

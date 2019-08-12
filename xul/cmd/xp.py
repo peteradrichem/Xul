@@ -109,7 +109,7 @@ def print_xmlns(ns_map, root):
 
 
 def element_repr(node, content=True):
-    """Return element representation (UTF-8 encoded).
+    """Return element representation (UTF-8 unicode).
 
     node -- lxml.etree._Element instance -- iselement(node)
 
@@ -131,13 +131,12 @@ def element_repr(node, content=True):
     # node.tag is lxml.etree.PI (is lxml.etree.ProcessingInstruction)
     if node.tag is PI:
         # Processing instruction node - node.target -- node.tag(): <? ?>
-        return "%s value: '%s'" % (
-            node.tag(node.target), node.text.encode('UTF-8', 'ignore'))
+        return "%s value: '%s'" % (node.tag(node.target), node.text)
 
     # node.tag is lxml.etree.Comment
     if node.tag is Comment:
         # Comment node - node.tag(): <!-- -->
-        return node.tag(node.text.encode('UTF-8', 'ignore'))
+        return node.tag(node.text)
 
     # node.tag: string
     if node.text:
@@ -145,14 +144,13 @@ def element_repr(node, content=True):
         if node.text.isspace():
             elem_str = "<%s> contains whitespace" % node.tag
         else:
-            elem_str = "<%s> contains '%s'" % (
-                node.tag, node.text.encode('UTF-8', 'ignore'))
+            elem_str = "<%s> contains '%s'" % (node.tag, node.text)
         return elem_str
     return "<%s> is empty" % node.tag
 
 
 def print_elem(node, pretty=False, xpath_exp=None):
-    """Print element (UTF-8 encoded).
+    """Print element (UTF-8 unicode).
 
     node -- lxml.etree._Element instance.
             element, comment or processing instruction node; see element_repr()
@@ -175,7 +173,7 @@ def print_elem(node, pretty=False, xpath_exp=None):
 
 
 def smart_with_parent(smart_string):
-    """Return lxml 'smart' string representation (UTF-8 encoded) with parent relation.
+    """Return lxml 'smart' string representation (UTF-8) with parent relation.
 
     lxml 'smart' string is a text node (atomic value) or an attribute node:
      * text node (tail, entity): contains text; never empty
@@ -195,14 +193,14 @@ def smart_with_parent(smart_string):
         if smart_string.isspace():
             smart_repr = "whitespace"
         else:
-            smart_repr = "'%s'" % smart_string.encode('UTF-8', 'ignore')
+            smart_repr = "'%s'" % smart_string
     # TAIL node -- text() -- .is_tail
     elif smart_string.is_tail:
         parent_rel = "after"
         if smart_string.isspace():
             smart_repr = "tail whitespace"
         else:
-            smart_repr = "tail '%s'" % smart_string.encode('UTF-8', 'ignore')
+            smart_repr = "tail '%s'" % smart_string
 
     return (smart_repr, parent_rel)
 
@@ -389,15 +387,16 @@ def main():
     # Command-line
     (options, args) = parse_cl()
 
-    # Check XPath expression
     if args:
+        # XPath expressie.
         if isinstance(args[0], bytes):
-            # Python 2
+            # Python 2 Unicode.
             xpath_expr = args[0].decode("utf-8")
         else:
-            # Python 3
+            # Python 3 Unicode string.
             xpath_expr = args[0]
         if build_xpath(xpath_expr):
+            # XML source(s).
             xml_sources = args[1:]
         else:
             exit(60)
