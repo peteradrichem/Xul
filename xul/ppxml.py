@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 """Pretty print XML with UTF-8 encoding."""
 
@@ -29,11 +29,19 @@ def _private_pp(etree, syntax=True, xml_declaration=None):
             etree, encoding='UTF-8',
             xml_declaration=xml_declaration, pretty_print=True)
 
-        # Bytes => unicode string (Python 3). String => unicode (Python 2).
         if syntax:
-            print(highlight(etree_str, lexer, formatter).decode("utf-8"))
+            syntax_etree = highlight(etree_str, lexer, formatter)
+            # String (Python 2).
+            if not isinstance(syntax_etree, str):
+                # Bytes => unicode string (Python 3).
+                syntax_etree = syntax_etree.decode("utf-8")
+            print(syntax_etree)
         else:
-            print(etree_str.decode("utf-8"))
+            # String (Python 2).
+            if not isinstance(etree_str, str):
+                # Bytes => unicode string (Python 3).
+                etree_str = etree_str.decode("utf-8")
+            print(etree_str)
     except IOError as e:
         # Catch 'IOError: [Errno 32] Broken pipe' (multiple etrees).
         if e.errno != 32:
