@@ -1,11 +1,11 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 """Transform XML source with XSLT."""
 
 
 from __future__ import print_function
 
-# Standard Python
+# Standard Python.
 from optparse import OptionParser
 from sys import stderr, stdin
 #
@@ -13,7 +13,7 @@ from sys import stderr, stdin
 # lxml ElementTree <http://lxml.de/>
 from lxml.etree import XMLParser, tostring
 
-# Import my own modules
+# Import my own modules.
 from .. import __version__
 from ..log import setup_logger_console
 from ..dom import build_xsl_transform, xml_transformer
@@ -42,13 +42,16 @@ def print_xslt(xml_source, transformer, parser, options):
     result = xml_transformer(xml_source, transformer, parser)
     if result:
         if result.getroot() is None:
-            # Result is not an ElementTree. Print as text
+            # Result is not an ElementTree. Print as text.
             print(result)
         else:
+            etree_str = tostring(
+                result, encoding='UTF-8', xml_declaration=options.declaration)
             try:
-                print(tostring(
-                    result, encoding='UTF-8', xml_declaration=options.declaration
-                ).decode("utf-8"))
+                if not isinstance(etree_str, str):
+                    # Bytes => unicode string (Python 3).
+                    etree_str = etree_str.decode("utf-8")
+                print(etree_str)
             except IOError as e:
                 # Catch 'IOError: [Errno 32] Broken pipe'.
                 if e.errno != 32:
@@ -57,16 +60,16 @@ def print_xslt(xml_source, transformer, parser, options):
 
 def main():
     """Main command line entry point."""
-    # Logging to the console
+    # Logging to the console.
     setup_logger_console()
 
-    # Command-line
+    # Command-line.
     (options, args) = parse_cl()
 
-    # Check XSLT source
+    # Check XSLT source.
     if args:
         xslt_source = args[0]
-        # Build an XSL Transformer from an XSLT source
+        # Build an XSL Transformer from an XSLT source.
         transformer = build_xsl_transform(xslt_source)
         if transformer:
             xml_sources = args[1:]
@@ -76,15 +79,15 @@ def main():
     else:
         stderr.write('No XSLT source specified\n')
         exit(50)
-    # Initialise XML parser
+    # Initialise XML parser.
     parser = XMLParser()
 
-    # Transform XML sources with XSL Transformer
+    # Transform XML sources with XSL Transformer.
     for xml_s in xml_sources:
         print_xslt(xml_s, transformer, parser, options)
 
     if not xml_sources:
-        # Read from a pipe when no XML source is specified
+        # Read from a pipe when no XML source is specified.
         if not stdin.isatty():
             print_xslt(stdin, transformer, parser, options)
         else:
