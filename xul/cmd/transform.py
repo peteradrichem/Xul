@@ -45,13 +45,14 @@ def print_xslt(xml_source, transformer, parser, options):
             # Result is not an ElementTree. Print as text.
             print(result)
         else:
-            etree_str = tostring(
+            # lxml.etree.tostring returns bytes (bytestring).
+            etree_result = tostring(
                 result, encoding='UTF-8', xml_declaration=options.declaration)
             try:
-                if not isinstance(etree_str, str):
+                if not isinstance(etree_result, str):
                     # Bytes => unicode string (Python 3).
-                    etree_str = etree_str.decode("utf-8")
-                print(etree_str)
+                    etree_result = etree_result.decode("utf-8")
+                print(etree_result)
             except IOError as e:
                 # Catch 'IOError: [Errno 32] Broken pipe'.
                 if e.errno != 32:

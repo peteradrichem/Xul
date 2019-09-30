@@ -25,23 +25,25 @@ def _private_pp(etree, syntax=True, xml_declaration=None):
     http://lxml.de/api/lxml.etree-module.html#tostring
     """
     try:
-        etree_str = tostring(
+        # lxml.etree.tostring returns bytes (bytestring).
+        # https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.tostring
+        plain_etree = tostring(
             etree, encoding='UTF-8',
             xml_declaration=xml_declaration, pretty_print=True)
 
         if syntax:
-            syntax_etree = highlight(etree_str, lexer, formatter)
-            # String (Python 2).
+            # pygments formatter returns bytes (bytestring).
+            # http://pygments.org/docs/formatters/
+            syntax_etree = highlight(plain_etree, lexer, formatter)
             if not isinstance(syntax_etree, str):
                 # Bytes => unicode string (Python 3).
                 syntax_etree = syntax_etree.decode("utf-8")
             print(syntax_etree)
         else:
-            # String (Python 2).
-            if not isinstance(etree_str, str):
+            if not isinstance(plain_etree, str):
                 # Bytes => unicode string (Python 3).
-                etree_str = etree_str.decode("utf-8")
-            print(etree_str)
+                plain_etree = plain_etree.decode("utf-8")
+            print(plain_etree)
     except IOError as e:
         # Catch 'IOError: [Errno 32] Broken pipe' (multiple etrees).
         if e.errno != 32:
