@@ -7,7 +7,7 @@ from __future__ import print_function
 
 # Standard Python.
 from optparse import OptionParser
-from sys import stderr, stdin
+import sys
 #
 # pylint: disable=no-name-in-module
 # lxml ElementTree <https://lxml.de/>
@@ -56,7 +56,7 @@ def print_xslt(xml_source, transformer, parser, options):
             except IOError as e:
                 # Catch 'IOError: [Errno 32] Broken pipe'.
                 if e.errno != 32:
-                    stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
+                    sys.stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
 
 
 def main():
@@ -75,11 +75,11 @@ def main():
         if transformer:
             xml_sources = args[1:]
         else:
-            stderr.write('Invalid XSLT source specified\n')
-            exit(60)
+            sys.stderr.write('Invalid XSLT source specified\n')
+            sys.exit(60)
     else:
-        stderr.write('No XSLT source specified\n')
-        exit(50)
+        sys.stderr.write('No XSLT source specified\n')
+        sys.exit(50)
     # Initialise XML parser.
     parser = XMLParser()
 
@@ -89,7 +89,7 @@ def main():
 
     if not xml_sources:
         # Read from a pipe when no XML source is specified.
-        if not stdin.isatty():
-            print_xslt(stdin, transformer, parser, options)
+        if not sys.stdin.isatty():
+            print_xslt(sys.stdin, transformer, parser, options)
         else:
-            stderr.write("Error: no XML source specified\n")
+            sys.stderr.write("Error: no XML source specified\n")

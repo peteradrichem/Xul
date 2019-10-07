@@ -7,7 +7,7 @@ from __future__ import print_function
 
 # Standard Python.
 from optparse import OptionParser
-from sys import stderr, stdin
+import sys
 #
 # pylint: disable=no-name-in-module
 # lxml ElementTree <https://lxml.de/>
@@ -86,12 +86,12 @@ def et_dom_xpath(xml_dom, xpath_exp, ns_map):
     try:
         xp_result = xml_dom.xpath(xpath_exp, namespaces=ns_map)
     except XPathEvalError as e:
-        stderr.write(
+        sys.stderr.write(
             "XPath '%s' evaluation error: %s\n" % (xpath_exp, e))
         return None
     # EXSLT function call errors (re:test positional arguments).
     except TypeError as e:
-        stderr.write("XPath '%s' type error: %s\n" % (xpath_exp, e))
+        sys.stderr.write("XPath '%s' type error: %s\n" % (xpath_exp, e))
         return None
     else:
         return xp_result
@@ -331,7 +331,7 @@ def print_xp_result(xp_result, xml_dom, ns_map, options):
         except IOError as e:
             # Catch 'IOError: [Errno 32] Broken pipe'.
             if e.errno != 32:
-                stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
+                sys.stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
 
     # FLOAT - float | nan == NaN == not a number.
     elif hasattr(xp_result, "is_integer"):
@@ -372,7 +372,7 @@ def xpath_on_xml(xml_source, parser, dom_xpath, options, xpath_expr):
     if xp_result is None:
         return False
 
-    if xml_source is stdin:
+    if xml_source is sys.stdin:
         print("<stdin>, XPath: %s," % xpath_expr, end=" ")
     else:
         print("Source: %s, XPath: %s," % (xml_source, xpath_expr), end=" ")
@@ -399,10 +399,10 @@ def main():
             # XML source(s).
             xml_sources = args[1:]
         else:
-            exit(60)
+            sys.exit(60)
     else:
-        stderr.write('No XPath expression specified\n')
-        exit(50)
+        sys.stderr.write('No XPath expression specified\n')
+        sys.exit(50)
 
     # DOM XPath function and XML parser.
     (dom_xpath, xml_parser) = xp_prepare(options)
@@ -418,7 +418,7 @@ def main():
 
     if not xml_sources:
         # Read from a pipe when no XML source is specified.
-        if not stdin.isatty():
-            xpath_on_xml(stdin, xml_parser, dom_xpath, options, xpath_expr)
+        if not sys.stdin.isatty():
+            xpath_on_xml(sys.stdin, xml_parser, dom_xpath, options, xpath_expr)
         else:
-            stderr.write("Error: no XML source specified\n")
+            sys.stderr.write("Error: no XML source specified\n")

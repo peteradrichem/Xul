@@ -7,7 +7,7 @@ from __future__ import print_function
 
 # Standard Python.
 from optparse import OptionParser
-from sys import stderr, stdin
+import sys
 
 # Import my own modules.
 from .. import __version__
@@ -49,10 +49,10 @@ def validate_xml(xml_source, validator, val_source):
         if validator.validate(xml_dom):
             print("'%s' validates against '%s'" % (name, val_source))
         else:
-            stderr.write(
+            sys.stderr.write(
                 "'%s' does not validate against '%s':\n" % (name, val_source))
             for e in validator.error_log:
-                stderr.write(
+                sys.stderr.write(
                     "\tline %i, column %i: %s\n" % (e.line, e.column, e.message))
 
 
@@ -78,11 +78,11 @@ def main():
         val_source = None
     # Check validator.
     if not val_source:
-        stderr.write('No XSD or DTD source specified\n')
-        exit(105)
+        sys.stderr.write('No XSD or DTD source specified\n')
+        sys.exit(105)
     elif not validator:
-        stderr.write('Invalid %s source specified\n' % val_type)
-        exit(105)
+        sys.stderr.write('Invalid %s source specified\n' % val_type)
+        sys.exit(105)
 
     # Validate XML sources.
     for xml_s in xml_sources:
@@ -90,7 +90,7 @@ def main():
 
     if not xml_sources:
         # Read from a pipe when no XML source is specified.
-        if not stdin.isatty():
-            validate_xml(stdin, validator, val_source)
+        if not sys.stdin.isatty():
+            validate_xml(sys.stdin, validator, val_source)
         else:
-            stderr.write("Error: no XML source specified\n")
+            sys.stderr.write("Error: no XML source specified\n")
