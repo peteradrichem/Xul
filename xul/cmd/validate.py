@@ -1,22 +1,22 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 """Validate XML source with XSD or DTD."""
 
 
 from __future__ import print_function
 
-# Standard Python
+# Standard Python.
 from optparse import OptionParser
 from sys import stderr, stdin
 
-# Import my own modules
+# Import my own modules.
 from .. import __version__
 from ..log import setup_logger_console
 from ..dom import build_etree, build_xml_schema, build_dtd
 
 
 def parse_cl():
-    """Parse the command-line for options and XML sources."""
+    """Parse the command line for options and XML sources."""
     parser = OptionParser(
         usage="""\t%prog -x xsd_source xml_source ...
 \t%prog -d dtd_source xml_source ...""",
@@ -58,10 +58,10 @@ def validate_xml(xml_source, validator, val_source):
 
 def main():
     """Main command line entry point."""
-    # Logging to the console
+    # Logging to the console.
     setup_logger_console()
 
-    # Command-line
+    # Command line.
     (options, xml_sources) = parse_cl()
 
     # XSD or DTD Validator?
@@ -76,7 +76,7 @@ def main():
     else:
         validator = None
         val_source = None
-    # Check validator
+    # Check validator.
     if not val_source:
         stderr.write('No XSD or DTD source specified\n')
         exit(105)
@@ -84,12 +84,12 @@ def main():
         stderr.write('Invalid %s source specified\n' % val_type)
         exit(105)
 
-    # Validate XML sources
+    # Validate XML sources.
     for xml_s in xml_sources:
         validate_xml(xml_s, validator, val_source)
 
     if not xml_sources:
-        # Read from a pipe when no XML source is specified
+        # Read from a pipe when no XML source is specified.
         if not stdin.isatty():
             validate_xml(stdin, validator, val_source)
         else:

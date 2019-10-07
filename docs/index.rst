@@ -29,7 +29,7 @@ XML
 
 Installing
 ----------
-The Xul command-line scripts can be installed with pip:
+The Xul command line scripts can be installed with pip:
 
 .. code:: bash
 

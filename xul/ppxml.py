@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 
-"""Pretty print XML with UTF-8 encoding."""
+"""Pretty Print XML with UTF-8 encoding."""
 
 
 from __future__ import print_function
 
-# Standard Python
+# Standard Python.
 from sys import stderr
 #
 # pylint: disable=no-name-in-module
-# lxml ElementTree <http://lxml.de/>
+# lxml ElementTree <https://lxml.de/>
 from lxml.etree import tostring
 
-# Import my own modules
+# Import my own modules.
 from .dom import build_etree
 
 
@@ -21,8 +21,8 @@ __all__ = ['prettyprint', 'pp_xml']
 def _private_pp(etree, syntax=True, xml_declaration=None):
     """Pretty print XML ElementTree with (optional) syntax highlighting.
 
-    http://lxml.de/api.html#serialisation
-    http://lxml.de/api/lxml.etree-module.html#tostring
+    https://lxml.de/api.html#serialisation
+    https://lxml.de/api/lxml.etree-module.html#tostring
     """
     try:
         # lxml.etree.tostring returns bytes (bytestring).

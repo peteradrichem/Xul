@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 """Logging.
 
@@ -11,11 +11,11 @@ Python logging URLs:
 """
 
 
-# Standard Python
+# Standard Python.
 import logging
 
 
-# Module logging
+# Module logging initialisation.
 logger = logging.getLogger(__name__)
 
 # Logging level names.
@@ -84,7 +84,7 @@ def setup_logger_console(log_level='info'):
 
        log_level -- console log level [default 'info']
 
-       Logging op het console (sys.stderr) voor de command-line.
+       Logging op het console (sys.stderr) voor de command line.
 
        Geef console handler (StreamHandler) terug.
             https://docs.python.org/library/logging.handlers.html#streamhandler

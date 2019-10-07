@@ -1,18 +1,18 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 """XPath.
 
 XML Path Language
-    http://www.w3.org/TR/xpath/
+    https://www.w3.org/TR/xpath/
 
 Namespaces in XML 1.0
-    http://www.w3.org/TR/xml-names/
+    https://www.w3.org/TR/xml-names/
 
 XPath and XSLT with lxml
-    http://lxml.de/xpathxslt.html
+    https://lxml.de/xpathxslt.html
 
 The XPath result depends on the XPath expression used.
-    http://lxml.de/xpathxslt.html#xpath-return-values
+    https://lxml.de/xpathxslt.html#xpath-return-values
 - attributes:               "location/@attribute"
 - text nodes:               "location/text()"
 - element nodes:            "location"
@@ -24,18 +24,18 @@ The XPath result depends on the XPath expression used.
 """
 
 
-# Standard Python
+# Standard Python.
 from logging import getLogger
 # pylint: disable=no-name-in-module
-# lxml ElementTree <http://lxml.de/>
+# lxml ElementTree <https://lxml.de/>
 from lxml.etree import XPath, XPathSyntaxError, XPathEvalError
 from lxml.etree import LIBXSLT_COMPILED_VERSION
 
-# Import my own modules
+# Import my own modules.
 from .dom import build_etree
 
 
-# Module logging
+# Module logging initialisation.
 logger = getLogger(__name__)
 
 
@@ -46,15 +46,15 @@ def build_xpath(xpath_exp, ns_map=None):
     ns_map -- XML namespace (prefix: URI) dictionary
 
     Uses the lxml XPath class:
-        http://lxml.de/xpathxslt.html#the-xpath-class
-        http://lxml.de/api/lxml.etree.XPath-class.html
+        https://lxml.de/xpathxslt.html#the-xpath-class
+        https://lxml.de/api/lxml.etree.XPath-class.html
     """
     if not ns_map:
         ns_map = {}
     try:
         xpath_obj = XPath(xpath_exp, namespaces=ns_map)
-    # Handle (parsing) errors in XPath expression
-    #   http://lxml.de/xpathxslt.html#error-handling
+    # Handle (parsing) errors in XPath expression.
+    #   https://lxml.de/xpathxslt.html#error-handling
     except XPathSyntaxError as e:
         logger.error("Invalid XPath '%s'", xpath_exp)
         logger.error("XPathSyntaxError: %s", e)
@@ -71,13 +71,13 @@ def etree_xpath(xml_dom, xpath_obj):
     """
     try:
         xpath_result = xpath_obj(xml_dom)
-    # Handle errors in evaluating an XPath expression
-    #   http://lxml.de/xpathxslt.html#error-handling
+    # Handle errors in evaluating an XPath expression.
+    #   https://lxml.de/xpathxslt.html#error-handling
     except XPathEvalError as e:
         logger.error("Invalid XPath '%s'", xpath_obj)
         logger.error("XPathEvalError: %s", e)
         return None
-    # Incorrect EXSLT function call (e.g. number of arguments for re:match)
+    # Incorrect EXSLT function call (e.g. number of arguments for re:match).
     except TypeError as e:
         logger.error("Invalid XPath '%s'", xpath_obj)
         logger.error("TypeError: %s", e)
@@ -92,10 +92,10 @@ def call_xpath(xml_file, xpath_obj):
     xml_file -- XML file
     xpath_obj -- lxml.etree.XPath instance; see build_xpath()
     """
-    # Parse an XML file into an XML Document Object Model
+    # Parse an XML file into an XML Document Object Model.
     xml_dom = build_etree(xml_file, lenient=False)
     if not xml_dom:
-        # No XML file
+        # No XML file.
         return None
 
     xpath_result = etree_xpath(xml_dom, xpath_obj)
@@ -136,21 +136,22 @@ def update_ns_map(ns_map, elm, none_prefix='default'):
      * No protection against namespace prefix collisions.
        First occurrence (ns_map) wins.
 
-    http://lxml.de/xpathxslt.html#namespaces-and-prefixes
+    Namespaces and prefixes:
+        https://lxml.de/xpathxslt.html#namespaces-and-prefixes
     """
     for key in elm.nsmap:
         if not key:
-            # XPath prefix for element default namespace
+            # XPath prefix for element default namespace.
             if not none_prefix in ns_map:
                 ns_map[none_prefix] = elm.nsmap[key]
         elif not key in ns_map:
-            # Protect the XPath default namespace prefix
+            # Protect the XPath default namespace prefix.
             if not key == none_prefix:
                 ns_map[key] = elm.nsmap[key]
 
 
 def dom_namespaces(xml_dom, exslt=False, none_prefix='default'):
-    """Collect all XML namespaces (xmlns) in the XML DOM
+    """Collect all XML namespaces (xmlns) in the XML DOM.
 
     xml_dom -- XML DOM (ElementTree)
     exslt -- add EXSLT XML namespace prefixes (libxslt 1.1.25 and newer)
@@ -158,7 +159,8 @@ def dom_namespaces(xml_dom, exslt=False, none_prefix='default'):
 
     Return XML namespaces (xmlns) 'prefix: URI' dict.
 
-    http://lxml.de/tutorial.html#namespaces
+    Namespaces.
+        https://lxml.de/tutorial.html#namespaces
     """
     if exslt:
         if LIBXSLT_COMPILED_VERSION < (1, 1, 25):
@@ -180,7 +182,7 @@ def dom_namespaces(xml_dom, exslt=False, none_prefix='default'):
     else:
         ns_map = {}
 
-    # Collect XML namespaces (xmlns) in all elements
+    # Collect XML namespaces (xmlns) in all elements.
     for elm in xml_dom.iter('*'):
         if elm.nsmap:
             update_ns_map(ns_map, elm, none_prefix=none_prefix)

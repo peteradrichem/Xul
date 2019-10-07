@@ -1,27 +1,27 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
-"""XML Document Object Model / ElementTree.
+"""XML Document Object Model / ElementTree XML API.
 
 W3C Document Object Model:
-    http://www.w3.org/DOM/
+    https://www.w3.org/DOM/
 
 The ElementTree XML API:
     https://docs.python.org/library/xml.etree.elementtree.html
 
 ElementTree Overview:
-    http://effbot.org/zone/element-index.htm
+    https://effbot.org/zone/element-index.htm
 """
 
 
-# Standard Python
+# Standard Python.
 from logging import getLogger
 #
 # pylint: disable=no-member
-# lxml ElementTree <http://lxml.de/>
+# lxml ElementTree <https://lxml.de/>
 from lxml import etree
 
 
-# Module logging
+# Module logging initialisation.
 logger = getLogger(__name__)
 
 
@@ -36,14 +36,14 @@ def build_etree(xml_source, parser=None, lenient=True):
     Return None on error.
 
     Extensible Markup Language (XML):
-        http://www.w3.org/XML/
+        https://www.w3.org/XML/
 
     The lxml.etree.parse function:
-        http://lxml.de/parsing.html
-        http://effbot.org/zone/element.htm#reading-and-writing-xml-files
+        https://lxml.de/parsing.html
+        https://effbot.org/zone/element.htm#reading-and-writing-xml-files
     Parser options (lxml.etree.XMLParser class):
-        http://lxml.de/parsing.html#parser-options
-        http://effbot.org/elementtree/elementtree-xmlparser.htm
+        https://lxml.de/parsing.html#parser-options
+        https://effbot.org/elementtree/elementtree-xmlparser.htm
     """
     # XML parser preparation.
     if not parser:
@@ -98,14 +98,16 @@ def build_xsl_transform(xslt_source):
     Return XSL Transformer (lxml.etree.XSLT) on success.
     Return None on error.
 
-    Extensible Stylesheet Language Transformatie (XSLT):
-        http://www.w3.org/Style/XSL/
+    The Extensible Stylesheet Language Family (XSL):
+        https://www.w3.org/Style/XSL/
+    XSL Transformations (XSLT):
+        https://www.w3.org/TR/xslt
 
     The lxml.etree.XSLT class:
-        http://lxml.de/api/lxml.etree.XSLT-class.html
-        http://lxml.de/xpathxslt.html#xslt
+        https://lxml.de/api/lxml.etree.XSLT-class.html
+        https://lxml.de/xpathxslt.html#xslt
     I/O access control in XSLT:
-        http://lxml.de/resolvers.html#i-o-access-control-in-xslt
+        https://lxml.de/resolvers.html#i-o-access-control-in-xslt
     """
     xslt_etree = build_etree(xslt_source, lenient=False)
     if not xslt_etree:
@@ -135,7 +137,7 @@ def etree_transformer(xml_dom, transformer, **params):
     xml_dom -- XML Document Object Model
     transformer -- XSL Transformer (lxml.etree.XSLT)
     params -- (optional) XSL style sheet parameters:
-        http://lxml.de/xpathxslt.html#stylesheet-parameters
+        https://lxml.de/xpathxslt.html#stylesheet-parameters
 
     XSLT lines with apply errors are logged as warnings.
 
@@ -201,11 +203,11 @@ def build_xml_schema(xsd_file):
     Return None on error.
 
     XML Schema Definition (XSD):
-        http://www.w3.org/XML/Schema
+        https://www.w3.org/XML/Schema
 
     The lxml.etree.XMLSchema class:
-        http://lxml.de/validation.html#xmlschema
-        http://lxml.de/api/lxml.etree.XMLSchema-class.html
+        https://lxml.de/validation.html#xmlschema
+        https://lxml.de/api/lxml.etree.XMLSchema-class.html
     """
     xsd_etree = build_etree(xsd_file, lenient=False)
     if not xsd_etree:
@@ -241,11 +243,11 @@ def build_dtd(dtd_file):
     Return None on error.
 
     Document Type Definition (DTD):
-        http://en.wikipedia.org/wiki/Document_Type_Definition
+        https://en.wikipedia.org/wiki/Document_type_definition
 
     The lxml.etree.DTD class:
-        http://lxml.de/validation.html#id1
-        http://lxml.de/api/lxml.etree.DTD-class.html
+        https://lxml.de/validation.html#id1
+        https://lxml.de/api/lxml.etree.DTD-class.html
     """
     try:
         validator = etree.DTD(file=dtd_file)

@@ -10,7 +10,7 @@ from optparse import OptionParser
 from sys import stderr, stdin
 #
 # pylint: disable=no-name-in-module
-# lxml ElementTree <http://lxml.de/>
+# lxml ElementTree <https://lxml.de/>
 from lxml.etree import XMLParser, tostring
 
 # Import my own modules.
@@ -20,7 +20,7 @@ from ..dom import build_xsl_transform, xml_transformer
 
 
 def parse_cl():
-    """Parse the command-line for XSLT source, options and XML sources."""
+    """Parse the command line for XSLT source, options and XML sources."""
     cl_parser = OptionParser(
         usage="%prog xslt_source [-o] xml_source ...",
         description=__doc__,
@@ -64,7 +64,7 @@ def main():
     # Logging to the console.
     setup_logger_console()
 
-    # Command-line.
+    # Command line.
     (options, args) = parse_cl()
 
     # Check XSLT source.
