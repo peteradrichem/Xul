@@ -33,14 +33,18 @@ Options
 
    $ transform --help
 
-   Usage: transform xslt_source [-o] xml_source ...
+   usage: transform [-h] [-V] [-o] xslt_source [xml_source [xml_source ...]]
 
    Transform XML source with XSLT.
 
-   Options:
-     --version             show program's version number and exit
-     -h, --help            show this help message and exit
-     -o, --omit-declaration
+   positional arguments:
+   xslt_source           XSLT source (file, http://...)
+   xml_source            XML source (file, <stdin>, http://...)
+
+   optional arguments:
+   -h, --help            show this help message and exit
+   -V, --version         show program's version number and exit
+   -o, --omit-declaration
                            omit the XML declaration
 
 .. index::
@@ -61,6 +65,6 @@ You can omit the XML declaration with the ``--omit-declaration`` option.
 
 .. rubric:: Footnotes
 
-.. [#] `XSL Transformations (XSLT) 1.0 <http://www.w3.org/TR/xslt>`_
+.. [#] `XSL Transformations (XSLT) 1.0 <https://www.w3.org/TR/xslt>`_
 .. [#] Extensible Markup Language §2.8
-   `Prolog and Document Type Declaration <http://www.w3.org/TR/xml/#sec-prolog-dtd>`_
+   `Prolog and Document Type Declaration <https://www.w3.org/TR/xml/#sec-prolog-dtd>`_
