@@ -34,21 +34,26 @@ Options
 
    $ xp --help
 
-   Usage:  xp xpath_expr [options] xml_source ...
+   usage: xp [-h] [-V] [-e] [-d DEFAULT_NS_PREFIX] [-r] [-p] [-m]
+             xpath_expr [xml_source [xml_source ...]]
 
    Select nodes in an XML source with an XPath expression.
 
-   Options:
-     --version             show program's version number and exit
-     -h, --help            show this help message and exit
-     -e, --exslt           add EXSLT XML namespace prefixes
-     -d DEFAULT_NS_PREFIX, --default-prefix=DEFAULT_NS_PREFIX
+   positional arguments:
+   xpath_expr            XPath expression
+   xml_source            XML source (file, <stdin>, http://...)
+
+   optional arguments:
+   -h, --help            show this help message and exit
+   -V, --version         show program's version number and exit
+   -e, --exslt           add EXSLT XML namespace prefixes
+   -d DEFAULT_NS_PREFIX, --default-prefix DEFAULT_NS_PREFIX
                            set the prefix for the default namespace in XPath
                            [default: 'd']
-     -r, --result-xpath    print the XPath expression of the result element (or
+   -r, --result-xpath    print the XPath expression of the result element (or
                            its parent)
-     -p, --pretty-element  pretty print the result element
-     -m, --method          use ElementTree.xpath method instead of XPath class
+   -p, --pretty-element  pretty print the result element
+   -m, --method          use ElementTree.xpath method instead of XPath class
 
 Print result's XPath
 --------------------
@@ -150,6 +155,6 @@ The results should be the same but error reporting can be different.
 
 .. rubric:: Footnotes
 
-.. [#] `XML Path Language (XPath) 1.0 <http://www.w3.org/TR/xpath>`_
-.. [#] `Namespaces in XML 1.0 <http://www.w3.org/TR/xml-names/>`_
+.. [#] `XML Path Language (XPath) 1.0 <https://www.w3.org/TR/xpath>`_
+.. [#] `Namespaces in XML 1.0 <https://www.w3.org/TR/xml-names/>`_
 .. [#] `Extensions to XSLT (EXSLT) <http://exslt.org/>`_

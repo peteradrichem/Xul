@@ -89,7 +89,7 @@ More XSDs and DTDs examples_ can be found in the Xul Bitbucket repository.
 .. rubric:: Footnotes
 
 .. [#] `XHTML™ 1.0 The Extensible HyperText Markup Language
-   <http://www.w3.org/TR/xhtml1>`_
+   <https://www.w3.org/TR/xhtml1>`_
 
 
 .. _examples: https://bitbucket.org/peteradrichem/xul/src/tip/examples/

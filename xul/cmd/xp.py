@@ -6,7 +6,7 @@
 from __future__ import print_function
 
 # Standard Python.
-from optparse import OptionParser
+from argparse import ArgumentParser
 import sys
 #
 # pylint: disable=no-name-in-module
@@ -23,28 +23,33 @@ from ..ppxml import prettyprint
 
 
 def parse_cl():
-    """Parse the command line for options and XML sources."""
-    parser = OptionParser(
-        usage="\t%prog xpath_expr [options] xml_source ...",
-        description=__doc__,
-        version="%prog " + __version__)
-    parser.add_option(
+    """Parse the command line for options, XPath expression and XML sources."""
+    parser = ArgumentParser(
+        description=__doc__)
+    parser.add_argument(
+        "-V", "--version", action="version",
+        version="%(prog)s " + __version__)
+    parser.add_argument("xpath_expr", help="XPath expression")
+    parser.add_argument(
+        "xml_sources", nargs='*',
+        metavar='xml_source', help="XML source (file, <stdin>, http://...)")
+    parser.add_argument(
         "-e", "--exslt",
         action="store_true", default=False, dest="exslt",
         help="add EXSLT XML namespace prefixes")
-    parser.add_option(
+    parser.add_argument(
         "-d", "--default-prefix",
-        action="store", type="string", default="d", dest="default_ns_prefix",
-        help="set the prefix for the default namespace in XPath [default: '%default']")
-    parser.add_option(
+        action="store", default="d", dest="default_ns_prefix",
+        help="set the prefix for the default namespace in XPath [default: '%(default)s']")
+    parser.add_argument(
         "-r", "--result-xpath",
         action="store_true", default=False, dest="result_xpath",
         help="print the XPath expression of the result element (or its parent)")
-    parser.add_option(
+    parser.add_argument(
         "-p", "--pretty-element",
         action="store_true", default=False, dest="pretty_element",
         help="pretty print the result element")
-    parser.add_option(
+    parser.add_argument(
         "-m", "--method",
         action="store_true", default=False, dest="lxml_method",
         help="use ElementTree.xpath method instead of XPath class")
@@ -52,19 +57,19 @@ def parse_cl():
     return parser.parse_args()
 
 
-def xp_prepare(options):
+def xp_prepare(args):
     """Return DOM XPath function and XML parser.
 
-    options -- Command-line options
+    args -- Command-line arguments
     """
     # ElementTree.xpath method or XPath class (default).
-    if options.lxml_method:
+    if args.lxml_method:
         dom_xpath = et_dom_xpath
     else:
         dom_xpath = class_dom_xpath
 
     # Initialise XML parser.
-    if options.pretty_element:
+    if args.pretty_element:
         # Pretty print preparation (removes whitespace nodes!).
         xml_parser = XMLParser(remove_blank_text=True)
     else:
@@ -205,14 +210,14 @@ def smart_with_parent(smart_string):
     return (smart_repr, parent_rel)
 
 
-def print_smart_string(smart_string, xml_dom, options):
+def print_smart_string(smart_string, xml_dom, args):
     """Print lxml 'smart' string with parent element tag.
 
     smart_string -- XPath string result that provides a getparent() method:
      * string: lxml.etree._ElementStringResult
      * Unicode: lxml.etree._ElementUnicodeResult
     xml_dom -- XML DOM (ElementTree)
-    options -- Command-line options
+    args -- Command-line arguments
     """
     # Parent element.
     par_el = smart_string.getparent()
@@ -226,7 +231,7 @@ def print_smart_string(smart_string, xml_dom, options):
     # Print 'smart' string.
     smart_repr, parent_rel = smart_with_parent(smart_string)
     if smart_repr:
-        if options.result_xpath:
+        if args.result_xpath:
             # Print the absolute XPath expression of the parent element.
             print("line %d, parent XPath %s" % (
                 par_el.sourceline, xml_dom.getpath(par_el)))
@@ -236,32 +241,32 @@ def print_smart_string(smart_string, xml_dom, options):
                 par_el.sourceline, smart_repr, parent_rel, par_el_str))
     else:
         print("**smart string DEBUG fallback**")
-        print_elem(par_el, pretty=options.pretty_element)
+        print_elem(par_el, pretty=args.pretty_element)
 
 
-def print_result_list(result_list, xml_dom, options):
+def print_result_list(result_list, xml_dom, args):
     """Print all nodes from the list of XPath results.
 
     result_list -- XPath result list
     xml_dom -- XML DOM (ElementTree)
-    options -- Command-line options
+    args -- Command-line arguments
     """
-    if options.pretty_element:
+    if args.pretty_element:
         print()
     # All nodes -- //node()
     for node in result_list:
         if iselement(node):
-            if options.result_xpath:
+            if args.result_xpath:
                 print_elem(
                     node,
-                    pretty=options.pretty_element,
+                    pretty=args.pretty_element,
                     xpath_exp=xml_dom.getpath(node))
             else:
-                print_elem(node, pretty=options.pretty_element)
+                print_elem(node, pretty=args.pretty_element)
 
         # Smart string -- .getparent() | attribute, entity, text (atomic value).
         elif hasattr(node, "getparent"):
-            print_smart_string(node, xml_dom, options)
+            print_smart_string(node, xml_dom, args)
 
         # Namespaces -- namespace::
         elif isinstance(node, tuple):
@@ -296,13 +301,13 @@ def print_result_header(xp_result):
             print("%d results." % xp_r_len)
 
 
-def print_xp_result(xp_result, xml_dom, ns_map, options):
+def print_xp_result(xp_result, xml_dom, ns_map, args):
     """Print XPath results.
 
     xp_result -- XPath result
     xml_dom -- XML DOM (ElementTree)
     ns_map -- XML namespaces (xmlns) 'prefix: URI' dict
-    options -- Command-line options
+    args -- Command-line arguments
 
     Prints:
      * result header
@@ -322,12 +327,12 @@ def print_xp_result(xp_result, xml_dom, ns_map, options):
         # Python 3.
         basestring = (str, bytes)
     if isinstance(xp_result, basestring):
-        print_smart_string(xp_result, xml_dom, options)
+        print_smart_string(xp_result, xml_dom, args)
 
     # LIST - list - node-set.
     elif isinstance(xp_result, list):
         try:
-            print_result_list(xp_result, xml_dom, options)
+            print_result_list(xp_result, xml_dom, args)
         except IOError as e:
             # Catch 'IOError: [Errno 32] Broken pipe'.
             if e.errno != 32:
@@ -348,14 +353,13 @@ def print_xp_result(xp_result, xml_dom, ns_map, options):
         print("Unknown XPath result: %s" % xp_result)
 
 
-def xpath_on_xml(xml_source, parser, dom_xpath, options, xpath_expr):
+def xpath_on_xml(xml_source, parser, dom_xpath, args):
     """Apply XPath expression to XML source.
 
     xml_source -- XML file, file-like object or URL
     parser -- XML parser (lxml.etree.XMLParser)
     dom_xpath -- ElementTree.xpath method or XPath class
-    options -- Command-line options
-    xpath_expr -- XPath expression
+    args -- Command-line arguments
     """
     # XML DOM Node Tree (ElementTree).
     xml_dom = build_etree(
@@ -366,59 +370,49 @@ def xpath_on_xml(xml_source, parser, dom_xpath, options, xpath_expr):
         return False
 
     # XML namespaces.
-    ns_map = dom_namespaces(xml_dom, options.exslt, options.default_ns_prefix)
+    ns_map = dom_namespaces(xml_dom, args.exslt, args.default_ns_prefix)
     # Use XPath expression on XML DOM.
-    xp_result = dom_xpath(xml_dom, xpath_expr, ns_map)
+    xp_result = dom_xpath(xml_dom, args.xpath_expr, ns_map)
     if xp_result is None:
         return False
 
-    if xml_source is sys.stdin:
-        print("<stdin>, XPath: %s," % xpath_expr, end=" ")
+    if xml_source == '-' or xml_source is sys.stdin:
+        print("<stdin>, XPath: %s," % args.xpath_expr, end=" ")
     else:
-        print("Source: %s, XPath: %s," % (xml_source, xpath_expr), end=" ")
-    return print_xp_result(xp_result, xml_dom, ns_map, options)
+        print("Source: %s, XPath: %s," % (xml_source, args.xpath_expr), end=" ")
+    return print_xp_result(xp_result, xml_dom, ns_map, args)
 
 
 def main():
-    """Main command line entry point."""
+    """xp command line script entry point."""
     # Logging to the console.
     setup_logger_console()
 
     # Command line.
-    (options, args) = parse_cl()
+    args = parse_cl()
 
-    if args:
-        # XPath expressie.
-        if isinstance(args[0], bytes):
-            # Python 2 Unicode.
-            xpath_expr = args[0].decode("utf-8")
-        else:
-            # Python 3 Unicode string.
-            xpath_expr = args[0]
-        if build_xpath(xpath_expr):
-            # XML source(s).
-            xml_sources = args[1:]
-        else:
-            sys.exit(60)
-    else:
-        sys.stderr.write('No XPath expression specified\n')
-        sys.exit(50)
+    # XPath expressie.
+    if isinstance(args.xpath_expr, bytes):
+        # Python 2 Bytestring to Unicode.
+        args.xpath_expr = args.xpath_expr.decode("utf-8")
+    if not build_xpath(args.xpath_expr):
+        sys.exit(60)
 
     # DOM XPath function and XML parser.
-    (dom_xpath, xml_parser) = xp_prepare(options)
+    (dom_xpath, xml_parser) = xp_prepare(args)
 
     # Use XPath on XML sources.
     first = True
-    for xml_s in xml_sources:
+    for xml_s in args.xml_sources:
         if first:
             first = False
         else:
             print()
-        xpath_on_xml(xml_s, xml_parser, dom_xpath, options, xpath_expr)
+        xpath_on_xml(xml_s, xml_parser, dom_xpath, args)
 
-    if not xml_sources:
+    if not args.xml_sources:
         # Read from a pipe when no XML source is specified.
         if not sys.stdin.isatty():
-            xpath_on_xml(sys.stdin, xml_parser, dom_xpath, options, xpath_expr)
+            xpath_on_xml(sys.stdin, xml_parser, dom_xpath, args)
         else:
             sys.stderr.write("Error: no XML source specified\n")
