@@ -35,15 +35,18 @@ Options
 
    $ ppx --help
 
-   Usage:  ppx [-no] xml_source ...
+   usage: ppx [-h] [-V] [-n] [-o] [xml_source [xml_source ...]]
 
    Pretty Print XML source in human readable form.
 
-   Options:
-     --version             show program's version number and exit
-     -h, --help            show this help message and exit
-     -n, --no-syntax       no syntax highlighting
-     -o, --omit-declaration
+   positional arguments:
+   xml_source            XML source (file, <stdin>, http://...)
+
+   optional arguments:
+   -h, --help            show this help message and exit
+   -V, --version         show program's version number and exit
+   -n, --no-syntax       no syntax highlighting
+   -o, --omit-declaration
                            omit the XML declaration
 
 
@@ -119,6 +122,6 @@ Redirect output (pipe) to ``ppx``:
 .. rubric:: Footnotes
 
 .. [#] Extensible Markup Language §2.10
-   `White Space Handling <http://www.w3.org/TR/xml/#sec-white-space>`_
+   `White Space Handling <https://www.w3.org/TR/xml/#sec-white-space>`_
 .. [#] Extensible Markup Language §2.8
-   `Prolog and Document Type Declaration <http://www.w3.org/TR/xml/#sec-prolog-dtd>`_
+   `Prolog and Document Type Declaration <https://www.w3.org/TR/xml/#sec-prolog-dtd>`_
