@@ -6,7 +6,7 @@
 from __future__ import print_function
 
 # Standard Python.
-from optparse import OptionParser
+from argparse import ArgumentParser
 import sys
 
 # Import my own modules.
@@ -17,18 +17,22 @@ from ..dom import build_etree, build_xml_schema, build_dtd
 
 def parse_cl():
     """Parse the command line for options and XML sources."""
-    parser = OptionParser(
-        usage="""\t%prog -x xsd_source xml_source ...
-\t%prog -d dtd_source xml_source ...""",
-        description=__doc__,
-        version="%prog " + __version__)
-    parser.add_option(
+    parser = ArgumentParser(
+        description=__doc__)
+    parser.add_argument(
+        "-V", "--version", action="version",
+        version="%(prog)s " + __version__)
+    parser.add_argument(
+        "xml_sources", nargs='*',
+        metavar='xml_source', help="XML source (file, <stdin>, http://...)")
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument(
         "-x", "--xsd",
-        action="store", type="string", dest="xsd_source",
+        action="store", dest="xsd_source",
         help="XML Schema Definition (XSD) source")
-    parser.add_option(
+    group.add_argument(
         "-d", "--dtd",
-        action="store", type="string", dest="dtd_source",
+        action="store", dest="dtd_source",
         help="Document Type Definition (DTD) source")
     return parser.parse_args()
 
@@ -57,38 +61,35 @@ def validate_xml(xml_source, validator, val_source):
 
 
 def main():
-    """Main command line entry point."""
+    """validate command line script entry point."""
     # Logging to the console.
     setup_logger_console()
 
     # Command line.
-    (options, xml_sources) = parse_cl()
+    args = parse_cl()
 
     # XSD or DTD Validator?
-    if options.xsd_source:
-        validator = build_xml_schema(options.xsd_source)
-        val_source = options.xsd_source
+    if args.xsd_source:
+        validator = build_xml_schema(args.xsd_source)
+        val_source = args.xsd_source
         val_type = "XSD"
-    elif options.dtd_source:
-        validator = build_dtd(options.dtd_source)
-        val_source = options.dtd_source
+    elif args.dtd_source:
+        validator = build_dtd(args.dtd_source)
+        val_source = args.dtd_source
         val_type = "DTD"
     else:
         validator = None
         val_source = None
     # Check validator.
-    if not val_source:
-        sys.stderr.write('No XSD or DTD source specified\n')
-        sys.exit(105)
-    elif not validator:
+    if not validator:
         sys.stderr.write('Invalid %s source specified\n' % val_type)
         sys.exit(105)
 
     # Validate XML sources.
-    for xml_s in xml_sources:
+    for xml_s in args.xml_sources:
         validate_xml(xml_s, validator, val_source)
 
-    if not xml_sources:
+    if not args.xml_sources:
         # Read from a pipe when no XML source is specified.
         if not sys.stdin.isatty():
             validate_xml(sys.stdin, validator, val_source)

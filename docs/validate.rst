@@ -37,17 +37,20 @@ Options
 
    $ validate --help
 
-   Usage:  validate -x xsd_source xml_source ...
-           validate -d dtd_source xml_source ...
+   usage: validate [-h] [-V] (-x XSD_SOURCE | -d DTD_SOURCE)
+                   [xml_source [xml_source ...]]
 
    Validate XML source with XSD or DTD.
 
-   Options:
-     --version             show program's version number and exit
-     -h, --help            show this help message and exit
-     -x XSD_SOURCE, --xsd=XSD_SOURCE
+   positional arguments:
+   xml_source            XML source (file, <stdin>, http://...)
+
+   optional arguments:
+   -h, --help            show this help message and exit
+   -V, --version         show program's version number and exit
+   -x XSD_SOURCE, --xsd XSD_SOURCE
                            XML Schema Definition (XSD) source
-     -d DTD_SOURCE, --dtd=DTD_SOURCE
+   -d DTD_SOURCE, --dtd DTD_SOURCE
                            Document Type Definition (DTD) source
 
 Examples
@@ -104,5 +107,5 @@ Validate the XML Schema XSD with the
 
 .. rubric:: Footnotes
 
-.. [#] `XML Schema 1.0 and 1.1 <http://www.w3.org/XML/Schema>`_
-.. [#] `XML Document Type Definition <http://www.w3.org/TR/xml/#dtd>`_
+.. [#] `XML Schema 1.0 and 1.1 <https://www.w3.org/XML/Schema>`_
+.. [#] `XML Document Type Definition <https://www.w3.org/TR/xml/#dtd>`_
