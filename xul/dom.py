@@ -267,25 +267,25 @@ def build_dtd(dtd_file):
         return validator
 
 
-def xml_validator(xml_file, validator):
-    """Validate an XML file against an XSD or DTD validator.
+def xml_validator(xml_source, validator):
+    """Validate an XML source against an XSD or DTD validator.
 
-    xml_file -- XML file
+    xml_source -- XML file, file-like object or URL
     validator -- XMLSchema or DTD Validator
 
     Log XML validation errors as warnings.
 
     Return a tuple with the validation result (True/False) and the status string.
     """
-    xml_dom = build_etree(xml_file)
+    xml_dom = build_etree(xml_source)
     if not xml_dom:
-        return (False, "Not an XML file")
+        return (False, "Not an XML source")
 
     if validator.validate(xml_dom):
-        logger.info("XML file '%s' validates", xml_file)
-        return (True, "XML file validates")
+        logger.info("XML source '%s' validates", xml_source)
+        return (True, "XML source validates")
 
-    logger.warning("XML file '%s' does not validate:", xml_file)
+    logger.warning("XML source '%s' does not validate:", xml_source)
     for e in validator.error_log:
         # E.g. DTD e.level_name: "ERROR", e.domain_name: "VALID",
         # e.type_name: "DTD_UNKNOWN_ELEM"

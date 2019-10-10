@@ -97,5 +97,4 @@ def setup_logger_console(log_level='info'):
     # Koppel console handler aan de root logger.
     logging.getLogger('').addHandler(console_handler)
 
-    # Geef de console handler terug.
     return console_handler

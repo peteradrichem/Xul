@@ -86,28 +86,28 @@ def etree_xpath(xml_dom, xpath_obj):
         return xpath_result
 
 
-def call_xpath(xml_file, xpath_obj):
-    """Apply XPath instance to an XML file.
+def call_xpath(xml_source, xpath_obj):
+    """Apply XPath instance to an XML source.
 
-    xml_file -- XML file
+    xml_source -- XML file, file-like object or URL
     xpath_obj -- lxml.etree.XPath instance; see build_xpath()
     """
-    # Parse an XML file into an XML Document Object Model.
-    xml_dom = build_etree(xml_file, lenient=False)
+    # Parse an XML source into an XML Document Object Model.
+    xml_dom = build_etree(xml_source, lenient=False)
     if not xml_dom:
-        # No XML file.
+        # No XML source.
         return None
 
     xpath_result = etree_xpath(xml_dom, xpath_obj)
     if xpath_result is None:
-        logger.error("XPath failed on %s", xml_file)
+        logger.error("XPath failed on %s", xml_source)
     return xpath_result
 
 
-def xml_xpath(xml_file, xpath_exp):
-    """Apply XPath expression to an XML file.
+def xml_xpath(xml_source, xpath_exp):
+    """Apply XPath expression to an XML source.
 
-    xml_file -- XML file
+    xml_source -- XML file, file-like object or URL
     xpath_exp -- XPath expression
 
     Uses call_xpath()
@@ -116,7 +116,7 @@ def xml_xpath(xml_file, xpath_exp):
     if not xpath_obj:
         return None
 
-    return call_xpath(xml_file, xpath_obj)
+    return call_xpath(xml_source, xpath_obj)
 
 
 def update_ns_map(ns_map, elm, none_prefix='default'):
