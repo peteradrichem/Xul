@@ -114,7 +114,7 @@ def print_xmlns(ns_map, root):
 
 
 def element_repr(node, content=True):
-    """Return element representation (UTF-8 unicode).
+    """Return element representation (UTF-8 Unicode).
 
     node -- lxml.etree._Element instance -- iselement(node)
 
@@ -145,17 +145,20 @@ def element_repr(node, content=True):
 
     # node.tag: string.
     if node.text:
-        # node.text is a Python string.
         if node.text.isspace():
             elem_str = "<%s> contains whitespace" % node.tag
+        elif not isinstance(node.text, str):
+            # Python 2 Unicode naar Bytestring.
+            elem_str = "<%s> contains '%s'" % (node.tag, node.text.encode("utf-8"))
         else:
+            # node.text is a Python string.
             elem_str = "<%s> contains '%s'" % (node.tag, node.text)
         return elem_str
     return "<%s> is empty" % node.tag
 
 
 def print_elem(node, pretty=False, xpath_exp=None):
-    """Print element (UTF-8 unicode).
+    """Print element (UTF-8 Unicode).
 
     node -- lxml.etree._Element instance.
             element, comment or processing instruction node; see element_repr()
@@ -326,6 +329,7 @@ def print_xp_result(xp_result, xml_dom, ns_map, args):
     except NameError:
         # Python 3.
         basestring = (str, bytes)
+    # 'lxml.etree._ElementStringResult'
     if isinstance(xp_result, basestring):
         print_smart_string(xp_result, xml_dom, args)
 
