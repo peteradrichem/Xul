@@ -116,7 +116,7 @@ Redirect output (pipe) to ``ppx``:
    ppx -n data_dump.xml > pp_data_dump.xml
 
 
-.. _Pygments: http://pygments.org/
+.. _Pygments: https://pygments.org/
 
 
 .. rubric:: Footnotes
