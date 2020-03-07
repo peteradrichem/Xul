@@ -21,6 +21,9 @@ setup(
     packages=find_packages(),
     zip_safe=False,
     install_requires=["lxml>=2.0"],
+    extras_require={
+        'syntax': ["Pygments>=2.0"]
+    },
 
     author='Peter Adrichem',
     author_email='Peter.Adrichem@gmail.com',
@@ -36,22 +39,31 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: Implementation :: CPython',
         'Topic :: Text Processing :: Markup :: XML',
         'Topic :: Utilities'
     ],
     description="XML (XPath, XSD, XSLT) Utilities",
-    keywords='xml xpath xslt xsd dtd',
+    keywords="xml xpath xslt xsd dtd 'xml schema'",
     license='MIT',
     long_description=long_description(),
+    python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*",
     platforms='CPython',
     url='https://xul.readthedocs.io/',
-    download_url='https://bitbucket.org/peteradrichem/xul',
+    project_urls={
+        'Documentation': 'https://xul.readthedocs.io/',
+        'Source': 'https://bitbucket.org/peteradrichem/xul'
+    },
     entry_points={
         'console_scripts': [
             'transform = xul.cmd.transform:main',
             'ppx = xul.cmd.ppx:main',
             'xp = xul.cmd.xp:main',
             'validate = xul.cmd.validate:main'
-            ]
+        ]
     }
 )

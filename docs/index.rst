@@ -5,6 +5,15 @@ XML [#]_ utilities written in Python.
 
 Current version: |release|
 
+.. image:: https://img.shields.io/pypi/pyversions/xul.svg
+   :target: https://pypi.org/project/Xul/
+
+.. image:: https://img.shields.io/pypi/wheel/xul.svg
+   :target: https://pypi.org/project/Xul/
+
+.. image:: https://img.shields.io/pypi/l/xul.svg
+   :target: https://pypi.org/project/Xul/
+
 
 .. index::
    single: scripts

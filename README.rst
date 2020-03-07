@@ -2,6 +2,12 @@
 Xul -- XML Utilities
 ====================
 
+.. image:: https://img.shields.io/pypi/pyversions/xul.svg
+   :target: https://pypi.org/project/Xul/
+
+.. image:: https://img.shields.io/pypi/v/xul
+   :target: https://pypi.org/project/Xul/
+
 .. contents::
 
 Xul scripts
@@ -103,5 +109,5 @@ W3C XML standards:
 .. _lxml: http://lxml.de/
 .. _libxml2: http://www.xmlsoft.org/
 .. _libxslt: http://xmlsoft.org/libxslt/
-.. _Pygments: http://pygments.org/
+.. _Pygments: https://pygments.org/
 .. _XHTML: http://www.w3.org/TR/xhtml1
