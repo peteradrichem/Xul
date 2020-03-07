@@ -46,12 +46,12 @@ setup(
     platforms='CPython',
     url='https://bitbucket.org/peteradrichem/xul',
     download_url='https://bitbucket.org/peteradrichem/xul',
-    bugtrack_url='https://bitbucket.org/peteradrichem/xul/issues',
     entry_points={
         'console_scripts': [
             'transform = xul.cmd.transform:main',
             'ppx = xul.cmd.ppx:main',
             'xp = xul.cmd.xp:main',
-            'validate = xul.cmd.validate:main']
+            'validate = xul.cmd.validate:main'
+            ]
     }
 )

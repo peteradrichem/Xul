@@ -20,6 +20,7 @@ import shlex
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('..'))
 
 import xul
 
@@ -49,7 +50,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Xul'
-copyright = u'2019, Peter Adrichem'
+copyright = u'2020, Peter Adrichem'
 author = u'Peter Adrichem'
 
 # The version info for the project you're documenting, acts as replacement for
