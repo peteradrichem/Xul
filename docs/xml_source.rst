@@ -92,5 +92,5 @@ More XSDs and DTDs examples_ can be found in the Xul Bitbucket repository.
    <https://www.w3.org/TR/xhtml1>`_
 
 
-.. _examples: https://bitbucket.org/peteradrichem/xul/src/tip/examples/
+.. _examples: https://bitbucket.org/peteradrichem/xul/src/master/examples/
 .. _libxml2: http://www.xmlsoft.org/

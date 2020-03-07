@@ -44,7 +44,7 @@ setup(
     license='MIT',
     long_description=long_description(),
     platforms='CPython',
-    url='https://bitbucket.org/peteradrichem/xul',
+    url='https://xul.readthedocs.io/',
     download_url='https://bitbucket.org/peteradrichem/xul',
     entry_points={
         'console_scripts': [

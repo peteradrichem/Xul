@@ -20,7 +20,7 @@ The Xul command line scripts can be installed with **pip**:
 
 .. code:: bash
 
-        $ pip install hg+https://bitbucket.org/peteradrichem/xul
+        $ pip install Xul
 
 Install Pygments_ for XML syntax highlighting (optional).
 

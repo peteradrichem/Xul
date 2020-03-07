@@ -48,7 +48,7 @@ libxml2_ and libxslt_.
 
 Source
 ------
-The Xul source can be found on Bitbucket_.
+The source can be found on Bitbucket_.
 
 
 Indices and search
