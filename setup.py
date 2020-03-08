@@ -51,6 +51,7 @@ setup(
     keywords="xml xpath xslt xsd dtd 'xml schema'",
     license='MIT',
     long_description=long_description(),
+    long_description_content_type='text/x-rst',
     python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*",
     platforms='CPython',
     url='https://xul.readthedocs.io/',

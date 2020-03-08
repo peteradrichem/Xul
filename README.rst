@@ -11,7 +11,6 @@ Xul -- XML Utilities
 Xul is a set of XML scripts written in Python.
 Documentation can be found on `Read The Docs`_.
 
-.. contents::
 
 Xul scripts
 ===========
@@ -105,6 +104,7 @@ W3C XML standards:
 - `XSL Transformations (XSLT) 1.0 <http://www.w3.org/TR/xslt/>`_
 - `XML Path Language (XPath) 1.0 <http://www.w3.org/TR/xpath/>`_
 - `Namespaces in XML 1.0 <http://www.w3.org/TR/xml-names/>`_
+- `Extensions to XSLT (EXSLT) <http://exslt.org/>`_
 
 
 .. _Read The Docs: https://xul.readthedocs.io/
@@ -112,4 +112,3 @@ W3C XML standards:
 .. _libxml2: http://www.xmlsoft.org/
 .. _libxslt: http://xmlsoft.org/libxslt/
 .. _Pygments: https://pygments.org/
-.. _XHTML: http://www.w3.org/TR/xhtml1
