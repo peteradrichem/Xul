@@ -65,14 +65,14 @@ Validate XHTML with the
 
 .. code:: bash
 
-   validate -d examples/dtd/xhtml1-strict.dtd http://www.w3.org/TR/xhtml1
+   curl -s https://www.webstandards.org/learn/reference/templates/xhtml10s/ | validate -d examples/dtd/xhtml1-strict.dtd
 
 Validate XHTML with the
 :download:`XHTML 1.0 strict XSD <../examples/xsd/xhtml1-strict.xsd>`:
 
 .. code:: bash
 
-   validate -x examples/xsd/xhtml1-strict.xsd  http://www.w3.org/TR/xhtml1
+   curl -s https://www.webstandards.org/learn/reference/templates/xhtml10s/ | validate -x examples/xsd/xhtml1-strict.xsd
 
 --------------
 XSD Validation

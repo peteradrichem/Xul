@@ -8,12 +8,13 @@ Xul -- XML Utilities
 .. image:: https://img.shields.io/pypi/v/xul
    :target: https://pypi.org/project/Xul/
 
+Xul is a set of XML scripts written in Python.
+Documentation can be found on `Read The Docs`_.
+
 .. contents::
 
 Xul scripts
 ===========
-
-XML utilities written in Python.
 
 - ``ppx``: pretty print XML
 - ``xp``: select nodes in XML source
@@ -24,13 +25,13 @@ Installation
 ------------
 The Xul command line scripts can be installed with **pip**:
 
-.. code:: bash
+.. code:: text
 
         $ pip install Xul
 
 Install Pygments_ for XML syntax highlighting (optional).
 
-.. code:: bash
+.. code:: text
 
         $ pip install Pygments
 
@@ -41,7 +42,7 @@ libxml2_ and libxslt_.
 
 Options
 -------
-Use the ``--help`` option to print a command line script's parameters:
+The ``--help`` option displays the parameters of a script:
 
 .. code::
 
@@ -73,9 +74,17 @@ Pretty print any local XML file with ``ppx``:
 
         ppx data_dump.xml
 
+Pipe
+----
+You can redirect output (pipe) to a Xul script:
+
+.. code::
+
+        curl -s https://www.python.org/dev/peps/peps.rss/ | ppx
+
 URL
 ---
-libxml2_ also supports loading XML through HTTP (and FTP).
+libxml2_ supports loading XML through HTTP (and FTP).
 For example, to pretty print an RSS feed:
 
 .. code::
@@ -84,14 +93,6 @@ For example, to pretty print an RSS feed:
 
 Loading XML through HTTPS is not supported and will result in an
 *failed to load external entity* error.
-
-Pipe
-----
-Redirect output (pipe) to a Xul script:
-
-.. code::
-
-        curl -s https://www.python.org/dev/peps/peps.rss/ | ppx
 
 
 XML standards
@@ -106,6 +107,7 @@ W3C XML standards:
 - `Namespaces in XML 1.0 <http://www.w3.org/TR/xml-names/>`_
 
 
+.. _Read The Docs: https://xul.readthedocs.io/
 .. _lxml: http://lxml.de/
 .. _libxml2: http://www.xmlsoft.org/
 .. _libxslt: http://xmlsoft.org/libxslt/
