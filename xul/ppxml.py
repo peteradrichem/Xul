@@ -27,23 +27,18 @@ def _private_pp(etree, syntax=True, xml_declaration=None):
     try:
         # lxml.etree.tostring returns bytes (bytestring).
         # https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.tostring
-        plain_etree = tostring(
+        etree_string = tostring(
             etree, encoding='UTF-8',
             xml_declaration=xml_declaration, pretty_print=True)
 
         if syntax:
-            # pygments formatter returns bytes (bytestring).
-            # http://pygments.org/docs/formatters/
-            syntax_etree = highlight(plain_etree, lexer, formatter)
-            if not isinstance(syntax_etree, str):
-                # Bytes => unicode string (Python 3).
-                syntax_etree = syntax_etree.decode("utf-8")
-            print(syntax_etree)
+            # pygments.highlight() will return a Unicode string …
+            # https://pygments.org/docs/formatters/
+            etree_string = highlight(etree_string, lexer, Terminal256Formatter())
         else:
-            if not isinstance(plain_etree, str):
-                # Bytes => unicode string (Python 3).
-                plain_etree = plain_etree.decode("utf-8")
-            print(plain_etree)
+            # Bytes(string) => unicode string.
+            etree_string = etree_string.decode("utf-8")
+        print(etree_string)
     except IOError as e:
         # Catch 'IOError: [Errno 32] Broken pipe' (multiple etrees).
         if e.errno != 32:
@@ -53,7 +48,7 @@ def _private_pp(etree, syntax=True, xml_declaration=None):
 try:
     # pylint: disable=wrong-import-position
     from pygments.lexers import get_lexer_by_name
-    from pygments.formatters.terminal256 import Terminal256Formatter
+    from pygments.formatters import Terminal256Formatter
     from pygments import highlight
 except ImportError:
     # pylint: disable=unused-argument
@@ -61,8 +56,7 @@ except ImportError:
         """Plain pretty print XML ElementTree (without syntax highlighting)."""
         return _private_pp(etree, syntax=False, xml_declaration=xml_declaration)
 else:
-    lexer = get_lexer_by_name('xml', encoding='utf-8')
-    formatter = Terminal256Formatter(encoding='utf-8', nobold=True)
+    lexer = get_lexer_by_name('xml')
     def prettyprint(etree, syntax=True, xml_declaration=None):
         """Pretty print XML ElementTree with (optional) syntax highlighting."""
         return _private_pp(etree, syntax=syntax, xml_declaration=xml_declaration)
