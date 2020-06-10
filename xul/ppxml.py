@@ -5,9 +5,9 @@
 
 from __future__ import print_function
 
-# Standard Python.
-from sys import stderr
-#
+import sys
+import codecs
+
 # pylint: disable=no-name-in-module
 # lxml ElementTree <https://lxml.de/>
 from lxml.etree import tostring
@@ -38,11 +38,15 @@ def _private_pp(etree, syntax=True, xml_declaration=None):
         else:
             # Bytes(string) => unicode string.
             etree_string = etree_string.decode("utf-8")
+
+        # Fix output encoding (piping Python2 output to less).
+        if sys.stdout.encoding is None:
+            sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
         print(etree_string)
     except IOError as e:
         # Catch 'IOError: [Errno 32] Broken pipe' (multiple etrees).
         if e.errno != 32:
-            stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
+            sys.stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
 
 
 try:
