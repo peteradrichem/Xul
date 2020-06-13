@@ -63,14 +63,14 @@ def build_xpath(xpath_exp, ns_map=None):
         return xpath_obj
 
 
-def etree_xpath(xml_dom, xpath_obj):
-    """Apply XPath instance to an XML DOM.
+def etree_xpath(el_tree, xpath_obj):
+    """Apply XPath instance to an ElementTree.
 
-    xml_dom -- XML Document Object Model
+    el_tree -- ElementTree (lxml.etree._ElementTree)
     xpath_obj -- lxml.etree.XPath instance; see build_xpath()
     """
     try:
-        xpath_result = xpath_obj(xml_dom)
+        xpath_result = xpath_obj(el_tree)
     # Handle errors in evaluating an XPath expression.
     #   https://lxml.de/xpathxslt.html#error-handling
     except XPathEvalError as e:
@@ -87,18 +87,18 @@ def etree_xpath(xml_dom, xpath_obj):
 
 
 def call_xpath(xml_source, xpath_obj):
-    """Apply XPath instance to an XML source.
+    """Apply lxml.etree.XPath on an XML source.
 
     xml_source -- XML file, file-like object or URL
     xpath_obj -- lxml.etree.XPath instance; see build_xpath()
     """
     # Parse an XML source into an XML Document Object Model.
-    xml_dom = build_etree(xml_source, lenient=False)
-    if not xml_dom:
+    el_tree = build_etree(xml_source, lenient=False)
+    if not el_tree:
         # No XML source.
         return None
 
-    xpath_result = etree_xpath(xml_dom, xpath_obj)
+    xpath_result = etree_xpath(el_tree, xpath_obj)
     if xpath_result is None:
         logger.error("XPath failed on %s", xml_source)
     return xpath_result
@@ -150,10 +150,10 @@ def update_ns_map(ns_map, elm, none_prefix='default'):
                 ns_map[key] = elm.nsmap[key]
 
 
-def dom_namespaces(xml_dom, exslt=False, none_prefix='default'):
-    """Collect all XML namespaces (xmlns) in the XML DOM.
+def namespaces(el_tree, exslt=False, none_prefix='default'):
+    """Collect all XML namespaces (xmlns) in ElementTree.
 
-    xml_dom -- XML DOM (ElementTree)
+    el_tree -- ElementTree (lxml.etree._ElementTree)
     exslt -- add EXSLT XML namespace prefixes (libxslt 1.1.25 and newer)
     none_prefix -- prefix for the default namespace in XPath
 
@@ -183,7 +183,7 @@ def dom_namespaces(xml_dom, exslt=False, none_prefix='default'):
         ns_map = {}
 
     # Collect XML namespaces (xmlns) in all elements.
-    for elm in xml_dom.iter('*'):
+    for elm in el_tree.iter('*'):
         if elm.nsmap:
             update_ns_map(ns_map, elm, none_prefix=none_prefix)
 

@@ -22,7 +22,6 @@ from ..dom import build_xsl_transform, xml_transformer
 def parse_cl():
     """Parse the command line for options, XSLT source and XML sources."""
     parser = ArgumentParser(
-        #usage="%(prog)s xslt_source [-o] xml_source ...",
         description=__doc__)
     parser.add_argument(
         "-V", "--version", action="version",

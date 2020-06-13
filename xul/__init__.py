@@ -12,5 +12,5 @@ XML scripts in Python.
 
 
 # Xul version.
-__version_info__ = ('2', '0', '3')
+__version_info__ = ('2', '1', '0')
 __version__ = '.'.join(__version_info__)

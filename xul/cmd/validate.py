@@ -44,13 +44,13 @@ def validate_xml(xml_source, validator, val_source):
     validator -- XSD or DTD Validator
     val_source -- Validator source (XSD or DTD)
     """
-    xml_dom = build_etree(xml_source)
-    if xml_dom:
+    el_tree = build_etree(xml_source)
+    if el_tree:
         if hasattr(xml_source, "name"):
             name = xml_source.name
         else:
             name = xml_source
-        if validator.validate(xml_dom):
+        if validator.validate(el_tree):
             print("'%s' validates against '%s'" % (name, val_source))
         else:
             sys.stderr.write(

@@ -2,14 +2,14 @@
 
 """XML Document Object Model / ElementTree XML API.
 
-W3C Document Object Model:
-    https://www.w3.org/DOM/
-
 The ElementTree XML API:
     https://docs.python.org/library/xml.etree.elementtree.html
 
 ElementTree Overview:
     https://effbot.org/zone/element-index.htm
+
+W3C Document Object Model:
+    https://www.w3.org/DOM/
 """
 
 
@@ -25,13 +25,13 @@ logger = getLogger(__name__)
 
 
 def build_etree(xml_source, parser=None, lenient=True):
-    """Parse XML source into an XML Document Object Model (ElementTree).
+    """Parse XML source into an ElementTree.
 
     xml_source -- XML file, file-like object or URL
     parser -- (optional) XML parser (lxml.etree.XMLParser)
     lenient -- log XMLSyntaxError as warnings instead of errors
 
-    Return XML Document Object Model on success.
+    Return ElementTree (lxml.etree._ElementTree) on success.
     Return None on error.
 
     Extensible Markup Language (XML):
@@ -49,7 +49,7 @@ def build_etree(xml_source, parser=None, lenient=True):
         parser = etree.XMLParser(ns_clean=True)
 
     try:
-        xml_dom = etree.parse(xml_source, parser)
+        el_tree = etree.parse(xml_source, parser)
     # Catch XML syntax errors.
     #   https://lxml.de/api.html#error-handling-on-exceptions
     # error log copy attached to the exception: global error log of all errors
@@ -84,7 +84,7 @@ def build_etree(xml_source, parser=None, lenient=True):
         logger.error(e)
         return None
     else:
-        return xml_dom
+        return el_tree
 
 
 def build_xsl_transform(xslt_source):
@@ -130,24 +130,24 @@ def build_xsl_transform(xslt_source):
         return xsl_transform
 
 
-def etree_transformer(xml_dom, transformer, **params):
-    """Transform an XML DOM (ElementTree) with an XSL Transformer.
+def etree_transformer(el_tree, transformer, **params):
+    """Transform an ElementTree with an XSL Transformer.
 
-    xml_dom -- XML Document Object Model
+    el_tree -- ElementTree (lxml.etree._ElementTree)
     transformer -- XSL Transformer (lxml.etree.XSLT)
     params -- (optional) XSL style sheet parameters:
         https://lxml.de/xpathxslt.html#stylesheet-parameters
 
     XSLT lines with apply errors are logged as warnings.
 
-    Return XML Document Object Model on success.
+    Return lxml.etree._XSLTResultTree object on success.
     Return None on error.
     """
     try:
         if params:
-            xml_result = transformer(xml_dom, **params)
+            xslt_result = transformer(el_tree, **params)
         else:
-            xml_result = transformer(xml_dom)
+            xslt_result = transformer(el_tree)
     # Catch XSL Transformation errors.
     except etree.XSLTApplyError as inst:
         if not inst.error_log:
@@ -162,7 +162,7 @@ def etree_transformer(xml_dom, transformer, **params):
                 logger.warning("line %i, column %i: %s", e.line, e.column, e.message)
         return None
     else:
-        return xml_result
+        return xslt_result
 
 
 def xml_transformer(xml_source, transformer, parser=None):
@@ -172,16 +172,16 @@ def xml_transformer(xml_source, transformer, parser=None):
     transformer -- XSL Transformer (lxml.etree.XSLT)
     parser -- (optional) XML parser (lxml.etree.XMLParser)
 
-    Return XML Document Object Model on success.
+    Return lxml.etree._XSLTResultTree object on success.
     Return None on error.
     """
-    xml_dom = build_etree(xml_source, parser=parser, lenient=False)
-    if not xml_dom:
+    el_tree = build_etree(xml_source, parser=parser, lenient=False)
+    if not el_tree:
         return None
 
-    xml_result = etree_transformer(xml_dom, transformer)
-    if xml_result:
-        return xml_result
+    xslt_result = etree_transformer(el_tree, transformer)
+    if xslt_result:
+        return xslt_result
 
     if hasattr(xml_source, "name"):
         name = xml_source.name
@@ -276,11 +276,11 @@ def xml_validator(xml_source, validator):
 
     Return a tuple with the validation result (True/False) and the status string.
     """
-    xml_dom = build_etree(xml_source)
-    if not xml_dom:
+    el_tree = build_etree(xml_source)
+    if not el_tree:
         return (False, "Not an XML source")
 
-    if validator.validate(xml_dom):
+    if validator.validate(el_tree):
         logger.info("XML source '%s' validates", xml_source)
         return (True, "XML source validates")
 
