@@ -6,7 +6,7 @@
 from __future__ import print_function
 
 import sys
-import codecs
+import io
 
 # pylint: disable=no-name-in-module
 # lxml ElementTree <https://lxml.de/>
@@ -41,7 +41,7 @@ def _private_pp(etree, syntax=True, xml_declaration=None):
 
         # Fix output encoding (piping Python2 output to less).
         if sys.stdout.encoding is None:
-            sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
+            sys.stdout = io.open(sys.stdout.fileno(), 'w', encoding='utf8')
         print(etree_string)
     except IOError as e:
         # Catch 'IOError: [Errno 32] Broken pipe' (multiple etrees).
