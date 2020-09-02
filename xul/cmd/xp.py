@@ -53,6 +53,11 @@ def parse_cl():
         "-m", "--method",
         action="store_true", default=False, dest="lxml_method",
         help="use ElementTree.xpath method instead of XPath class")
+    parser.add_argument(
+        "-f", "-l", "--files-with-matches",
+        action="store_true", default=False, dest="file_names",
+        help="only the names of files with XPath matches " +
+        "are written to standard output")
 
     return parser.parse_args()
 
@@ -283,8 +288,13 @@ def print_result_list(result_list, el_tree, args):
             print(node)
 
 
-def print_result_header(xp_result):
-    """Print header for XPath result(s)."""
+def print_result_header(xml_source, xpath_expr, xp_result):
+    """Print header with XPath result summary."""
+    if xml_source == '-' or xml_source is sys.stdin:
+        print("<stdin>, XPath: %s," % xpath_expr, end=" ")
+    else:
+        print("Source: %s, XPath: %s," % (xml_source, xpath_expr), end=" ")
+    # XPath result summary.
     if isinstance(xp_result, list):
         list_result = xp_result
     else:
@@ -313,14 +323,12 @@ def print_xp_result(xp_result, el_tree, ns_map, args):
     args -- Command-line arguments
 
     Prints:
-     * result header
      * XML namespaces (if there are any)
      * XPath result(s)
 
     XPath return values:
         https://lxml.de/xpathxslt.html#xpath-return-values
     """
-    print_result_header(xp_result)
     print_xmlns(ns_map, el_tree.getroot())
 
     # STRING - string (basestring) - smart string | Namespace URI.
@@ -375,16 +383,18 @@ def xpath_on_xml(xml_source, parser, xpath_fn, args):
 
     # XML namespaces.
     ns_map = namespaces(el_tree, args.exslt, args.default_ns_prefix)
-    # Use XPath expression on ElementTree.
+    # XPath expression on ElementTree.
     xp_result = xpath_fn(el_tree, args.xpath_expr, ns_map)
     if xp_result is None:
         return False
 
-    if xml_source == '-' or xml_source is sys.stdin:
-        print("<stdin>, XPath: %s," % args.xpath_expr, end=" ")
-    else:
-        print("Source: %s, XPath: %s," % (xml_source, args.xpath_expr), end=" ")
-    return print_xp_result(xp_result, el_tree, ns_map, args)
+    if args.file_names:
+        if xp_result:
+            print(xml_source)
+        return True
+    print_result_header(xml_source, args.xpath_expr, xp_result)
+    print_xp_result(xp_result, el_tree, ns_map, args)
+    return True
 
 
 def main():
@@ -406,12 +416,12 @@ def main():
     (xpath_fn, xml_parser) = xp_prepare(args)
 
     # Use XPath on XML sources.
-    first = True
+    extra_new_line = False
     for xml_s in args.xml_sources:
-        if first:
-            first = False
-        else:
+        if extra_new_line:
             print()
+        elif not args.file_names:
+            extra_new_line = True
         xpath_on_xml(xml_s, xml_parser, xpath_fn, args)
 
     if not args.xml_sources:
