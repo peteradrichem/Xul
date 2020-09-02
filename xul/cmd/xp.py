@@ -58,6 +58,10 @@ def parse_cl():
         action="store_true", default=False, dest="file_names",
         help="only the names of files with XPath matches " +
         "are written to standard output")
+    parser.add_argument(
+        "-q", "--quiet",
+        action="store_false", default=True, dest="verbose",
+        help="don't print the result header")
 
     return parser.parse_args()
 
@@ -329,7 +333,8 @@ def print_xp_result(xp_result, el_tree, ns_map, args):
     XPath return values:
         https://lxml.de/xpathxslt.html#xpath-return-values
     """
-    print_xmlns(ns_map, el_tree.getroot())
+    if args.verbose:
+        print_xmlns(ns_map, el_tree.getroot())
 
     # STRING - string (basestring) - smart string | Namespace URI.
     try:
@@ -392,7 +397,10 @@ def xpath_on_xml(xml_source, parser, xpath_fn, args):
         if xp_result:
             print(xml_source)
         return True
-    print_result_header(xml_source, args.xpath_expr, xp_result)
+    if args.verbose:
+        print_result_header(xml_source, args.xpath_expr, xp_result)
+    else:
+        print(xml_source)
     print_xp_result(xp_result, el_tree, ns_map, args)
     return True
 
