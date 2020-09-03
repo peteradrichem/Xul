@@ -399,7 +399,7 @@ def xpath_on_xml(xml_source, parser, xpath_fn, args):
         return True
     if args.verbose:
         print_result_header(xml_source, args.xpath_expr, xp_result)
-    else:
+    elif xml_source != '-' and xml_source is not sys.stdin:
         print(xml_source)
     print_xp_result(xp_result, el_tree, ns_map, args)
     return True
