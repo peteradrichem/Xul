@@ -14,13 +14,13 @@ If you need a command line XSLT processor with more options have a look at
 
 Transform an XML file:
 
-.. code:: bash
+.. code-block:: bash
 
    transform xsl_transform.xml file.xml
 
 Transform an XML file and :doc:`pretty print <ppx>` the result:
 
-.. code:: bash
+.. code-block:: bash
 
    transform xsl_transform.xml file.xml | ppx
 
@@ -29,7 +29,7 @@ Options
 
 ``transform`` supports the following command-line options:
 
-.. code:: bash
+.. code-block:: console
 
    $ transform --help
 
@@ -45,7 +45,7 @@ Options
    -h, --help            show this help message and exit
    -V, --version         show program's version number and exit
    -o, --omit-declaration
-                           omit the XML declaration
+                         omit the XML declaration
 
 .. index::
    single: XML declaration; transform
@@ -58,7 +58,7 @@ XML documents should begin with an XML declaration which specifies the version o
 By default ``transform`` will print an (UTF-8) XML declaration.
 You can omit the XML declaration with the ``--omit-declaration`` option.
 
-.. code:: bash
+.. code-block:: bash
 
    transform --omit-declaration xsl_transform.xml file.xml
 

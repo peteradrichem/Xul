@@ -40,13 +40,13 @@ Installing
 ----------
 The Xul command line scripts can be installed with pip:
 
-.. code:: bash
+.. code-block:: bash
 
    pip install Xul
 
 Install Pygments_ for XML syntax highlighting (optional).
 
-.. code:: bash
+.. code-block:: bash
 
    pip install Pygments
 

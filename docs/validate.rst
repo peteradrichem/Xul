@@ -13,7 +13,7 @@ XSD
 ---
 Validate an XML source with an XSD [#]_ file:
 
-.. code:: bash
+.. code-block:: bash
 
    validate -x schema.xsd file.xml
 
@@ -25,7 +25,7 @@ DTD
 ---
 Validate an XML source with a DTD [#]_ file:
 
-.. code:: bash
+.. code-block:: bash
 
    validate -d doctype.dtd file.xml
 
@@ -33,7 +33,7 @@ Options
 -------
 ``validate`` supports the following command-line options:
 
-.. code:: bash
+.. code-block:: console
 
    $ validate --help
 
@@ -49,9 +49,9 @@ Options
    -h, --help            show this help message and exit
    -V, --version         show program's version number and exit
    -x XSD_SOURCE, --xsd XSD_SOURCE
-                           XML Schema Definition (XSD) source
+                         XML Schema Definition (XSD) source
    -d DTD_SOURCE, --dtd DTD_SOURCE
-                           Document Type Definition (DTD) source
+                         Document Type Definition (DTD) source
 
 Examples
 --------
@@ -63,14 +63,14 @@ XML Validation
 Validate XHTML with the
 :download:`XHTML 1.0 strict DTD <../examples/dtd/xhtml1-strict.dtd>`:
 
-.. code:: bash
+.. code-block:: bash
 
    curl -s https://www.webstandards.org/learn/reference/templates/xhtml10s/ | validate -d examples/dtd/xhtml1-strict.dtd
 
 Validate XHTML with the
 :download:`XHTML 1.0 strict XSD <../examples/xsd/xhtml1-strict.xsd>`:
 
-.. code:: bash
+.. code-block:: bash
 
    curl -s https://www.webstandards.org/learn/reference/templates/xhtml10s/ | validate -x examples/xsd/xhtml1-strict.xsd
 
@@ -81,26 +81,26 @@ XSD Validation
 Validate an XSD file with the
 :download:`XML Schema schema document <../examples/xsd/XMLSchema.xsd>`:
 
-.. code:: bash
+.. code-block:: bash
 
    validate -x examples/xsd/XMLSchema.xsd schema_file.xsd
 
 Validate the XML Schema 1.1 XSD with the (identical) XML Schema schema document:
 
-.. sourcecode:: bash
+.. code-block:: bash
 
    validate -x examples/xsd/XMLSchema.xsd http://www.w3.org/2009/XMLSchema/XMLSchema.xsd
 
 And vice versa:
 
-.. sourcecode:: bash
+.. code-block:: bash
 
    validate -x http://www.w3.org/2009/XMLSchema/XMLSchema.xsd examples/xsd/XMLSchema.xsd
 
 Validate the XML Schema XSD with the
 :download:`DTD for XML Schema <../examples/dtd/XMLSchema.dtd>`:
 
-.. code:: bash
+.. code-block:: bash
 
    validate -d examples/dtd/XMLSchema.dtd examples/xsd/XMLSchema.xsd
 

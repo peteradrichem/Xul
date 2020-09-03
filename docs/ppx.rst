@@ -8,7 +8,7 @@ ppx -- Pretty Print XML
 
 Use ``ppx`` to pretty print an :ref:`xml_source` in human readable form.
 
-.. code:: bash
+.. code-block:: bash
 
    ppx file.xml
 
@@ -31,7 +31,7 @@ Options
 
 ``ppx`` supports the following command-line options:
 
-.. code:: bash
+.. code-block:: console
 
    $ ppx --help
 
@@ -47,7 +47,7 @@ Options
    -V, --version         show program's version number and exit
    -n, --no-syntax       no syntax highlighting
    -o, --omit-declaration
-                           omit the XML declaration
+                         omit the XML declaration
 
 
 .. index::
@@ -59,7 +59,7 @@ Syntax Highlighting
 
 Pretty print the XML Schema 1.0 schema document:
 
-.. sourcecode:: bash
+.. code-block:: bash
 
    ppx http://www.w3.org/2001/XMLSchema.xsd
 
@@ -78,7 +78,7 @@ XML documents should begin with an XML declaration which specifies the version o
 By default ``ppx`` will print an (UTF-8) XML declaration.
 Omit the XML declaration with the ``--omit-declaration`` option.
 
-.. sourcecode:: bash
+.. code-block:: bash
 
    ppx --omit-declaration file.xml
 
@@ -87,31 +87,31 @@ Examples
 
 Pretty print any local XML file:
 
-.. code:: bash
+.. code-block:: bash
 
    ppx data_dump.xml
 
 RSS feed:
 
-.. code:: bash
+.. code-block:: bash
 
    ppx http://feeds.feedburner.com/PythonInsider
 
 Page XML file with less:
 
-.. code:: bash
+.. code-block:: bash
 
    ppx xml/large.xml | less -RX
 
 Redirect output (pipe) to ``ppx``:
 
-.. code:: bash
+.. code-block:: bash
 
    curl -s https://www.python.org/dev/peps/peps.rss/ | ppx
 
 :ref:`Rewrite XML <white_space>`:
 
-.. code:: bash
+.. code-block:: bash
 
    ppx -n data_dump.xml > pp_data_dump.xml
 

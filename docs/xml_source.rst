@@ -17,7 +17,7 @@ File
 ----
 With ``xp`` you can select nodes in a local XML file with an XPath expression:
 
-.. code::
+.. code-block:: bash
 
    xp 'node()' entity.xml
 
@@ -30,7 +30,7 @@ Pipe
 ----
 Redirect output (pipe) to a Xul script:
 
-.. code::
+.. code-block:: bash
 
    curl -s https://developer.apple.com/news/rss/news.rss | ppx
 
@@ -43,7 +43,7 @@ URL
 libxml2_ also supports loading XML through HTTP (and FTP).
 For example, to pretty print an RSS feed:
 
-.. code::
+.. code-block:: bash
 
    ppx http://feeds.launchpad.net/pytz/announcements.atom
 
@@ -63,20 +63,20 @@ Examples
 --------
 Pretty print an XHTML document:
 
-.. code::
+.. code-block:: bash
 
    curl -s https://www.webstandards.org/learn/reference/templates/xhtml11/ | ppx
 
 Validate an XHTML document with the
 :download:`XHTML 1.0 strict DTD <../examples/dtd/xhtml1-strict.dtd>`:
 
-.. code::
+.. code-block:: bash
 
    curl -s https://www.webstandards.org/learn/reference/templates/xhtml10t/ | validate -d examples/dtd/xhtml1-transitional.dtd
 
 Print the link destinations in an XHTML document:
 
-.. code::
+.. code-block:: bash
 
    xp -d html "//html:link/@href" http://www.w3.org/1999/xhtml/
 
