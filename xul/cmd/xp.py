@@ -395,7 +395,10 @@ def xpath_on_xml(xml_source, parser, xpath_fn, args):
 
     if args.file_names:
         if xp_result:
-            print(xml_source)
+            if xml_source is sys.stdin or xml_source == "-":
+                print("<stdin>")
+            else:
+                print(xml_source)
         return True
     if args.verbose:
         print_result_header(xml_source, args.xpath_expr, xp_result)
