@@ -61,7 +61,7 @@ def parse_cl():
     parser.add_argument(
         "-q", "--quiet",
         action="store_false", default=True, dest="verbose",
-        help="don't print the result header")
+        help="don't print the XML namespace list")
 
     return parser.parse_args()
 
@@ -292,12 +292,9 @@ def print_result_list(result_list, el_tree, args):
             print(node)
 
 
-def print_result_header(xml_source, xpath_expr, xp_result):
+def print_result_header(source_name, xp_result):
     """Print header with XPath result summary."""
-    if xml_source == '-' or xml_source is sys.stdin:
-        print("<stdin>, XPath: %s," % xpath_expr, end=" ")
-    else:
-        print("Source: %s, XPath: %s," % (xml_source, xpath_expr), end=" ")
+    print("%s:" % source_name, end=" ")
     # XPath result summary.
     if isinstance(xp_result, list):
         list_result = xp_result
@@ -308,7 +305,7 @@ def print_result_header(xml_source, xpath_expr, xp_result):
         print("no results.")
     elif xp_r_len == 1:
         if isinstance(list_result[0], tuple):
-            print("1 XML namespace result")
+            print("1 XML namespace result.")
         else:
             print("1 result.")
     else:
@@ -393,17 +390,26 @@ def xpath_on_xml(xml_source, parser, xpath_fn, args):
     if xp_result is None:
         return False
 
-    if args.file_names:
-        if xp_result:
-            if xml_source is sys.stdin or xml_source == "-":
-                print("<stdin>")
-            else:
-                print(xml_source)
+    # Printable name for sys.stdin.
+    if xml_source in ('-', sys.stdin):
+        source_name = "<stdin>"
+    else:
+        source_name = xml_source
+
+    # No results.
+    if not xp_result:
+        if not args.file_names:
+            print_result_header(source_name, xp_result)
         return True
-    if args.verbose:
-        print_result_header(xml_source, args.xpath_expr, xp_result)
-    elif xml_source != '-' and xml_source is not sys.stdin:
-        print(xml_source)
+
+    # XML sources names with results (--files-with-matches).
+    if args.file_names:
+        print(source_name)
+        return True
+
+    # Result header.
+    print_result_header(source_name, xp_result)
+    # XPath results.
     print_xp_result(xp_result, el_tree, ns_map, args)
     return True
 

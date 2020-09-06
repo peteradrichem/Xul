@@ -64,7 +64,7 @@ Options
    -f, -l, --files-with-matches
                          only the names of files with XPath matches are written
                          to standard output
-   -q, --quiet           don't print the result header
+   -q, --quiet           don't print the XML namespace list
 
 Print result's XPath
 --------------------
