@@ -159,8 +159,9 @@ Pretty print result
 -------------------
 A result element can be pretty printed with the ``--pretty-element`` command-line option.
 
-.. warning:: The ``--pretty-element`` option removes all white space nodes before
-   applying the XPath expression.
+.. warning:: The ``--pretty-element`` option removes all white space text nodes
+   *before* applying the XPath expression. There will therefore be no white space
+   text nodes in the results.
 
 Pretty print the latest Python PEP:
 

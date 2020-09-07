@@ -103,7 +103,7 @@ def xp_prepare(args):
 
     # Initialise XML parser.
     if args.pretty_element:
-        # Pretty print preparation (removes white space nodes!).
+        # Pretty print preparation (removes white space text nodes!).
         xml_parser = XMLParser(remove_blank_text=True)
     else:
         xml_parser = XMLParser()
