@@ -21,15 +21,15 @@ Use ``ppx`` to pretty print an :ref:`xml_source` in human readable form.
 White Space
 -----------
 
-For greater readability ``ppx`` adds extra *white space*.
+For greater readability ``ppx`` removes and adds *white space*.
 
 .. note:: White space can be significant in an XML document [#]_.
-   So be careful with using ``ppx`` to rewrite XML files.
+   So be careful when using ``ppx`` to rewrite XML files.
 
 Options
 -------
 
-``ppx`` supports the following command-line options:
+``ppx`` can be used with the following command-line options:
 
 .. code-block:: console
 

@@ -103,7 +103,7 @@ def xp_prepare(args):
 
     # Initialise XML parser.
     if args.pretty_element:
-        # Pretty print preparation (removes whitespace nodes!).
+        # Pretty print preparation (removes white space nodes!).
         xml_parser = XMLParser(remove_blank_text=True)
     else:
         xml_parser = XMLParser()
@@ -263,8 +263,6 @@ def print_result_list(result_list, el_tree, args):
     el_tree -- ElementTree (lxml.etree._ElementTree)
     args -- Command-line arguments
     """
-    if args.pretty_element:
-        print()
     # All nodes -- //node()
     for node in result_list:
         if iselement(node):

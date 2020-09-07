@@ -31,7 +31,7 @@ Validate an XML source with a DTD [#]_ file:
 
 Options
 -------
-``validate`` supports the following command-line options:
+``validate`` can be used with the following command-line options:
 
 .. code-block:: console
 

@@ -159,6 +159,9 @@ Pretty print result
 -------------------
 A result element can be pretty printed with the ``--pretty-element`` command-line option.
 
+.. warning:: The ``--pretty-element`` option removes all white space nodes before
+   applying the XPath expression.
+
 Pretty print the latest Python PEP:
 
 .. code-block:: bash
@@ -172,7 +175,7 @@ of the XML files that match an XPath expression.
 
 .. code-block:: bash
 
-   xp -f "count(descendant::*/*)>1" *.xml
+   xp "//mpeg7:FamilyName[text()='Bauwens']" *.xml -f
 
 xpath method
 ------------

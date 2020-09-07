@@ -27,7 +27,7 @@ Transform an XML file and :doc:`pretty print <ppx>` the result:
 Options
 -------
 
-``transform`` supports the following command-line options:
+``transform`` can be used with the following command-line options:
 
 .. code-block:: console
 
