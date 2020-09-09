@@ -61,9 +61,12 @@ Options
                          its parent)
    -p, --pretty-element  pretty print the result element
    -m, --method          use ElementTree.xpath method instead of XPath class
-   -f, -l, --files-with-matches
-                         only the names of files with XPath matches are written
-                         to standard output
+   -f, -l, --files-with-results
+                         only the names of files with a non-false result are
+                         written to standard output
+   -F, -L, --files-without-results
+                         only the names of files with a false result or without
+                         any results are written to standard output
    -q, --quiet           don't print the XML namespace list
 
 Print result's XPath
@@ -171,12 +174,23 @@ Pretty print the latest Python PEP:
 
 Print file names
 ----------------
-The ``--files-with-matches`` command-line option only prints the names
-of the XML files that match an XPath expression.
+The ``--files-with-results`` command-line option only prints the names
+of files with a non-false result.
+
+Find XML files with HTTP URL's:
 
 .. code-block:: bash
 
-   xp "//mpeg7:FamilyName[text()='Bauwens']" *.xml -f
+   xp "//mpeg7:MediaUri[starts-with(., 'http://')]" *.xml -f
+
+The ``--files-without-results`` command-line option only prints the names
+of files with a false result or without any results.
+
+XML files without a person with the family name 'Bauwens':
+
+.. code-block:: bash
+
+   xp "//mpeg7:FamilyName[text()='Bauwens']" *.xml -F
 
 xpath method
 ------------

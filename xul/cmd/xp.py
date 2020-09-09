@@ -54,10 +54,15 @@ def parse_cl():
         action="store_true", default=False, dest="lxml_method",
         help="use ElementTree.xpath method instead of XPath class")
     parser.add_argument(
-        "-f", "-l", "--files-with-matches",
-        action="store_true", default=False, dest="file_names",
-        help="only the names of files with XPath matches " +
+        "-f", "-l", "--files-with-results",
+        action="store_true", default=False, dest="files_with_results",
+        help="only the names of files with a non-false result " +
         "are written to standard output")
+    parser.add_argument(
+        "-F", "-L", "--files-without-results",
+        action="store_true", default=False, dest="files_without_results",
+        help="only the names of files with a false result " +
+        "or without any results are written to standard output")
     parser.add_argument(
         "-q", "--quiet",
         action="store_false", default=True, dest="verbose",
@@ -296,9 +301,11 @@ def print_result_header(source_name, xp_result):
     # XPath result summary.
     if isinstance(xp_result, list):
         list_result = xp_result
+        xp_r_len = len(list_result)
     else:
+        # String, number, boolean.
         list_result = [xp_result]
-    xp_r_len = len(list_result)
+        xp_r_len = 1
     if xp_r_len == 0:
         print("no results.")
     elif xp_r_len == 1:
@@ -344,6 +351,7 @@ def print_xp_result(xp_result, el_tree, ns_map, args):
     # LIST - list - node-set.
     elif isinstance(xp_result, list):
         try:
+            # List can be empty.
             print_result_list(xp_result, el_tree, args)
         except IOError as e:
             # Catch 'IOError: [Errno 32] Broken pipe'.
@@ -394,15 +402,13 @@ def xpath_on_xml(xml_source, parser, xpath_fn, args):
     else:
         source_name = xml_source
 
-    # No results.
-    if not xp_result:
-        if not args.file_names:
-            print_result_header(source_name, xp_result)
-        return True
-
-    # XML sources names with results (--files-with-matches).
-    if args.file_names:
-        print(source_name)
+    # XML sources names (--files-with-results/--files-without-results).
+    if args.files_with_results or args.files_without_results:
+        if args.files_with_results and xp_result:
+            print(source_name)
+        # False is a possible value for xp_result (test).
+        elif args.files_without_results and not xp_result:
+            print(source_name)
         return True
 
     # Result header.
@@ -435,7 +441,7 @@ def main():
     for xml_s in args.xml_sources:
         if extra_new_line:
             print()
-        elif not args.file_names:
+        elif not (args.files_with_results or args.files_without_results):
             extra_new_line = True
         xpath_on_xml(xml_s, xml_parser, xpath_fn, args)
 
