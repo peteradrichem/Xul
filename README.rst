@@ -47,62 +47,34 @@ libxml2_ and libxslt_.
 
 Options
 -------
-The ``--help`` option displays the parameters of a script:
+List the command-line options of a Xul script with ``--help``.
+For example:
 
 .. code::
 
-        $ ppx --help
+   $ ppx --help
 
-        Usage:  ppx [-nr] xml_source_1 ... xml_source_n
+   usage: ppx [-h] [-V] [-n] [-o] [xml_source [xml_source ...]]
 
-        Pretty Print XML source in human readable form.
+   Pretty Print XML source in human readable form.
 
-        Options:
-          --version             show program's version number and exit
-          -h, --help            show this help message and exit
-          -n, --no-syntax       no syntax highlighting
-          -r, --remove-declaration
-                                remove the XML declaration
+   positional arguments:
+   xml_source            XML source (file, <stdin>, http://...)
 
+   optional arguments:
+   -h, --help            show this help message and exit
+   -V, --version         show program's version number and exit
+   -n, --no-syntax       no syntax highlighting
+   -o, --omit-declaration
+                         omit the XML declaration
 
-XML source
-==========
-
-An XML source can be a local file, an URL or a pipe.
-
-File
-----
-
-Pretty print any local XML file with ``ppx``:
-
-.. code::
-
-        ppx data_dump.xml
-
-Pipe
-----
-You can redirect output (pipe) to a Xul script:
-
-.. code::
-
-        curl -s https://www.python.org/dev/peps/peps.rss/ | ppx
-
-URL
----
-libxml2_ supports loading XML through HTTP (and FTP).
-For example, to pretty print an RSS feed:
-
-.. code::
-
-        ppx http://feeds.feedburner.com/PythonInsider
-
-Loading XML through HTTPS is not supported and will result in an
-*failed to load external entity* error.
+Documentation
+-------------
+More documentation can be found on `Read The Docs`_.
 
 
 XML standards
 =============
-
 W3C XML standards:
 
 - `Extensible Markup Language (XML) 1.0 <http://www.w3.org/TR/xml/>`_
