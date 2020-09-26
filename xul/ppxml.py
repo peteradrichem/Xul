@@ -13,7 +13,7 @@ import io
 from lxml.etree import tostring
 
 # Import my own modules.
-from .dom import build_etree
+from .etree import build_etree
 
 
 __all__ = ['prettyprint', 'pp_xml']

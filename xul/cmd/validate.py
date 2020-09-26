@@ -12,7 +12,8 @@ import sys
 # Import my own modules.
 from .. import __version__
 from ..log import setup_logger_console
-from ..dom import build_etree, build_xml_schema, build_dtd
+from ..etree import build_etree
+from ..validate import build_xml_schema, build_dtd
 
 
 def parse_cl():

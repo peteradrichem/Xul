@@ -8,8 +8,8 @@ XML Path Language
 Namespaces in XML 1.0
     https://www.w3.org/TR/xml-names/
 
-XPath and XSLT with lxml
-    https://lxml.de/xpathxslt.html
+XPath with lxml
+    https://lxml.de/xpathxslt.html#xpath
 
 The XPath result depends on the XPath expression used.
     https://lxml.de/xpathxslt.html#xpath-return-values
@@ -32,7 +32,7 @@ from lxml.etree import XPath, XPathSyntaxError, XPathEvalError
 from lxml.etree import LIBXSLT_COMPILED_VERSION
 
 # Import my own modules.
-from .dom import build_etree
+from .etree import build_etree
 
 
 # Module logging initialisation.

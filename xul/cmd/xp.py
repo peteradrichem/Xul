@@ -17,7 +17,7 @@ from lxml.etree import iselement, PI, Comment
 # Import my own modules.
 from .. import __version__
 from ..log import setup_logger_console
-from ..dom import build_etree
+from ..etree import build_etree
 from ..xpath import build_xpath, etree_xpath, namespaces
 from ..ppxml import prettyprint
 

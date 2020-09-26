@@ -16,7 +16,7 @@ from lxml.etree import XMLParser, tostring
 # Import my own modules.
 from .. import __version__
 from ..log import setup_logger_console
-from ..dom import build_xsl_transform, xml_transformer
+from ..xsl import build_xsl_transform, xml_transformer
 
 
 def parse_cl():

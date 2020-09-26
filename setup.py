@@ -57,7 +57,7 @@ setup(
     url='https://xul.readthedocs.io/',
     project_urls={
         'Documentation': 'https://xul.readthedocs.io/',
-        'Source': 'https://bitbucket.org/peteradrichem/xul'
+        'Source Code': 'https://bitbucket.org/peteradrichem/xul'
     },
     entry_points={
         'console_scripts': [
