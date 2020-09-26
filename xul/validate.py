@@ -28,13 +28,11 @@ logger = getLogger(__name__)
 
 
 def build_xml_schema(xsd_file):
-    """Parse an XSD file into an XMLSchema Validator.
+    """Parse an XSD file into an XMLSchema validator.
 
     xsd_file -- XSD file (XML schema file)
 
-    Lines with XSD parse errors are logged as warnings.
-
-    Return XMLSchema Validator (lxml.etree.XMLSchema) on success.
+    Return XMLSchema validator (lxml.etree.XMLSchema) on success.
     Return None on error.
 
     The lxml.etree.XMLSchema class:
@@ -49,29 +47,27 @@ def build_xml_schema(xsd_file):
         validator = etree.XMLSchema(xsd_etree)
     # Catch XSD parse errors.
     except etree.XMLSchemaParseError as inst:
-        if inst.error_log.last_error.line != 0:
-            logger.error("XML file '%s' is not a valid XSD file", xsd_file)
+        if inst.error_log.last_error.line == 0:
+            # The XML document '%s' is not a schema document.
+            logger.error(inst)
+            return None
+        logger.error("XML file '%s' is not a valid XSD file", xsd_file)
+        # Lines with XSD parse errors are logged as warnings.
         for e in inst.error_log:
             # E.g. e.level_name: "ERROR", e.domain_name: "SCHEMASP",
-            # e.type_name: "SCHEMAP_NOT_SCHEMA"
-            if e.line == 0:
-                # The XML document '%s' is not a schema document.
-                logger.error(e.message)
-            else:
-                logger.warning("line %i, column %i: %s", e.line, e.column, e.message)
+            # e.type_name: "SCHEMAP_S4S_ATTR_INVALID_VALUE".
+            logger.warning("line %i, column %i: %s", e.line, e.column, e.message)
         return None
     else:
         return validator
 
 
 def build_dtd(dtd_file):
-    """Parse an DTD file into an DTD Validator.
+    """Parse an DTD file into an DTD validator.
 
     dtd_file -- DTD file
 
-    Lines with DTD parse errors are logged as warnings.
-
-    Return DTD Validator (lxml.etree.DTD) on success.
+    Return DTD validator (lxml.etree.DTD) on success.
     Return None on error.
 
     The lxml.etree.DTD class:
@@ -80,17 +76,20 @@ def build_dtd(dtd_file):
     """
     try:
         validator = etree.DTD(file=dtd_file)
-    # Catch DTD parse errors
+    # Catch DTD parse errors.
     except etree.DTDParseError as inst:
-        # "failed to load external entity" when file does not exist
-        logger.error("'%s' is not a DTD file:", dtd_file)
+        if inst.error_log.last_error.line == 0:
+            # error parsing DTD
+            logger.error(inst)
+            # "failed to load external entity" when file does not exist.
+            logger.error(inst.error_log.last_error.message)
+            return None
+        logger.error("'%s' is not a valid DTD file", dtd_file)
+        # Lines with DTD parse errors are logged as warnings.
         for e in inst.error_log:
             # E.g. e.level_name: "FATAL", e.domain_name: "PARSER",
             # e.type_name: "ERR_EXT_SUBSET_NOT_FINISHED"
-            if e.line == 0:
-                logger.error(e.message)
-            else:
-                logger.warning("line %i, column %i: %s", e.line, e.column, e.message)
+            logger.warning("line %i, column %i: %s", e.line, e.column, e.message)
         return None
     else:
         return validator
@@ -100,7 +99,7 @@ def xml_validator(xml_source, validator):
     """Validate an XML source against an XSD or DTD validator.
 
     xml_source -- XML file, file-like object or URL
-    validator -- XMLSchema or DTD Validator
+    validator -- XMLSchema or DTD validator
 
     Log XML validation errors as warnings.
 
