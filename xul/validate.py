@@ -95,13 +95,12 @@ def build_dtd(dtd_file):
         return validator
 
 
-def xml_validator(xml_source, validator):
+def xml_validator(xml_source, validator, lenient=True):
     """Validate an XML source against an XSD or DTD validator.
 
     xml_source -- XML file, file-like object or URL
     validator -- XMLSchema or DTD validator
-
-    Log XML validation errors as warnings.
+    lenient -- log XML validation errors as warnings
 
     Return a tuple with the validation result (True/False) and the status string.
     """
@@ -113,13 +112,18 @@ def xml_validator(xml_source, validator):
         logger.info("XML source '%s' validates", xml_source)
         return (True, "XML source validates")
 
-    logger.warning("XML source '%s' does not validate:", xml_source)
+    if lenient:
+        val_logger = logger.warning
+    else:
+        val_logger = logger.error
+    val_logger("XML source '%s' does not validate", xml_source)
+    # Lines with XML validation errors.
     for e in validator.error_log:
         # E.g. DTD e.level_name: "ERROR", e.domain_name: "VALID",
-        # e.type_name: "DTD_UNKNOWN_ELEM"
+        # e.type_name: "DTD_UNKNOWN_ELEM".
         # E.g. XSD e.level_name: "ERROR", e.domain_name: "SCHEMASV",
-        # e.type_name: "SCHEMAV_CVC_ELT_1"
-        logger.warning("line %i, column %i: %s", e.line, e.column, e.message)
-    # Return the first line with a validation error (status string)
+        # e.type_name: "SCHEMAV_CVC_ELT_1".
+        val_logger("line %i, column %i: %s", e.line, e.column, e.message)
+    # Return the status string: first validation error.
     e = validator.error_log[0]
     return (False, "line %i, column %i: %s" % (e.line, e.column, e.message))
