@@ -8,6 +8,9 @@ XML Schema Definition (XSD):
 Document Type Definition (DTD):
     https://en.wikipedia.org/wiki/Document_type_definition
 
+RELAX NG:
+    https://relaxng.org/
+
 Validation with lxml:
     https://lxml.de/validation.html
 """
@@ -63,7 +66,7 @@ def build_xml_schema(xsd_file):
 
 
 def build_dtd(dtd_file):
-    """Parse an DTD file into an DTD validator.
+    """Parse a DTD file into a DTD validator.
 
     dtd_file -- DTD file
 
@@ -132,3 +135,38 @@ def xml_validator(xml_source, validator, lenient=True):
     # Return the status string: first validation error.
     e = validator.error_log[0]
     return (False, "line %i, column %i: %s" % (e.line, e.column, e.message))
+
+
+def build_relaxng(relaxng_file):
+    """Parse a RELAX NG file into a RELAX NG validator.
+
+    relaxng_file -- RELAX NG file
+
+    Return RelaxNG validator (lxml.etree.RelaxNG) on success.
+    Return None on error.
+
+    The lxml.etree.RelaxNG class:
+        https://lxml.de/validation.html#relaxng
+        https://lxml.de/api/lxml.etree.RelaxNG-class.html
+    """
+    relaxng_etree = build_etree(relaxng_file, lenient=False)
+    if not relaxng_etree:
+        return None
+
+    try:
+        validator = etree.RelaxNG(relaxng_etree)
+    # Catch RELAX NG parse errors.
+    except etree.RelaxNGParseError as inst:
+        logger.error("XML file '%s' is not a valid RELAX NG file", relaxng_file)
+        if inst.error_log.last_error.line == -1:
+            # xmlRelaxNGParse: schemas is empty.
+            logger.error(inst)
+            return None
+        # Lines with RELAX NG parse errors are logged as warnings.
+        for e in inst.error_log:
+            # E.g. e.level_name: "ERROR", e.domain_name: "RELAXNGP",
+            # e.type_name: "RNGP_UNKNOWN_CONSTRUCT".
+            logger.warning("line %i, column %i: %s", e.line, e.column, e.message)
+        return None
+    else:
+        return validator
