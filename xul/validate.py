@@ -100,11 +100,11 @@ def xml_validator(xml_source, validator, lenient=True):
 
     xml_source -- XML file, file-like object or URL
     validator -- XMLSchema or DTD validator
-    lenient -- log XML validation errors as warnings
+    lenient -- log XML (validation) errors as warnings
 
     Return a tuple with the validation result (True/False) and the status string.
     """
-    el_tree = build_etree(xml_source)
+    el_tree = build_etree(xml_source, lenient=lenient)
     if not el_tree:
         return (False, "Not an XML source")
 
