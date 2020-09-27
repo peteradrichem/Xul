@@ -48,7 +48,7 @@ setup(
         'Topic :: Utilities'
     ],
     description="XML (XPath, XSD, XSLT) Utilities",
-    keywords="xml xpath xslt xsd dtd 'xml schema'",
+    keywords="xml xpath xslt xsd dtd 'xml schema' 'relax ng' rng",
     license='MIT',
     long_description=long_description(),
     long_description_content_type='text/x-rst',

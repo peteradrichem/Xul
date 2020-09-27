@@ -15,7 +15,7 @@ Validate an XML source with an XSD [#]_ file:
 
 .. code-block:: bash
 
-   validate -x schema.xsd file.xml
+   validate -x schema.xsd source.xml
 
 .. index::
    single: DTD
@@ -27,7 +27,15 @@ Validate an XML source with a DTD [#]_ file:
 
 .. code-block:: bash
 
-   validate -d doctype.dtd file.xml
+   validate -d doctype.dtd source.xml
+
+RELAX NG
+--------
+Validate an XML source with a RELAX NG [#]_ file:
+
+.. code-block:: bash
+
+   validate -r relaxng.rng source.xml
 
 Options
 -------
@@ -37,10 +45,10 @@ Options
 
    $ validate --help
 
-   usage: validate [-h] [-V] (-x XSD_SOURCE | -d DTD_SOURCE)
-                   [xml_source [xml_source ...]]
+   usage: validate [-h] [-V] (-x XSD_SOURCE | -d DTD_SOURCE | -r RELAXNG_SOURCE)
+                  [xml_source [xml_source ...]]
 
-   Validate XML source with XSD or DTD.
+   Validate XML source with XSD, DTD or RELAX NG.
 
    positional arguments:
    xml_source            XML source (file, <stdin>, http://...)
@@ -52,6 +60,8 @@ Options
                          XML Schema Definition (XSD) source
    -d DTD_SOURCE, --dtd DTD_SOURCE
                          Document Type Definition (DTD) source
+   -r RELAXNG_SOURCE, --relaxng RELAXNG_SOURCE
+                         RELAX NG source
 
 Examples
 --------
@@ -109,3 +119,4 @@ Validate the XML Schema XSD with the
 
 .. [#] `XML Schema 1.0 and 1.1 <https://www.w3.org/XML/Schema>`_
 .. [#] `XML Document Type Definition <https://www.w3.org/TR/xml/#dtd>`_
+.. [#] `RELAX NG Specification <https://www.oasis-open.org/committees/relax-ng/spec.html>`_

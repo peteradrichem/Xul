@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Validate XML source with XSD or DTD."""
+"""Validate XML source with XSD, DTD or RELAX NG."""
 
 
 from __future__ import print_function
@@ -12,19 +12,16 @@ import sys
 # Import my own modules.
 from .. import __version__
 from ..log import setup_logger_console
-from ..validate import build_xml_schema, build_dtd, xml_validator
+from ..validate import build_xml_schema, build_dtd, build_relaxng
+from ..validate import xml_validator
 
 
 def parse_cl():
     """Parse the command line for options and XML sources."""
-    parser = ArgumentParser(
-        description=__doc__)
+    parser = ArgumentParser(description=__doc__)
     parser.add_argument(
         "-V", "--version", action="version",
         version="%(prog)s " + __version__)
-    parser.add_argument(
-        "xml_sources", nargs='*',
-        metavar='xml_source', help="XML source (file, <stdin>, http://...)")
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument(
         "-x", "--xsd",
@@ -34,6 +31,13 @@ def parse_cl():
         "-d", "--dtd",
         action="store", dest="dtd_source",
         help="Document Type Definition (DTD) source")
+    group.add_argument(
+        "-r", "--relaxng",
+        action="store", dest="relaxng_source",
+        help="RELAX NG source")
+    parser.add_argument(
+        "xml_sources", nargs='*',
+        metavar='xml_source', help="XML source (file, <stdin>, http://...)")
     return parser.parse_args()
 
 
@@ -50,6 +54,8 @@ def main():
         validator = build_xml_schema(args.xsd_source)
     elif args.dtd_source:
         validator = build_dtd(args.dtd_source)
+    elif args.relaxng_source:
+        validator = build_relaxng(args.relaxng_source)
     else:
         validator = None
     # Check validator.
