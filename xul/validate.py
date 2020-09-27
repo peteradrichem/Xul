@@ -108,15 +108,20 @@ def xml_validator(xml_source, validator, lenient=True):
     if not el_tree:
         return (False, "Not an XML source")
 
+    if hasattr(xml_source, "name"):
+        # <stdin>.
+        source_name = xml_source.name
+    else:
+        source_name = xml_source
     if validator.validate(el_tree):
-        logger.info("XML source '%s' validates", xml_source)
+        logger.info("XML source '%s' validates", source_name)
         return (True, "XML source validates")
 
     if lenient:
         val_logger = logger.warning
     else:
         val_logger = logger.error
-    val_logger("XML source '%s' does not validate", xml_source)
+    val_logger("XML source '%s' does not validate", source_name)
     # Lines with XML validation errors.
     for e in validator.error_log:
         # E.g. DTD e.level_name: "ERROR", e.domain_name: "VALID",
