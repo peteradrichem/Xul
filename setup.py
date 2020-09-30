@@ -28,24 +28,24 @@ setup(
     author='Peter Adrichem',
     author_email='Peter.Adrichem@gmail.com',
     classifiers=[
-        'Development Status :: 5 - Production/Stable',
-        'Environment :: Console',
-        'Intended Audience :: End Users/Desktop',
-        'Intended Audience :: System Administrators',
-        'License :: OSI Approved :: MIT License',
-        'Operating System :: MacOS :: MacOS X',
-        'Operating System :: POSIX',
-        'Operating System :: Unix',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: Implementation :: CPython',
-        'Topic :: Text Processing :: Markup :: XML',
-        'Topic :: Utilities'
+        "Development Status :: 5 - Production/Stable",
+        "Environment :: Console",
+        "Intended Audience :: End Users/Desktop",
+        "Intended Audience :: System Administrators",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: MacOS :: MacOS X",
+        "Operating System :: POSIX",
+        "Operating System :: Unix",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: Implementation :: CPython",
+        "Topic :: Text Processing :: Markup :: XML",
+        "Topic :: Utilities"
     ],
     description="XML (XPath, XSD, XSLT) Utilities",
     keywords="xml xpath xslt xsd dtd 'xml schema' 'relax ng' rng",
@@ -57,7 +57,7 @@ setup(
     url='https://xul.readthedocs.io/',
     project_urls={
         'Documentation': 'https://xul.readthedocs.io/',
-        'Source Code': 'https://bitbucket.org/peteradrichem/xul'
+        'Source': 'https://bitbucket.org/peteradrichem/xul'
     },
     entry_points={
         'console_scripts': [
