@@ -360,9 +360,13 @@ def print_xp_result(xp_result, el_tree, ns_map, args):
 
     # FLOAT - float | nan == NaN == not a number.
     elif hasattr(xp_result, "is_integer"):
-        # Python float.is_integer()
+        # pylint: disable=comparison-with-itself ## NaN elif.
         if xp_result.is_integer():
             print("XPath number: %i" % xp_result)
+        # float('nan') != float('nan')
+        elif xp_result != xp_result:
+            print("XPath result: NaN (not a number)")
+        # float.
         else:
             print("XPath number: %s" % xp_result)
 
