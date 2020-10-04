@@ -61,12 +61,12 @@ Options
                          its parent)
    -p, --pretty-element  pretty print the result element
    -m, --method          use ElementTree.xpath method instead of XPath class
-   -f, -l, --files-with-results
-                         only the names of files with a non-false result are
-                         written to standard output
-   -F, -L, --files-without-results
-                         only the names of files with a false result or without
-                         any results are written to standard output
+   -f, -l, --files-with-hits
+                         only the names of files with a non-false and non-NaN
+                         result are written to standard output
+   -F, -L, --files-without-hits
+                         only the names of files with a false or NaN result, or
+                         without any results are written to standard output
    -q, --quiet           don't print the XML namespace list
 
 Print result's XPath
@@ -163,7 +163,7 @@ Pretty print result
 A result element can be pretty printed with the ``--pretty-element`` command-line option.
 
 .. warning:: The ``--pretty-element`` option removes all white space text nodes
-   *before* applying the XPath expression. There will therefore be no white space
+   *before* applying the XPath expression. Therefore there will be no white space
    text nodes in the results.
 
 Pretty print the latest Python PEP:
@@ -174,8 +174,8 @@ Pretty print the latest Python PEP:
 
 Print file names
 ----------------
-The ``--files-with-results`` command-line option only prints the names
-of files with a non-false result.
+The ``--files-with-hits`` command-line option only prints the names
+of files with an XPath result that is not false and not NaN (not a number).
 
 Find XML files with HTTP URL's:
 
@@ -183,8 +183,14 @@ Find XML files with HTTP URL's:
 
    xp "//mpeg7:MediaUri[starts-with(., 'http://')]" *.xml -f
 
-The ``--files-without-results`` command-line option only prints the names
-of files with a false result or without any results.
+XML files where all the book prices are below € 25,-.
+
+.. code-block:: bash
+
+   xp -el "math:max(//book/price[@currency='€'])<25" *.xml
+
+The ``--files-without-hits`` command-line option only prints the names
+of files without any XPath results, or with a false or NaN result.
 
 XML files without a person with the family name 'Bauwens':
 

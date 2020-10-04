@@ -54,14 +54,14 @@ def parse_cl():
         action="store_true", default=False, dest="lxml_method",
         help="use ElementTree.xpath method instead of XPath class")
     parser.add_argument(
-        "-f", "-l", "--files-with-results",
-        action="store_true", default=False, dest="files_with_results",
-        help="only the names of files with a non-false result " +
+        "-f", "-l", "--files-with-hits",
+        action="store_true", default=False, dest="files_with_hits",
+        help="only the names of files with a non-false and non-NaN result " +
         "are written to standard output")
     parser.add_argument(
-        "-F", "-L", "--files-without-results",
-        action="store_true", default=False, dest="files_without_results",
-        help="only the names of files with a false result " +
+        "-F", "-L", "--files-without-hits",
+        action="store_true", default=False, dest="files_without_hits",
+        help="only the names of files with a false or NaN result, " +
         "or without any results are written to standard output")
     parser.add_argument(
         "-q", "--quiet",
@@ -358,12 +358,12 @@ def print_xp_result(xp_result, el_tree, ns_map, args):
             if e.errno != 32:
                 sys.stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
 
-    # FLOAT - float | nan == NaN == not a number.
+    # FLOAT - float.
     elif hasattr(xp_result, "is_integer"):
         # pylint: disable=comparison-with-itself ## NaN elif.
         if xp_result.is_integer():
             print("XPath number: %i" % xp_result)
-        # float('nan') != float('nan')
+        # float('nan') != float('nan') -- IEEE 754.
         elif xp_result != xp_result:
             print("XPath result: NaN (not a number)")
         # float.
@@ -407,11 +407,16 @@ def xpath_on_xml(xml_source, parser, xpath_fn, args):
         source_name = xml_source
 
     # XML sources names (--files-with-results/--files-without-results).
-    if args.files_with_results or args.files_without_results:
-        if args.files_with_results and xp_result:
+    if args.files_with_hits or args.files_without_hits:
+        # pylint: disable=comparison-with-itself
+        # NaN check: float('nan') != float('nan').
+        if xp_result != xp_result:
+            if args.files_without_hits:
+                print(source_name)
+        elif args.files_with_hits and xp_result:
             print(source_name)
-        # False is a possible value for xp_result (test).
-        elif args.files_without_results and not xp_result:
+        # False is a possible value for xp_result (XPath test).
+        elif args.files_without_hits and not xp_result:
             print(source_name)
         return True
 
@@ -445,7 +450,7 @@ def main():
     for xml_s in args.xml_sources:
         if extra_new_line:
             print()
-        elif not (args.files_with_results or args.files_without_results):
+        elif not (args.files_with_hits or args.files_without_hits):
             extra_new_line = True
         xpath_on_xml(xml_s, xml_parser, xpath_fn, args)
 
