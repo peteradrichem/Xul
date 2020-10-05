@@ -41,7 +41,7 @@ Options
 
    $ xp --help
 
-   usage: xp [-h] [-V] [-e] [-d DEFAULT_NS_PREFIX] [-r] [-p] [-m] [-f] [-q]
+   usage: xp [-h] [-V] [-e] [-d DEFAULT_NS_PREFIX] [-r] [-p] [-m] [-f] [-F] [-q]
              xpath_expr [xml_source [xml_source ...]]
 
    Select nodes in an XML source with an XPath expression.
@@ -89,6 +89,7 @@ List the XPath expressions of all elements with attributes:
 
 
 .. index::
+   single: xp script; namespaces
    single: XML Namespaces
    single: Namespaces
 
@@ -117,7 +118,7 @@ List the five most recent Python Insider posts:
    xp "descendant::d:entry[position()<=5]/d:title/text()" \
    http://feeds.feedburner.com/PythonInsider
 
-Change the prefix for the default namespace with the ``--default-prefix`` option:
+You can change the prefix for the default namespace with the ``--default-prefix`` option:
 
 .. code-block:: bash
 
@@ -126,6 +127,7 @@ Change the prefix for the default namespace with the ``--default-prefix`` option
 
 
 .. index::
+   single: xp script; EXSLT
    single: EXSLT
    single: Extensions to XSLT
 
@@ -158,6 +160,10 @@ Find Python PEPs with "remove" or "specification" in the title (case-insensitive
 
 The ``--quiet`` command-line option will not print the result header.
 
+
+.. index::
+   single: xp script; pretty print
+
 Pretty print result
 -------------------
 A result element can be pretty printed with the ``--pretty-element`` command-line option.
@@ -171,6 +177,10 @@ Pretty print the latest Python PEP:
 .. code-block:: bash
 
    curl -s https://www.python.org/dev/peps/peps.rss/ | xp "//item[1]" -p
+
+
+.. index::
+   single: xp script; file names
 
 Print file names
 ----------------

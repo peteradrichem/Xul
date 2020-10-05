@@ -1,41 +1,55 @@
 .. index::
    single: validate script
    single: scripts; validate
-   single: XSD
-   single: XML Schema Definition
 
 validate -- Validate an XML source
 ==================================
 
-Use ``validate`` to validate an :ref:`xml_source`.
+The ``validate`` script can check if an :ref:`xml_source` conforms to an XML schema.
+It supports the following XML schema languages.
+
+
+.. index::
+   single: validate script; XSD
+   single: XSD
+   single: XML Schema Definition
+   single: XML Schema
 
 XSD
 ---
-Validate an XML source with an XSD [#]_ file:
+Use the ``--xsd`` option to validate an XML source with an XSD [#]_ file:
 
 .. code-block:: bash
 
    validate -x schema.xsd source.xml
 
+
 .. index::
+   single: validate script; DTD
    single: DTD
    single: Document Type Definition
 
 DTD
 ---
-Validate an XML source with a DTD [#]_ file:
+Validate an XML source with a DTD [#]_ file with the ``--dtd`` option:
 
 .. code-block:: bash
 
    validate -d doctype.dtd source.xml
 
+
+.. index::
+   single: validate script; RELAX NG
+   single: RELAX NG
+
 RELAX NG
 --------
-Validate an XML source with a RELAX NG [#]_ file:
+The ``--relaxng`` option validates an XML source with a RELAX NG [#]_ file:
 
 .. code-block:: bash
 
    validate -r relaxng.rng source.xml
+
 
 Options
 -------
@@ -83,6 +97,20 @@ Validate XHTML with the
 .. code-block:: bash
 
    curl -s https://www.webstandards.org/learn/reference/templates/xhtml10s/ | validate -x examples/xsd/xhtml1-strict.xsd
+
+-----------------
+Validation Errors
+-----------------
+
+If an :ref:`xml_source` doesn't validate the ``validate`` script will show the
+reason with some additional information:
+
+.. code-block:: bash
+
+   validate -x TV-Anytime.xsd NED120200816E.xml
+
+   XML source 'NED120200816E.xml' does not validate
+   line 92, column 0: Element '{urn:tva:metadata:2019}Broadcaster': This element is not expected. Expected is one of ( {urn:tva:metadata:2019}FirstShowing, {urn:tva:metadata:2019}LastShowing, {urn:tva:metadata:2019}Free ).
 
 --------------
 XSD Validation

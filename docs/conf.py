@@ -59,7 +59,7 @@ author = u'Peter Adrichem'
 # built documents.
 #
 # The short X.Y version.
-version = u'2.1'
+version = ".".join(xul.__version__.split(".")[0:2])
 # The full version, including alpha/beta/rc tags.
 release = xul.__version__
 
@@ -122,6 +122,7 @@ html_theme_options = {
     'font_size': '15px',
     'code_font_size': '12px',
     'fixed_sidebar': True,
+    'extra_nav_links': {"Index": "genindex.html"}
 }
 
 # Add any paths that contain custom themes here, relative to this directory.

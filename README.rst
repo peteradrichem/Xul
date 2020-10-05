@@ -69,20 +69,21 @@ For example:
                          omit the XML declaration
 
 Documentation
--------------
-More documentation can be found on `Read The Docs`_.
-
-
-XML standards
 =============
-W3C XML standards:
+The Xul documentation can be found on `Read The Docs`_.
 
+W3C standards
+-------------
 - `Extensible Markup Language (XML) 1.0 <http://www.w3.org/TR/xml/>`_
 - `XML Schema 1.0 <http://www.w3.org/XML/Schema>`_
 - `XSL Transformations (XSLT) 1.0 <http://www.w3.org/TR/xslt/>`_
 - `XML Path Language (XPath) 1.0 <http://www.w3.org/TR/xpath/>`_
 - `Namespaces in XML 1.0 <http://www.w3.org/TR/xml-names/>`_
+
+Related
+-------
 - `Extensions to XSLT (EXSLT) <http://exslt.org/>`_
+- `RELAX NG <https://relaxng.org/>`_
 
 
 .. _Read The Docs: https://xul.readthedocs.io/
