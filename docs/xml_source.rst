@@ -3,6 +3,7 @@
 
 .. _xml_source:
 
+==========
 XML source
 ==========
 

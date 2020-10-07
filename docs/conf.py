@@ -122,8 +122,11 @@ html_theme_options = {
     'font_size': '15px',
     'code_font_size': '12px',
     'fixed_sidebar': True,
-    'extra_nav_links': {"Index": "genindex.html"}
+    'extra_nav_links': {"Xul index": "genindex.html"}
 }
+
+# Custom CSS (sidebar).
+html_css_files = ['custom.css']
 
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []

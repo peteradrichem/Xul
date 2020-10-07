@@ -51,6 +51,7 @@ Options
 
 
 .. index::
+   single: ppx script; syntax highlighting
    single: syntax highlighting
 
 Syntax Highlighting
@@ -67,6 +68,7 @@ You can disable syntax highlighting with the ``--no-syntax`` option.
 
 
 .. index::
+   single: ppx script; XML declaration
    single: XML declaration
    single: XML declaration; ppx
 

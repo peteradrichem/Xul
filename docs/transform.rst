@@ -4,12 +4,12 @@
    single: XSLT
    single: Extensible Stylesheet Language Transformations
 
-transform -- Transform XML with XSLT
-====================================
+transform -- Transform XML
+==========================
 
-``transform`` is a simple command line script to apply XSLT [#]_ stylesheets to
+``transform`` is a simple command-line script to apply XSLT [#]_ stylesheets to
 an :ref:`xml_source`.
-If you need a command line XSLT processor with more options have a look at
+If you need a command-line XSLT processor with more options have a look at
 `xsltproc <http://xmlsoft.org/XSLT/xsltproc.html>`_
 
 Transform an XML file:
@@ -48,6 +48,7 @@ Options
                          omit the XML declaration
 
 .. index::
+   single: transform script; XML declaration
    single: XML declaration; transform
 
 XML declaration

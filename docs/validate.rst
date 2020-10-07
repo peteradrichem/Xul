@@ -2,8 +2,8 @@
    single: validate script
    single: scripts; validate
 
-validate -- Validate an XML source
-==================================
+validate -- Validate XML
+========================
 
 The ``validate`` script can check if an :ref:`xml_source` conforms to an XML schema.
 It supports the following XML schema languages.
