@@ -69,8 +69,15 @@ Options
                          without any results are written to standard output
    -q, --quiet           don't print the XML namespace list
 
+
+.. index::
+   single: xp script; result XPath
+
 Print result's XPath
 --------------------
+.. program:: xp
+.. option:: -r, --result-xpath
+
 Print the XPath expression of each result element with the ``--result-xpath`` option.
 Each XPath expression will have an absolute location path.
 
@@ -118,6 +125,9 @@ List the five most recent Python Insider posts:
    xp "descendant::d:entry[position()<=5]/d:title/text()" \
    http://feeds.feedburner.com/PythonInsider
 
+.. program:: xp
+.. option:: -d <prefix>, --default-prefix <prefix>
+
 You can change the prefix for the default namespace with the ``--default-prefix`` option:
 
 .. code-block:: bash
@@ -133,6 +143,9 @@ You can change the prefix for the default namespace with the ``--default-prefix`
 
 Extensions to XSLT
 ------------------
+.. program:: xp
+.. option:: -e, --exslt
+
 lxml supports the EXSLT [#]_ extensions through libxslt (requires libxslt 1.1.25 or higher).
 ``xp`` will add EXSLT namespaces with the ``--exslt`` command-line option.
 
@@ -153,20 +166,29 @@ Python Insider posts updated in December:
 Use the power of regular expression (``re`` prefix).
 Find Python PEPs with "remove" or "specification" in the title (case-insensitive):
 
+.. index::
+   single: xp script; quiet
+
+.. program:: xp
+.. option:: -q, --quiet
+
+The ``--quiet`` command-line option will not print the result header.
+
 .. code-block:: bash
 
    curl -s https://www.python.org/dev/peps/peps.rss/ | \
    xp -e '//item/title[re:match(text(), "(remove|specification)", "i")]' -q
 
-The ``--quiet`` command-line option will not print the result header.
-
 
 .. index::
    single: xp script; pretty print
 
-Pretty print result
--------------------
-A result element can be pretty printed with the ``--pretty-element`` command-line option.
+Pretty print element result
+---------------------------
+.. program:: xp
+.. option:: -p, --pretty-element
+
+A result element node can be pretty printed with the ``--pretty-element`` command-line option.
 
 .. warning:: The ``--pretty-element`` option removes all white space text nodes
    *before* applying the XPath expression. Therefore there will be no white space
@@ -184,6 +206,9 @@ Pretty print the latest Python PEP:
 
 Print file names
 ----------------
+.. program:: xp
+.. option:: -f, -l, --files-with-hits
+
 The ``--files-with-hits`` command-line option only prints the names
 of files with an XPath result that is not false and not NaN (not a number).
 
@@ -199,6 +224,9 @@ XML files where all the book prices are below € 25,-.
 
    xp -el "math:max(//book/price[@currency='€'])<25" *.xml
 
+.. program:: xp
+.. option:: -F, -L, --files-without-hits
+
 The ``--files-without-hits`` command-line option only prints the names
 of files without any XPath results, or with a false or NaN result.
 
@@ -210,7 +238,10 @@ XML files without a person with the family name 'Bauwens':
 
 xpath method
 ------------
-``xp`` uses `lxml.etree.XPath` class by default. You can choose the
+.. program:: xp
+.. option:: -m, --method
+
+``xp`` uses the `lxml.etree.XPath` class by default. You can choose the
 `lxml.etree.ElementTree.xpath` method with the ``--method`` command-line option.
 The results should be the same but error reporting can be different.
 

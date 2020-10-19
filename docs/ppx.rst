@@ -5,7 +5,6 @@
 
 ppx -- Pretty Print XML
 =======================
-
 Use ``ppx`` to pretty print an :ref:`xml_source` in human readable form.
 
 .. code-block:: bash
@@ -20,15 +19,14 @@ Use ``ppx`` to pretty print an :ref:`xml_source` in human readable form.
 
 White Space
 -----------
-
 For greater readability ``ppx`` removes and adds *white space*.
 
-.. note:: White space can be significant in an XML document [#]_.
+.. warning:: White space can be significant in an XML document [#]_.
    So be careful when using ``ppx`` to rewrite XML files.
+
 
 Options
 -------
-
 ``ppx`` can be used with the following command-line options:
 
 .. code-block:: console
@@ -64,6 +62,9 @@ Pretty print the XML Schema 1.0 schema document:
 
    ppx http://www.w3.org/2001/XMLSchema.xsd
 
+.. program:: ppx
+.. option:: -n, --no-syntax
+
 You can disable syntax highlighting with the ``--no-syntax`` option.
 
 
@@ -74,10 +75,13 @@ You can disable syntax highlighting with the ``--no-syntax`` option.
 
 XML declaration
 ---------------
-
 XML documents should begin with an XML declaration which specifies the version of XML being used [#]_.
 
 By default ``ppx`` will print an (UTF-8) XML declaration.
+
+.. program:: ppx
+.. option:: -o, --omit-declaration
+
 Omit the XML declaration with the ``--omit-declaration`` option.
 
 .. code-block:: bash
@@ -86,7 +90,6 @@ Omit the XML declaration with the ``--omit-declaration`` option.
 
 Examples
 --------
-
 Pretty print any local XML file:
 
 .. code-block:: bash

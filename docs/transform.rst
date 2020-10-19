@@ -6,7 +6,6 @@
 
 transform -- Transform XML
 ==========================
-
 ``transform`` is a simple command-line script to apply XSLT [#]_ stylesheets to
 an :ref:`xml_source`.
 If you need a command-line XSLT processor with more options have a look at
@@ -26,7 +25,6 @@ Transform an XML file and :doc:`pretty print <ppx>` the result:
 
 Options
 -------
-
 ``transform`` can be used with the following command-line options:
 
 .. code-block:: console
@@ -53,10 +51,13 @@ Options
 
 XML declaration
 ---------------
-
 XML documents should begin with an XML declaration which specifies the version of XML being used [#]_.
 
 By default ``transform`` will print an (UTF-8) XML declaration.
+
+.. program:: transform
+.. option:: -o, --omit-declaration
+
 You can omit the XML declaration with the ``--omit-declaration`` option.
 
 .. code-block:: bash

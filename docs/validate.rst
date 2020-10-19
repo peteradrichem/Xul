@@ -4,7 +4,6 @@
 
 validate -- Validate XML
 ========================
-
 The ``validate`` script can check if an :ref:`xml_source` conforms to an XML schema.
 It supports the following XML schema languages.
 
@@ -17,6 +16,9 @@ It supports the following XML schema languages.
 
 XSD
 ---
+.. program:: validate
+.. option:: -x <xml_schema>, --xsd <xml_schema>
+
 Use the ``--xsd`` option to validate an XML source with an XSD [#]_ file:
 
 .. code-block:: bash
@@ -31,6 +33,9 @@ Use the ``--xsd`` option to validate an XML source with an XSD [#]_ file:
 
 DTD
 ---
+.. program:: validate
+.. option:: -d <dtd_schema>, --dtd <dtd_schema>
+
 Validate an XML source with a DTD [#]_ file with the ``--dtd`` option:
 
 .. code-block:: bash
@@ -44,6 +49,9 @@ Validate an XML source with a DTD [#]_ file with the ``--dtd`` option:
 
 RELAX NG
 --------
+.. program:: validate
+.. option:: -r <relax_ng_schema>, --relaxng <relax_ng_schema>
+
 The ``--relaxng`` option validates an XML source with a RELAX NG [#]_ file:
 
 .. code-block:: bash
