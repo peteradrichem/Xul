@@ -85,7 +85,7 @@ Each XPath expression will have an absolute location path.
 
    xp --result-xpath "//title" file.xml
 
-If an XPath result is a text or attribute node ``xp`` will print the parent element's
+If an XPath result is a text or attribute node ``xp`` prints the parent element's
 XPath expression.
 
 List the XPath expressions of all elements with attributes:
@@ -115,8 +115,8 @@ Print the default namespace of the document element, if it has one:
    xp 'namespace::*[name()=""]' file.xml
 
 The default XML namespace in an XML document has no prefix (*None*).
-To select nodes in an XML namespace XPath uses prefixed names (qualified names).
-``xp`` will use 'd' as the prefix for the default XML namespace.
+To select nodes in an XML namespace XPath needs prefixed names (qualified names).
+Therefore ``xp`` uses ``d`` as the prefix for the default XML namespace.
 
 List the five most recent Python Insider posts:
 
@@ -146,8 +146,7 @@ Extensions to XSLT
 .. program:: xp
 .. option:: -e, --exslt
 
-lxml supports the EXSLT [#]_ extensions through libxslt (requires libxslt 1.1.25 or higher).
-``xp`` will add EXSLT namespaces with the ``--exslt`` command-line option.
+lxml supports the EXSLT [#]_ extensions through libxslt (requires libxslt 1.1.25 or higher). Add EXSLT namespaces with the ``--exslt`` command-line option.
 
 Find Python Insider posts published in or after 2015 with EXSLT (``date`` prefix):
 
@@ -163,16 +162,16 @@ Python Insider posts updated in December:
    xp -e "//d:entry[date:month-name(d:updated) = 'December']/d:title/text()" \
    http://feeds.feedburner.com/PythonInsider
 
-Use the power of regular expression (``re`` prefix).
-Find Python PEPs with "remove" or "specification" in the title (case-insensitive):
-
 .. index::
    single: xp script; quiet
 
 .. program:: xp
 .. option:: -q, --quiet
 
-The ``--quiet`` command-line option will not print the result header.
+The ``--quiet`` command-line option will not print the list with XML namespaces.
+
+Use the power of regular expression (``re`` prefix).
+Find Python PEPs with "remove" or "specification" in the title (case-insensitive):
 
 .. code-block:: bash
 
