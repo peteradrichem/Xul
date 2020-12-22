@@ -19,7 +19,6 @@ setup(
     version=__version__,
 
     packages=find_packages(),
-    zip_safe=False,
     install_requires=["lxml>=2.0"],
     extras_require={
         'syntax': ["Pygments>=2.0"]
@@ -30,19 +29,16 @@ setup(
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Console",
-        "Intended Audience :: End Users/Desktop",
-        "Intended Audience :: System Administrators",
         "License :: OSI Approved :: MIT License",
-        "Operating System :: MacOS :: MacOS X",
-        "Operating System :: POSIX",
-        "Operating System :: Unix",
-        "Programming Language :: Python",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Text Processing :: Markup :: XML",
         "Topic :: Utilities"
@@ -52,8 +48,8 @@ setup(
     license='MIT',
     long_description=long_description(),
     long_description_content_type='text/x-rst',
-    python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*",
     platforms='CPython',
+    python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*",
     url='https://xul.readthedocs.io/',
     project_urls={
         'Documentation': 'https://xul.readthedocs.io/',
