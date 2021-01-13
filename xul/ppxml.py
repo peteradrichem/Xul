@@ -7,6 +7,7 @@ from __future__ import print_function
 
 import sys
 import io
+import errno
 
 # pylint: disable=no-name-in-module
 # lxml ElementTree <https://lxml.de/>
@@ -39,13 +40,24 @@ def _private_pp(etree, syntax=True, xml_declaration=None):
             # Bytes(string) => unicode string.
             etree_string = etree_string.decode("utf-8")
 
-        # Fix output encoding (piping Python2 output to less).
-        if sys.stdout.encoding is None:
-            sys.stdout = io.open(sys.stdout.fileno(), 'w', encoding='utf8')
-        print(etree_string)
+        # Fix output encoding errors (Python 2) when piping multiple etree_string.
+        # E.g.: % ppx Unicode_1.xml Unicode_2.xml | less
+        #       % xp -q "//d:OtherIdentifier[position()<=12]/.." Unicode.xml -p | less
+        if not sys.stdout.isatty() and sys.stdout.encoding is None:
+            # Standard out is buffered.
+            sys.stdout.flush()
+            # Standard out with UTF-8 encoding.
+            sys.stdout = io.open(
+                # Do not close sys.stdout file descriptor.
+                sys.stdout.fileno(), 'w', encoding='utf8', closefd=False)
+            print(etree_string)
+            # Restore sys.stdout (reuse file descriptor).
+            sys.stdout = sys.__stdout__
+        else:
+            print(etree_string)
+    # Python 2: catch 'IOError: [Errno 32] Broken pipe' (multiple etrees).
     except IOError as e:
-        # Catch 'IOError: [Errno 32] Broken pipe' (multiple etrees).
-        if e.errno != 32:
+        if e.errno != errno.EPIPE:
             sys.stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
 
 
