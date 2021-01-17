@@ -24,8 +24,8 @@ The XPath result depends on the XPath expression used.
 """
 
 
-# Standard Python.
 from logging import getLogger
+
 # pylint: disable=no-name-in-module
 # lxml ElementTree <https://lxml.de/>
 from lxml.etree import XPath, XPathSyntaxError, XPathEvalError

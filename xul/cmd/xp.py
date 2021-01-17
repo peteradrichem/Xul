@@ -5,10 +5,10 @@
 
 from __future__ import print_function
 
-# Standard Python.
 from argparse import ArgumentParser
 import sys
-#
+import errno
+
 # pylint: disable=no-name-in-module
 # lxml ElementTree <https://lxml.de/>
 from lxml.etree import XPathEvalError, XMLParser
@@ -354,8 +354,8 @@ def print_xp_result(xp_result, el_tree, ns_map, args):
             # List can be empty.
             print_result_list(xp_result, el_tree, args)
         except IOError as e:
-            # Catch 'IOError: [Errno 32] Broken pipe'.
-            if e.errno != 32:
+            # Python 2: catch 'IOError: [Errno 32] Broken pipe'.
+            if e.errno != errno.EPIPE:
                 sys.stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
 
     # FLOAT - float.
@@ -435,7 +435,7 @@ def main():
     # Command line.
     args = parse_cl()
 
-    # XPath expressie.
+    # XPath expression.
     if isinstance(args.xpath_expr, bytes):
         # Python 2 Bytestring to Unicode.
         args.xpath_expr = args.xpath_expr.decode("utf-8")
@@ -460,3 +460,4 @@ def main():
             xpath_on_xml(sys.stdin, xml_parser, xpath_fn, args)
         else:
             sys.stderr.write("Error: no XML source specified\n")
+            sys.exit(70)

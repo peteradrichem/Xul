@@ -5,7 +5,6 @@
 
 from __future__ import print_function
 
-# Standard Python.
 from argparse import ArgumentParser
 import sys
 
@@ -60,7 +59,7 @@ def main():
         validator = None
     # Check validator.
     if not validator:
-        sys.exit(105)
+        sys.exit(60)
 
     # Validate XML sources.
     for xml_s in args.xml_sources:
@@ -72,3 +71,4 @@ def main():
             xml_validator(sys.stdin, validator)
         else:
             sys.stderr.write("Error: no XML source specified\n")
+            sys.exit(70)

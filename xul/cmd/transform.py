@@ -5,10 +5,10 @@
 
 from __future__ import print_function
 
-# Standard Python.
 from argparse import ArgumentParser
 import sys
-#
+import errno
+
 # pylint: disable=no-name-in-module
 # lxml ElementTree <https://lxml.de/>
 from lxml.etree import XMLParser, tostring
@@ -59,8 +59,8 @@ def print_xslt(xml_source, transformer, parser, args):
                     etree_result = etree_result.decode("utf-8")
                 print(etree_result)
             except IOError as e:
-                # Catch 'IOError: [Errno 32] Broken pipe'.
-                if e.errno != 32:
+                # Python 2: catch 'IOError: [Errno 32] Broken pipe'.
+                if e.errno != errno.EPIPE:
                     sys.stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
 
 
@@ -95,3 +95,4 @@ def main():
             print_xslt(sys.stdin, transformer, parser, args)
         else:
             sys.stderr.write("Error: no XML source specified\n")
+            sys.exit(70)

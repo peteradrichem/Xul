@@ -16,8 +16,8 @@ Validation with lxml:
 """
 
 
-# Standard Python.
 from logging import getLogger
+
 # pylint: disable=no-member
 # lxml ElementTree <https://lxml.de/>
 from lxml import etree

@@ -3,10 +3,9 @@
 """Pretty Print XML source in human readable form."""
 
 
-# Standard Python.
 from argparse import ArgumentParser
 from sys import stdin, stderr
-#
+
 # pylint: disable=no-name-in-module
 # lxml ElementTree <https://lxml.de/>
 from lxml.etree import XMLParser
