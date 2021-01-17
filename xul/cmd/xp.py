@@ -53,12 +53,13 @@ def parse_cl():
         "-m", "--method",
         action="store_true", default=False, dest="lxml_method",
         help="use ElementTree.xpath method instead of XPath class")
-    parser.add_argument(
+    file_group = parser.add_mutually_exclusive_group(required=False)
+    file_group.add_argument(
         "-f", "-l", "--files-with-hits",
         action="store_true", default=False, dest="files_with_hits",
         help="only the names of files with a non-false and non-NaN result " +
         "are written to standard output")
-    parser.add_argument(
+    file_group.add_argument(
         "-F", "-L", "--files-without-hits",
         action="store_true", default=False, dest="files_without_hits",
         help="only the names of files with a false or NaN result, " +
