@@ -12,7 +12,7 @@ import sys
 from .. import __version__
 from ..log import setup_logger_console
 from ..validate import build_xml_schema, build_dtd, build_relaxng
-from ..validate import xml_validator
+from ..validate import validate_xml
 
 
 def parse_cl():
@@ -35,10 +35,25 @@ def parse_cl():
         action="store", dest="relaxng_source",
         help="RELAX NG source")
     parser.add_argument(
+        "-f", "-l", "--validated-files",
+        action="store_true", default=False, dest="validated_files",
+        help="only the names of validated XML files are written to standard output")
+    parser.add_argument(
         "xml_sources", nargs='*',
         metavar='xml_source', help="XML source (file, <stdin>, http://...)")
     return parser.parse_args()
 
+def apply_validator(xml_source, validator, args):
+    """Apply XML validator on an XML source."""
+    if args.validated_files:
+        if validate_xml(xml_source, validator, silent=True):
+            if xml_source in ('-', sys.stdin):
+                # <stdin>.
+                print(sys.stdin.name)
+            else:
+                print(xml_source)
+    else:
+        validate_xml(xml_source, validator)
 
 def main():
     """validate command line script entry point."""
@@ -63,12 +78,12 @@ def main():
 
     # Validate XML sources.
     for xml_s in args.xml_sources:
-        xml_validator(xml_s, validator)
+        apply_validator(xml_s, validator, args)
 
     if not args.xml_sources:
-        # Read from a pipe when no XML source is specified.
         if not sys.stdin.isatty():
-            xml_validator(sys.stdin, validator)
+            # Read from a pipe when no XML source is specified.
+            apply_validator(sys.stdin, validator, args)
         else:
             sys.stderr.write("Error: no XML source specified\n")
             sys.exit(70)

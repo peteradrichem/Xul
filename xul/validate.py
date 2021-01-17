@@ -17,6 +17,7 @@ Validation with lxml:
 
 
 from logging import getLogger
+import sys
 
 # pylint: disable=no-member
 # lxml ElementTree <https://lxml.de/>
@@ -99,10 +100,10 @@ def build_dtd(dtd_file):
 
 
 def xml_validator(xml_source, validator, lenient=True):
-    """Validate an XML source against an XSD or DTD validator.
+    """Validate an XML source against an XSD, DTD or RELAX NG validator.
 
     xml_source -- XML file, file-like object or URL
-    validator -- XMLSchema or DTD validator
+    validator -- XMLSchema, DTD validator or RELAX NG validator
     lenient -- log XML (validation) errors as warnings
 
     Return a tuple with the validation result (True/False) and the status string.
@@ -111,9 +112,9 @@ def xml_validator(xml_source, validator, lenient=True):
     if not el_tree:
         return (False, "Not an XML source")
 
-    if hasattr(xml_source, "name"):
+    if xml_source in ('-', sys.stdin):
         # <stdin>.
-        source_name = xml_source.name
+        source_name = sys.stdin.name
     else:
         source_name = xml_source
     if validator.validate(el_tree):
@@ -170,3 +171,46 @@ def build_relaxng(relaxng_file):
         return None
     else:
         return validator
+
+
+def validate_xml(xml_source, validator, lenient=True, silent=False):
+    """Validate an XML source against an XSD, DTD or RELAX NG validator.
+
+    xml_source -- XML file, file-like object or URL
+    validator -- XMLSchema, DTD validator or RELAX NG validator
+    lenient -- log XML (validation) errors as warnings
+    silent -- no logging
+
+    Return the validation result (True/False).
+    """
+    el_tree = build_etree(xml_source, lenient=lenient, silent=silent)
+    if not el_tree:
+        return False
+
+    if xml_source in ('-', sys.stdin):
+        # <stdin>.
+        source_name = sys.stdin.name
+    else:
+        source_name = xml_source
+
+    if validator.validate(el_tree):
+        if not silent:
+            logger.info("XML source '%s' validates", source_name)
+        return True
+    if silent:
+        return False
+
+    # Log validation errors.
+    if lenient:
+        val_logger = logger.warning
+    else:
+        val_logger = logger.error
+    val_logger("XML source '%s' does not validate", source_name)
+    # Lines with XML validation errors.
+    for e in validator.error_log:
+        # E.g. DTD e.level_name: "ERROR", e.domain_name: "VALID",
+        # e.type_name: "DTD_UNKNOWN_ELEM".
+        # E.g. XSD e.level_name: "ERROR", e.domain_name: "SCHEMASV",
+        # e.type_name: "SCHEMAV_CVC_ELT_1".
+        val_logger("line %i, column %i: %s", e.line, e.column, e.message)
+    return False

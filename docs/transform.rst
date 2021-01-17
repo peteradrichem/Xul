@@ -36,14 +36,14 @@ Options
    Transform XML source with XSLT.
 
    positional arguments:
-   xslt_source           XSLT source (file, http://...)
-   xml_source            XML source (file, <stdin>, http://...)
+     xslt_source           XSLT source (file, http://...)
+     xml_source            XML source (file, <stdin>, http://...)
 
    optional arguments:
-   -h, --help            show this help message and exit
-   -V, --version         show program's version number and exit
-   -o, --omit-declaration
-                         omit the XML declaration
+     -h, --help            show this help message and exit
+     -V, --version         show program's version number and exit
+     -o, --omit-declaration
+                           omit the XML declaration
 
 .. index::
    single: transform script; XML declaration

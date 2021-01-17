@@ -14,6 +14,7 @@ The lxml.etree Tutorial
 
 
 from logging import getLogger
+import sys
 
 # pylint: disable=no-member
 # lxml ElementTree <https://lxml.de/>
@@ -24,12 +25,13 @@ from lxml import etree
 logger = getLogger(__name__)
 
 
-def build_etree(xml_source, parser=None, lenient=True):
+def build_etree(xml_source, parser=None, lenient=True, silent=False):
     """Parse XML source into an ElementTree.
 
     xml_source -- XML file, file-like object or URL
     parser -- (optional) XML parser (lxml.etree.XMLParser)
     lenient -- log XMLSyntaxError as warnings instead of errors
+    silent -- no logging
 
     Return ElementTree (lxml.etree._ElementTree) on success.
     Return None on error.
@@ -55,12 +57,14 @@ def build_etree(xml_source, parser=None, lenient=True):
     # error log copy attached to the exception: global error log of all errors
     # that occurred at the application level.
     except etree.XMLSyntaxError:
+        if silent:
+            return None
         if lenient:
             xmllogger = logger.warning
         else:
             xmllogger = logger.error
-        if hasattr(xml_source, "name"):
-            name = xml_source.name
+        if xml_source in ('-', sys.stdin):
+            name = sys.stdin.name
             xml_type = "object"
         else:
             name = xml_source

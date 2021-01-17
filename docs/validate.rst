@@ -68,27 +68,28 @@ Options
    $ validate --help
 
    usage: validate [-h] [-V] (-x XSD_SOURCE | -d DTD_SOURCE | -r RELAXNG_SOURCE)
-                  [xml_source [xml_source ...]]
+                   [-f]
+                   [xml_source [xml_source ...]]
 
    Validate XML source with XSD, DTD or RELAX NG.
 
    positional arguments:
-   xml_source            XML source (file, <stdin>, http://...)
+     xml_source            XML source (file, <stdin>, http://...)
 
    optional arguments:
-   -h, --help            show this help message and exit
-   -V, --version         show program's version number and exit
-   -x XSD_SOURCE, --xsd XSD_SOURCE
-                         XML Schema Definition (XSD) source
-   -d DTD_SOURCE, --dtd DTD_SOURCE
-                         Document Type Definition (DTD) source
-   -r RELAXNG_SOURCE, --relaxng RELAXNG_SOURCE
-                         RELAX NG source
+     -h, --help            show this help message and exit
+     -V, --version         show program's version number and exit
+     -x XSD_SOURCE, --xsd XSD_SOURCE
+                           XML Schema Definition (XSD) source
+     -d DTD_SOURCE, --dtd DTD_SOURCE
+                           Document Type Definition (DTD) source
+     -r RELAXNG_SOURCE, --relaxng RELAXNG_SOURCE
+                           RELAX NG source
+     -f, -l, --validated-files
+                           only the names of validated XML files are written to
+                           standard output
 
-Examples
---------
 
---------------
 XML Validation
 --------------
 
@@ -106,7 +107,6 @@ Validate XHTML with the
 
    curl -s https://www.webstandards.org/learn/reference/templates/xhtml10s/ | validate -x examples/xsd/xhtml1-strict.xsd
 
------------------
 Validation Errors
 -----------------
 
@@ -120,7 +120,6 @@ reason with some additional information:
    XML source 'NED120200816E.xml' does not validate
    line 92, column 0: Element '{urn:tva:metadata:2019}Broadcaster': This element is not expected. Expected is one of ( {urn:tva:metadata:2019}FirstShowing, {urn:tva:metadata:2019}LastShowing, {urn:tva:metadata:2019}Free ).
 
---------------
 XSD Validation
 --------------
 
@@ -149,6 +148,20 @@ Validate the XML Schema XSD with the
 .. code-block:: bash
 
    validate -d examples/dtd/XMLSchema.dtd examples/xsd/XMLSchema.xsd
+
+Print file names
+----------------
+.. program:: validate
+.. option:: -f, -l, --validated-files
+
+The ``-f, -l, --validated-files`` command-line option only prints the names
+of validated XML files.
+
+Find XML files that validate:
+
+.. code-block:: bash
+
+   validate -x schema.xsd *.xml -l
 
 
 .. rubric:: Footnotes

@@ -38,14 +38,14 @@ Options
    Pretty Print XML source in human readable form.
 
    positional arguments:
-   xml_source            XML source (file, <stdin>, http://...)
+     xml_source            XML source (file, <stdin>, http://...)
 
    optional arguments:
-   -h, --help            show this help message and exit
-   -V, --version         show program's version number and exit
-   -n, --no-syntax       no syntax highlighting
-   -o, --omit-declaration
-                         omit the XML declaration
+     -h, --help            show this help message and exit
+     -V, --version         show program's version number and exit
+     -n, --no-syntax       no syntax highlighting
+     -o, --omit-declaration
+                           omit the XML declaration
 
 
 .. index::

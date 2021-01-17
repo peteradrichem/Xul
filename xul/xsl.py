@@ -14,6 +14,7 @@ XSLT with lxml
 
 
 from logging import getLogger
+import sys
 
 # pylint: disable=no-member
 # lxml ElementTree <https://lxml.de/>
@@ -117,8 +118,8 @@ def xml_transformer(xml_source, transformer, parser=None):
     if xslt_result:
         return xslt_result
 
-    if hasattr(xml_source, "name"):
-        name = xml_source.name
+    if xml_source in ('-', sys.stdin):
+        name = sys.stdin.name
     else:
         name = xml_source
     logger.error("XSL transformation on '%s' failed", name)

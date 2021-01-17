@@ -387,10 +387,7 @@ def xpath_on_xml(xml_source, parser, xpath_fn, args):
     args -- Command-line arguments
     """
     # ElementTree (lxml.etree._ElementTree).
-    el_tree = build_etree(
-        xml_source,
-        parser=parser,
-        lenient=False)
+    el_tree = build_etree(xml_source, parser=parser, lenient=False)
     if el_tree is None:
         return False
 
@@ -403,7 +400,7 @@ def xpath_on_xml(xml_source, parser, xpath_fn, args):
 
     # Printable name for sys.stdin.
     if xml_source in ('-', sys.stdin):
-        source_name = "<stdin>"
+        source_name = sys.stdin.name
     else:
         source_name = xml_source
 
