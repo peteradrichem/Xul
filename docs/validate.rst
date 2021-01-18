@@ -68,7 +68,7 @@ Options
    $ validate --help
 
    usage: validate [-h] [-V] (-x XSD_SOURCE | -d DTD_SOURCE | -r RELAXNG_SOURCE)
-                   [-f]
+                   [-f | -F]
                    [xml_source [xml_source ...]]
 
    Validate XML source with XSD, DTD or RELAX NG.
@@ -87,6 +87,9 @@ Options
                            RELAX NG source
      -f, -l, --validated-files
                            only the names of validated XML files are written to
+                           standard output
+     -F, -L, --invalidated-files
+                           only the names of invalidated XML files are written to
                            standard output
 
 
@@ -162,6 +165,18 @@ Find XML files that validate:
 .. code-block:: bash
 
    validate -x schema.xsd *.xml -l
+
+.. program:: validate
+.. option:: -F, -L, --invalidated-files
+
+The ``-F, -L, --invalidated-files`` command-line option only prints the names
+of XML files that don't validate.
+
+Remove XML files that fail to validate:
+
+.. code-block:: bash
+
+   validate -x schema.xsd *.xml -L | xargs rm
 
 
 .. rubric:: Footnotes

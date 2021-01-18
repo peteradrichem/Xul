@@ -21,23 +21,28 @@ def parse_cl():
     parser.add_argument(
         "-V", "--version", action="version",
         version="%(prog)s " + __version__)
-    group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument(
+    lang_group = parser.add_mutually_exclusive_group(required=True)
+    lang_group.add_argument(
         "-x", "--xsd",
         action="store", dest="xsd_source",
         help="XML Schema Definition (XSD) source")
-    group.add_argument(
+    lang_group.add_argument(
         "-d", "--dtd",
         action="store", dest="dtd_source",
         help="Document Type Definition (DTD) source")
-    group.add_argument(
+    lang_group.add_argument(
         "-r", "--relaxng",
         action="store", dest="relaxng_source",
         help="RELAX NG source")
-    parser.add_argument(
+    file_group = parser.add_mutually_exclusive_group(required=False)
+    file_group.add_argument(
         "-f", "-l", "--validated-files",
         action="store_true", default=False, dest="validated_files",
         help="only the names of validated XML files are written to standard output")
+    file_group.add_argument(
+        "-F", "-L", "--invalidated-files",
+        action="store_true", default=False, dest="invalidated_files",
+        help="only the names of invalidated XML files are written to standard output")
     parser.add_argument(
         "xml_sources", nargs='*',
         metavar='xml_source', help="XML source (file, <stdin>, http://...)")
@@ -45,8 +50,9 @@ def parse_cl():
 
 def apply_validator(xml_source, validator, args):
     """Apply XML validator on an XML source."""
-    if args.validated_files:
-        if validate_xml(xml_source, validator, silent=True):
+    if args.validated_files or args.invalidated_files:
+        valid = validate_xml(xml_source, validator, silent=True)
+        if (valid and args.validated_files) or (not valid and args.invalidated_files):
             if xml_source in ('-', sys.stdin):
                 # <stdin>.
                 print(sys.stdin.name)
