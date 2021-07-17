@@ -30,7 +30,11 @@ def parse_cl():
     parser.add_argument(
         "xml_sources", nargs='*',
         metavar='xml_source', help="XML source (file, <stdin>, http://...)")
-    parser.add_argument(
+    output_group = parser.add_mutually_exclusive_group(required=False)
+    output_group.add_argument(
+        "-x", "--xsl-output", action="store_true", default=False,
+        dest="xsl_output", help="honor xsl:output")
+    output_group.add_argument(
         "-o", "--omit-declaration", action="store_false", default=True,
         dest="declaration", help="omit the XML declaration")
     return parser.parse_args()
@@ -45,23 +49,53 @@ def print_xslt(xml_source, transformer, parser, args):
     args -- Command-line arguments
     """
     result = xml_transformer(xml_source, transformer, parser)
-    if result:
-        if result.getroot() is None:
-            # Result is not an ElementTree. Print as text.
+    if not result:
+        pass
+    elif result.getroot() is None:
+        # Result is not an ElementTree.
+        print(result)
+
+    # https://lxml.de/xpathxslt.html#xslt-result-objects
+    # https://lxml.de/api/lxml.etree._XSLTResultTree-class.html
+    #   _XSLTResultTree (./src/lxml/xslt.pxi):
+    elif args.xsl_output:
+        try:
+            # https://lxml.de/api/lxml.etree.XSLT-class.html
+            # XSLT.tostring(). Deprecated: use str(result_tree) instead.
+            #
+            # Python 2: str(_XSLTResultTree) == bytes(_XSLTResultTree).
+            #
+            # Python 3: str(_XSLTResultTree) != bytes(_XSLTResultTree).
+            # Standard output: sys.stdout.encoding (UTF-8).
+            # Document labelled UTF-16 but has UTF-8 content:
+            #   str(result, result.docinfo.encoding) ==
+            #       bytes(result).decode(result.docinfo.encoding)
             print(result)
-        else:
-            # lxml.etree.tostring returns bytes (bytestring).
-            etree_result = tostring(
-                result, encoding='UTF-8', xml_declaration=args.declaration)
-            try:
-                if not isinstance(etree_result, str):
-                    # Bytes => unicode string (Python 3).
-                    etree_result = etree_result.decode("utf-8")
-                print(etree_result)
-            except IOError as e:
-                # Python 2: catch 'IOError: [Errno 32] Broken pipe'.
-                if e.errno != errno.EPIPE:
-                    sys.stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
+        # io.TextIOWrapper catches Python 3 BrokenPipeError.
+        except IOError as e:
+            # Python 2: catch 'IOError: [Errno 32] Broken pipe'.
+            if e.errno != errno.EPIPE:
+                sys.stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
+        except LookupError as e:
+            # LookupError: unknown encoding: UCS-4.
+            sys.stderr.write("LookupError (XSLT result): %s\n" % e)
+
+    # https://lxml.de/parsing.html#serialising-to-unicode-strings
+    # For normal byte encodings, the tostring() function automatically adds
+    # a declaration as needed that reflects the encoding of the returned string.
+    else:
+        etree_result = tostring(
+            result, encoding='UTF-8', xml_declaration=args.declaration)
+        # lxml.etree.tostring returns bytes (bytestring).
+        try:
+            if not isinstance(etree_result, str):
+                # Bytes => unicode string (Python 3).
+                etree_result = etree_result.decode("utf-8")
+            print(etree_result)
+        except IOError as e:
+            # Python 2: catch 'IOError: [Errno 32] Broken pipe'.
+            if e.errno != errno.EPIPE:
+                sys.stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
 
 
 def main():
