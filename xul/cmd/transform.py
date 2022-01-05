@@ -5,7 +5,7 @@
 
 from __future__ import print_function
 
-from argparse import ArgumentParser
+from argparse import ArgumentParser, FileType
 import sys
 import errno
 
@@ -28,8 +28,8 @@ def parse_cl():
         version="%(prog)s " + __version__)
     parser.add_argument("xslt_source", help="XSLT source (file, http://...)")
     parser.add_argument(
-        "xml_sources", nargs='*',
-        metavar='xml_source', help="XML source (file, <stdin>, http://...)")
+        "xml_source", nargs='?', default=sys.stdin, type=FileType('r'),
+        help="XML source (file, <stdin>, http://...)")
     output_group = parser.add_mutually_exclusive_group(required=False)
     output_group.add_argument(
         "-x", "--xsl-output", action="store_true", default=False,
@@ -37,11 +37,43 @@ def parse_cl():
     output_group.add_argument(
         "-o", "--omit-declaration", action="store_false", default=True,
         dest="declaration", help="omit the XML declaration")
+    parser.add_argument(
+        "-f", "--file", dest="file", help="save result to file")
     return parser.parse_args()
 
 
-def print_xslt(xml_source, transformer, parser, args):
-    """Print the result of an XSL Transformation.
+def print_result(result):
+    """Print transformation result."""
+    try:
+        print(result)
+    # io.TextIOWrapper catches Python 3 BrokenPipeError.
+    except IOError as e:
+        # Python 2: catch 'IOError: [Errno 32] Broken pipe'.
+        if e.errno != errno.EPIPE:
+            sys.stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
+    except LookupError as e:
+        # LookupError: unknown encoding: UCS-4.
+        sys.stderr.write("LookupError (XSLT result): %s\n" % e)
+
+
+def save_to_file(result, target_file):
+    """Save transformation result to file."""
+    if sys.version_info[0] == 2:
+        # File exists?
+        file_mode = "wb"
+    else:
+        file_mode = "bx"
+    try:
+        with open(target_file, file_mode) as file_object:
+            file_object.write(result)
+    except EnvironmentError as e:
+        sys.stderr.write("Saving result to %s failed: %s\n" % (
+            target_file, e.strerror))
+        sys.exit(80)
+
+
+def output_xslt(xml_source, transformer, parser, args):
+    """Print or save the result of an XSL Transformation.
 
     xml_source -- XML file, file-like object or URL
     transformer -- XSL Transformer (lxml.etree.XSLT)
@@ -59,43 +91,36 @@ def print_xslt(xml_source, transformer, parser, args):
     # https://lxml.de/api/lxml.etree._XSLTResultTree-class.html
     #   _XSLTResultTree (./src/lxml/xslt.pxi):
     elif args.xsl_output:
-        try:
-            # https://lxml.de/api/lxml.etree.XSLT-class.html
-            # XSLT.tostring(). Deprecated: use str(result_tree) instead.
-            #
-            # Python 2: str(_XSLTResultTree) == bytes(_XSLTResultTree).
-            #
-            # Python 3: str(_XSLTResultTree) != bytes(_XSLTResultTree).
+        # https://lxml.de/api/lxml.etree.XSLT-class.html
+        # XSLT.tostring(). Deprecated: use str(result_tree) instead.
+        #
+        # Python 2: str(_XSLTResultTree) == bytes(_XSLTResultTree).
+        #
+        # Python 3: str(_XSLTResultTree) != bytes(_XSLTResultTree).
+        if args.file:
+            save_to_file(result, args.file)
+        else:
             # Standard output: sys.stdout.encoding (UTF-8).
             # Document labelled UTF-16 but has UTF-8 content:
             #   str(result, result.docinfo.encoding) ==
             #       bytes(result).decode(result.docinfo.encoding)
-            print(result)
-        # io.TextIOWrapper catches Python 3 BrokenPipeError.
-        except IOError as e:
-            # Python 2: catch 'IOError: [Errno 32] Broken pipe'.
-            if e.errno != errno.EPIPE:
-                sys.stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
-        except LookupError as e:
-            # LookupError: unknown encoding: UCS-4.
-            sys.stderr.write("LookupError (XSLT result): %s\n" % e)
+            print_result(result)
 
     # https://lxml.de/parsing.html#serialising-to-unicode-strings
     # For normal byte encodings, the tostring() function automatically adds
     # a declaration as needed that reflects the encoding of the returned string.
     else:
         etree_result = tostring(
-            result, encoding='UTF-8', xml_declaration=args.declaration)
-        # lxml.etree.tostring returns bytes (bytestring).
-        try:
+            result, encoding=result.docinfo.encoding,
+            xml_declaration=args.declaration)
+        if args.file:
+            save_to_file(etree_result, args.file)
+        else:
+            # lxml.etree.tostring returns bytes (bytestring).
             if not isinstance(etree_result, str):
                 # Bytes => unicode string (Python 3).
-                etree_result = etree_result.decode("utf-8")
-            print(etree_result)
-        except IOError as e:
-            # Python 2: catch 'IOError: [Errno 32] Broken pipe'.
-            if e.errno != errno.EPIPE:
-                sys.stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
+                etree_result = etree_result.decode(result.docinfo.encoding)
+            print_result(etree_result)
 
 
 def main():
@@ -116,17 +141,8 @@ def main():
     else:
         sys.stderr.write('No XSLT source specified\n')
         sys.exit(50)
+
     # Initialise XML parser.
     parser = XMLParser()
-
-    # Transform XML sources with XSL Transformer.
-    for xml_s in args.xml_sources:
-        print_xslt(xml_s, transformer, parser, args)
-
-    if not args.xml_sources:
-        # Read from a pipe when no XML source is specified.
-        if not sys.stdin.isatty():
-            print_xslt(sys.stdin, transformer, parser, args)
-        else:
-            sys.stderr.write("Error: no XML source specified\n")
-            sys.exit(70)
+    # Transform XML source with XSL Transformer.
+    output_xslt(args.xml_source, transformer, parser, args)

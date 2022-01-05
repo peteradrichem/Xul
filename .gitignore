@@ -1,5 +1,5 @@
 *.pyc
-Xul.egg-info/
-build/
-dist/
-docs/_build/
+/Xul.egg-info/
+/build/
+/dist/
+/docs/_build/

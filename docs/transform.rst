@@ -21,7 +21,7 @@ Transform an XML file and :doc:`pretty print <ppx>` the result:
 
 .. code-block:: bash
 
-   transform stylesheet.xsl file.xml | ppx
+   transform --xsl-output stylesheet.xsl file.xml | ppx
 
 Options
 -------
@@ -31,7 +31,7 @@ Options
 
    $ transform --help
 
-   usage: transform [-h] [-V] [-x | -o] xslt_source [xml_source [xml_source ...]]
+   usage: transform [-h] [-V] [-x | -o] [-f FILE] xslt_source xml_source
 
    Transform XML source with XSLT.
 
@@ -45,6 +45,7 @@ Options
      -x, --xsl-output      honor xsl:output
      -o, --omit-declaration
                            omit the XML declaration
+     -f FILE, --file FILE  save result to file
 
 .. index::
    single: transform script; XML declaration
@@ -62,7 +63,13 @@ You can honor the ``xsl:output`` element [#]_ with the ``--xsl-output`` option.
 
    transform --xsl-output stylesheet.xsl file.xml
 
-Example stylesheet that pretty prints an XML document:
+Save transformation result to file
+----------------------------------
+
+.. program:: transform
+.. option:: -f FILE, --file FILE
+
+Example stylesheet that converts an XML document to UTF-16 encoding:
 
 .. code-block:: xml
 
@@ -71,7 +78,7 @@ Example stylesheet that pretty prints an XML document:
      version="1.0" id="utf16"
      xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-     <xsl:output method="xml" version="1.0" indent="yes" />
+     <xsl:output method="xml" version="1.0" encoding="UTF-16" indent="yes" />
 
      <xsl:template match="/">
       <xsl:copy-of select="." />
@@ -79,11 +86,17 @@ Example stylesheet that pretty prints an XML document:
 
    </xsl:stylesheet>
 
+Save the transformation result to a little-endian UTF-16 Unicode text file.
+
+.. code-block:: bash
+
+   transform --xsl-output to_utf16.xsl utf8.xml --file utf16.xml
+
+When saving to file use the ``--xsl-output`` option to preserve the character encoding of the transformation.
+
 XML declaration
 ---------------
 XML documents should begin with an XML declaration which specifies the version of XML being used [#]_.
-
-By default ``transform`` will print an (UTF-8) XML declaration.
 
 .. program:: transform
 .. option:: -o, --omit-declaration
