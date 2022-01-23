@@ -34,12 +34,13 @@ Xul scripts
    validate
    transform
 
-XML
----
+Other
+-----
 .. toctree::
    :maxdepth: 2
 
    xml_source
+   changelog
 
 
 Installing
@@ -50,16 +51,20 @@ The Xul command-line scripts can be installed with pip:
 
    pip install Xul
 
-Install Pygments_ for XML syntax highlighting (optional).
+Install Xul with Pygments_ for XML syntax highlighting.
 
 .. code-block:: bash
 
-   pip install Pygments
+   pip install Xul[syntax]
 
 Dependencies
 ------------
 Xul uses the excellent lxml_ XML toolkit, a Pythonic binding for the C libraries
 libxml2_ and libxslt_.
+
+Changelog
+---------
+Xul :doc:`Changelog <changelog>`.
 
 Source
 ------
