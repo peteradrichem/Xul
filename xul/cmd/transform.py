@@ -100,7 +100,7 @@ def output_xslt(xml_source, transformer, parser, args):
         if args.file:
             save_to_file(result, args.file)
         else:
-            # Standard output: sys.stdout.encoding (UTF-8).
+            # Standard output: sys.stdout.encoding.
             # Document labelled UTF-16 but has UTF-8 content:
             #   str(result, result.docinfo.encoding) ==
             #       bytes(result).decode(result.docinfo.encoding)

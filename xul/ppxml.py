@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Pretty Print XML with UTF-8 encoding."""
+"""Pretty Print XML."""
 
 
 from __future__ import print_function
@@ -26,10 +26,14 @@ def _private_pp(etree, syntax=True, xml_declaration=None):
     https://lxml.de/api/lxml.etree-module.html#tostring
     """
     try:
+        if sys.stdout.encoding is None:
+            encoding = 'utf-8'
+        else:
+            encoding = sys.stdout.encoding
         # lxml.etree.tostring returns bytes (bytestring).
         # https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.tostring
         etree_string = tostring(
-            etree, encoding='UTF-8',
+            etree, encoding=encoding,
             xml_declaration=xml_declaration, pretty_print=True)
 
         if syntax:
@@ -37,8 +41,8 @@ def _private_pp(etree, syntax=True, xml_declaration=None):
             # https://pygments.org/docs/formatters/
             etree_string = highlight(etree_string, lexer, Terminal256Formatter())
         else:
-            # Bytes(string) => unicode string.
-            etree_string = etree_string.decode("utf-8")
+            # Bytes(string) => Unicode object.
+            etree_string = etree_string.decode(encoding)
 
         # Fix output encoding errors (Python 2) when piping multiple etree_string.
         # E.g.: % ppx Unicode_1.xml Unicode_2.xml | less
@@ -46,10 +50,9 @@ def _private_pp(etree, syntax=True, xml_declaration=None):
         if not sys.stdout.isatty() and sys.stdout.encoding is None:
             # Standard out is buffered.
             sys.stdout.flush()
-            # Standard out with UTF-8 encoding.
             sys.stdout = io.open(
                 # Do not close sys.stdout file descriptor.
-                sys.stdout.fileno(), 'w', encoding='utf8', closefd=False)
+                sys.stdout.fileno(), 'w', encoding=encoding, closefd=False)
             print(etree_string)
             # Restore sys.stdout (reuse file descriptor).
             sys.stdout = sys.__stdout__

@@ -5,6 +5,7 @@ This document records all notable changes to `Xul <https://xul.readthedocs.io/>`
 
 `Unreleased <https://bitbucket.org/peteradrichem/xul/branches/compare/master%0D2.3.0>`_
 ---------------------------------------------------------------------------------------
+* Beter handling of encodings other than UTF-8.
 * Added ``--file FILE`` option to :doc:`transform <transform>`: save result to file.
 * :doc:`transform <transform>`: now only transforms a single file.
 * Added ``--xsl-output`` option to :doc:`transform <transform>`: honor ``xsl:output``.
@@ -38,7 +39,7 @@ This document records all notable changes to `Xul <https://xul.readthedocs.io/>`
 
 `2.0.3 <https://bitbucket.org/peteradrichem/xul/branches/compare/2.0.3%0D2.0.2>`_ (2020-06-10)
 ----------------------------------------------------------------------------------------------
-* Fix output encoding when piping output to a pager like less (Python2).
+* Fix output encoding when piping output to a pager like less (Python 2).
 
 `2.0.2 <https://bitbucket.org/peteradrichem/xul/branches/compare/2.0.2%0D2.0.1>`_ (2020-05-31)
 ----------------------------------------------------------------------------------------------
