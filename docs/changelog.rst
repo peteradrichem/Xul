@@ -3,9 +3,9 @@ Changelog
 
 This document records all notable changes to `Xul <https://xul.readthedocs.io/>`_.
 
-`Unreleased <https://bitbucket.org/peteradrichem/xul/branches/compare/master%0D2.3.0>`_
----------------------------------------------------------------------------------------
-* Beter handling of encodings other than UTF-8.
+`2.4.0 <https://bitbucket.org/peteradrichem/xul/branches/compare/2.4.0%0D2.3.0>`_ (2022-02-14)
+----------------------------------------------------------------------------------------------
+* Beter handling of encodings other than UTF-8 (e.g. ISO-8859, UTF-16, UCS-2, UCS-4).
 * Added ``--file FILE`` option to :doc:`transform <transform>`: save result to file.
 * :doc:`transform <transform>`: now only transforms a single file.
 * Added ``--xsl-output`` option to :doc:`transform <transform>`: honor ``xsl:output``.
