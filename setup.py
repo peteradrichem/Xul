@@ -54,7 +54,7 @@ setup(
     url='https://xul.readthedocs.io/',
     project_urls={
         'Documentation': 'https://xul.readthedocs.io/',
-        'Changelog': 'https://xul.readthedocs.io/changelog.html',
+        'Changelog': 'https://xul.readthedocs.io/en/latest/changelog.html',
         'Source': 'https://bitbucket.org/peteradrichem/xul'
     },
     entry_points={
