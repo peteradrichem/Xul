@@ -51,11 +51,11 @@ setup(
     long_description_content_type='text/x-rst',
     platforms='CPython',
     python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*",
-    url='https://xul.readthedocs.io/',
+    url='https://xul.readthedocs.io',
     project_urls={
-        'Documentation': 'https://xul.readthedocs.io/',
+        'Documentation': 'https://xul.readthedocs.io',
         'Changelog': 'https://xul.readthedocs.io/en/latest/changelog.html',
-        'Source': 'https://bitbucket.org/peteradrichem/xul'
+        'Source': 'https://github.com/peteradrichem/Xul'
     },
     entry_points={
         'console_scripts': [
