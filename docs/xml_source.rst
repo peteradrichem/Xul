@@ -8,7 +8,7 @@ XML source
 ==========
 
 The Xul scripts require an XML source to operate on.
-An XML source can be a local file, an URL or a pipe.
+An XML source can be a local file, an URL (HTTP or FTP) or a pipe.
 
 
 .. index::
@@ -26,6 +26,7 @@ With ``xp`` you can select nodes in a local XML file with an XPath expression:
 .. index::
    single: redirected output
    single: pipe
+   single: curl
 
 Pipe
 ----
@@ -38,6 +39,8 @@ Redirect output (pipe) to a Xul script:
 
 .. index::
    single: URL
+   single: HTTP
+   single: FTP
 
 URL
 ---
@@ -48,20 +51,20 @@ For example, to pretty print an RSS feed:
 
    ppx http://feeds.launchpad.net/pytz/announcements.atom
 
+.. index::
+   single: HTTPS
+
 Loading XML through HTTPS is not supported and will result in an
 *failed to load external entity* error.
+Try redirecting the HTTPS URL output to an Xul script. See the ``curl`` example above.
 
-
+Examples
+========
 .. index::
    single: XHTML
 
-XHTML
-=====
-
 XHTML [#]_ is part of the family of XML markup languages. It's obsolete.
 
-Examples
---------
 Pretty print an XHTML document:
 
 .. code-block:: bash
@@ -79,9 +82,9 @@ Print the link destinations in an XHTML document:
 
 .. code-block:: bash
 
-   xp -d html "//html:link/@href" http://www.w3.org/1999/xhtml/
+   curl -s https://www.w3.org/1999/xhtml/ | xp -d html "//html:link/@href"
 
-More XSDs and DTDs examples_ can be found in the Xul Bitbucket repository.
+More XSDs and DTDs examples_ can be found in the Xul GitHub repository.
 
 .. seealso:: Xul scripts: :doc:`ppx <ppx>`, :doc:`xp <xp>`,
    :doc:`validate <validate>`, :doc:`transform <transform>`
@@ -93,5 +96,5 @@ More XSDs and DTDs examples_ can be found in the Xul Bitbucket repository.
    <https://www.w3.org/TR/xhtml1>`_
 
 
-.. _examples: https://bitbucket.org/peteradrichem/xul/src/master/examples/
-.. _libxml2: http://www.xmlsoft.org/
+.. _examples: https://github.com/peteradrichem/Xul/tree/main/examples
+.. _libxml2: https://gitlab.gnome.org/GNOME/libxml2/-/wikis/

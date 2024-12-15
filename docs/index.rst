@@ -26,6 +26,8 @@ Current version: |release|
 
 Xul scripts
 -----------
+The supported XML sources are documented in  :ref:`xml_source`.
+
 .. toctree::
    :maxdepth: 2
 
@@ -68,7 +70,7 @@ Xul :doc:`Changelog <changelog>`.
 
 Source
 ------
-The source can be found on Bitbucket_.
+The source can be found on GitHub_.
 
 
 Indices and search
@@ -78,10 +80,10 @@ Indices and search
 
 
 .. _lxml: https://lxml.de/
-.. _libxml2: http://www.xmlsoft.org/
-.. _libxslt: http://xmlsoft.org/libxslt/
+.. _libxml2: https://gitlab.gnome.org/GNOME/libxml2/-/wikis/
+.. _libxslt: https://gitlab.gnome.org/GNOME/libxslt/-/wikis/
 .. _Pygments: https://pygments.org/
-.. _Bitbucket: https://bitbucket.org/peteradrichem/xul
+.. _GitHub: https://github.com/peteradrichem/Xul
 
 
 .. rubric:: Footnotes

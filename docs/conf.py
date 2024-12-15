@@ -12,8 +12,8 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys
 import os
+import sys
 from datetime import datetime
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -39,7 +39,7 @@ templates_path = ['_templates']
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 # source_suffix = ['.rst', '.md']
-source_suffix = '.rst'
+source_suffix = {".rst": "restructuredtext"}
 
 # The encoding of source files.
 #source_encoding = 'utf-8-sig'
@@ -48,9 +48,9 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Xul'
-copyright = u'%d, Peter Adrichem' % datetime.now().year
-author = u'Peter Adrichem'
+project = "Xul"
+copyright = f"2013-{datetime.now().year}, Peter Adrichem"
+author = "Peter Adrichem"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -66,7 +66,7 @@ release = xul.__version__
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "en"
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
@@ -240,8 +240,8 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  (master_doc, 'Xul.tex', u'Xul Documentation',
-   u'Peter Adrichem', 'manual'),
+  (master_doc, "Xul.tex", "Xul Documentation",
+   "Peter Adrichem", "manual"),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -270,7 +270,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'xul', u'Xul Documentation',
+    (master_doc, "xul", "Xul Documentation",
      [author], 1)
 ]
 
@@ -284,9 +284,9 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  (master_doc, 'Xul', u'Xul Documentation',
-   author, 'Xul', 'One line description of project.',
-   'Miscellaneous'),
+  (master_doc, "Xul", "Xul Documentation",
+   author, "Xul", "One line description of project.",
+   "Miscellaneous"),
 ]
 
 # Documents to append as an appendix to all manuals.
