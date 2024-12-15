@@ -3,6 +3,12 @@ Changelog
 
 This document records all notable changes to `Xul <https://xul.readthedocs.io/>`_.
 
+`2.4.2 <https://github.com/peteradrichem/Xul/compare/2.4.1...2.4.2>`_ (2024-12-15)
+----------------------------------------------------------------------------------
+* Moved to `GitHub <https://github.com/peteradrichem/Xul>`_.
+* Read the Docs configuration.
+* Migrated to pyproject.toml.
+
 `2.4.1 <https://bitbucket.org/peteradrichem/xul/branches/compare/2.4.1%0D2.4.0>`_ (2022-02-14)
 ----------------------------------------------------------------------------------------------
 * Fixed Changelog URL.

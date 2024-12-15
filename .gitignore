@@ -1,5 +1,6 @@
 *.pyc
-/Xul.egg-info/
+**/__pycache__/
+/Xul\.egg\-info/
 /build/
 /dist/
 /docs/_build/

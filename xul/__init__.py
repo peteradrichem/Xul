@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """XML Utilities.
 
 XML scripts in Python.
@@ -10,7 +8,6 @@ XML scripts in Python.
  * transform: transform XML source with XSLT.
 """
 
-
 # Xul version.
-__version_info__ = ('2', '4', '2')
-__version__ = '.'.join(__version_info__)
+__version_info__ = ("2", "4", "2")
+__version__ = ".".join(__version_info__)

@@ -1,6 +1,63 @@
+[project]
+name = "Xul"
+description = "XML (XPath, XSD, XSLT) Utilities"
+readme = "README.rst"
+authors = [
+    { name = "Peter Adrichem", email = "Peter.Adrichem@gmail.com" }
+]
+requires-python = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
+dependencies = [
+    "lxml>=2.0"
+]
+keywords = [ "xml", "xpath", "xslt", "xsd", "dtd", "xml schema", "relax ng", "rng" ]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 2",
+    "Programming Language :: Python :: 2.7",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Text Processing :: Markup :: XML",
+    "Topic :: Utilities"
+]
+license = { text = "MIT" }
+dynamic = [ "version" ]
+
+[project.optional-dependencies]
+syntax = [
+    "Pygments>=2.0"
+]
+docs = [
+    "Sphinx~=8.1.3"
+]
+
+[project.urls]
+Homepage = "https://xul.readthedocs.io/"
+Documentation = "https://xul.readthedocs.io/en/stable/"
+Changelog = "https://xul.readthedocs.io/en/latest/changelog.html"
+Source = "https://github.com/peteradrichem/Xul"
+
 [build-system]
 requires = [
     "setuptools>=42",
     "wheel"
 ]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+version = { attr = "xul.__version__" }
+
+[project.entry-points.console_scripts]
+transform = "xul.cmd.transform:main"
+ppx = "xul.cmd.ppx:main"
+xp = "xul.cmd.xp:main"
+validate = "xul.cmd.validate:main"
