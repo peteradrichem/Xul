@@ -23,14 +23,13 @@ List the latest Python PEPs:
 
 .. code-block:: bash
 
-   curl -s https://www.python.org/dev/peps/peps.rss/ | \
-   xp "//item/title/text()"
+   curl -s https://peps.python.org/peps.rss | xp "//item/title/text()"
 
 List the latest Python PEPs with their link:
 
 .. code-block:: bash
 
-   curl -s https://www.python.org/dev/peps/peps.rss/ | \
+   curl -s https://peps.python.org/peps.rss | \
    xp "//item/*[name()='title' or name()='link']/text()"
 
 Options
@@ -171,12 +170,12 @@ Python Insider posts updated in December:
 The ``--quiet`` command-line option will not print the list with XML namespaces.
 
 Use the power of regular expression (``re`` prefix).
-Find Python PEPs with "remove" or "specification" in the title (case-insensitive):
+Find Python PEPs with four digits in the title (case-insensitive):
 
 .. code-block:: bash
 
-   curl -s https://www.python.org/dev/peps/peps.rss/ | \
-   xp -e '//item/title[re:match(text(), "(remove|specification)", "i")]' -q
+   curl -s https://peps.python.org/peps.rss | \
+   xp -e '//item/title[re:match(text(), "pep [0-9]{4}:", "i")]' -q
 
 
 .. index::
@@ -197,7 +196,7 @@ Pretty print the latest Python PEP:
 
 .. code-block:: bash
 
-   curl -s https://www.python.org/dev/peps/peps.rss/ | xp "//item[1]" -p
+   curl -s https://peps.python.org/peps.rss | xp "//item[1]" -p
 
 
 .. index::
@@ -247,6 +246,6 @@ The results should be the same but error reporting can be different.
 
 .. rubric:: Footnotes
 
-.. [#] `XML Path Language (XPath) 1.0 <https://www.w3.org/TR/xpath>`_
+.. [#] `XML Path Language (XPath) 1.0 <https://www.w3.org/TR/xpath-10/>`_
 .. [#] `Namespaces in XML 1.0 <https://www.w3.org/TR/xml-names/>`_
-.. [#] `Extensions to XSLT (EXSLT) <http://exslt.org/>`_
+.. [#] `Extensions to XSLT (EXSLT) <https://exslt.github.io/>`_

@@ -112,7 +112,7 @@ Redirect output (pipe) to ``ppx``:
 
 .. code-block:: bash
 
-   curl -s https://www.python.org/dev/peps/peps.rss/ | ppx
+   curl -s https://peps.python.org/peps.rss | ppx
 
 :ref:`Rewrite XML <white_space>`:
 

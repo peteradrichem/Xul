@@ -9,7 +9,7 @@ transform -- Transform XML
 ``transform`` is a simple command-line script to apply XSLT [#]_ stylesheets to
 an :ref:`xml_source`.
 If you need a command-line XSLT processor with more options have a look at
-`xsltproc <http://xmlsoft.org/XSLT/xsltproc.html>`_
+`xsltproc <https://gnome.pages.gitlab.gnome.org/libxslt/xsltproc.html>`_
 
 Transform an XML file:
 

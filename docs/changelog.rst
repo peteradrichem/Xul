@@ -3,6 +3,10 @@ Changelog
 
 This document records all notable changes to `Xul <https://xul.readthedocs.io/>`_.
 
+`Unreleased <https://github.com/peteradrichem/Xul/compare/2.4.2...main>`_ (2024-12-20)
+--------------------------------------------------------------------------------------
+* Documentation updates
+
 `2.4.2 <https://github.com/peteradrichem/Xul/compare/2.4.1...2.4.2>`_ (2024-12-15)
 ----------------------------------------------------------------------------------
 * Moved to `GitHub <https://github.com/peteradrichem/Xul>`_.

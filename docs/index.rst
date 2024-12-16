@@ -26,7 +26,7 @@ Current version: |release|
 
 Xul scripts
 -----------
-The supported XML sources are documented in  :ref:`xml_source`.
+Supported XML sources are documented in  :ref:`xml_source`.
 
 .. toctree::
    :maxdepth: 2
@@ -47,7 +47,7 @@ Other
 
 Installing
 ----------
-The Xul command-line scripts can be installed with pip:
+Xul command-line scripts can be installed with pip:
 
 .. code-block:: bash
 

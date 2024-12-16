@@ -22,13 +22,13 @@ Xul scripts
 ===========
 
 - ``ppx``: pretty print XML
-- ``xp``: select nodes in XML source
+- ``xp``: select XML nodes with XPath
 - ``transform``: transform XML with XSLT
-- ``validate``: validate an XML source
+- ``validate``: validate XML with XSD, DTD or RELAX NG
 
 Installation
 ------------
-The Xul command line scripts can be installed with **pip**:
+Xul command line scripts can be installed with **pip**:
 
 .. code:: text
 
@@ -38,7 +38,7 @@ Install Pygments_ for XML syntax highlighting (optional).
 
 .. code:: text
 
-        $ pip install Pygments
+        $ pip install Xul[syntax]
 
 Dependencies
 ------------
@@ -70,24 +70,24 @@ For example:
 
 Documentation
 =============
-The Xul documentation can be found on `Read The Docs`_.
+Xul documentation can be found on `Read The Docs`_.
 
 W3C standards
 -------------
-- `Extensible Markup Language (XML) 1.0 <http://www.w3.org/TR/xml/>`_
-- `XML Schema 1.0 <http://www.w3.org/XML/Schema>`_
-- `XSL Transformations (XSLT) 1.0 <http://www.w3.org/TR/xslt/>`_
-- `XML Path Language (XPath) 1.0 <http://www.w3.org/TR/xpath/>`_
-- `Namespaces in XML 1.0 <http://www.w3.org/TR/xml-names/>`_
+- `Extensible Markup Language (XML) 1.0 <https://www.w3.org/TR/xml/>`_
+- `XML Schema 1.1 <https://www.w3.org/XML/Schema>`_
+- `XSL Transformations (XSLT) 1.0 <https://www.w3.org/TR/xslt-10/>`_
+- `XML Path Language (XPath) 1.0 <https://www.w3.org/TR/xpath-10/>`_
+- `Namespaces in XML 1.0 <https://www.w3.org/TR/xml-names/>`_
 
 Related
 -------
-- `Extensions to XSLT (EXSLT) <http://exslt.org/>`_
+- `Extensions to XSLT (EXSLT) <https://exslt.github.io/>`_
 - `RELAX NG <https://relaxng.org/>`_
 
 
 .. _Read The Docs: https://xul.readthedocs.io/
-.. _lxml: http://lxml.de/
-.. _libxml2: http://www.xmlsoft.org/
-.. _libxslt: http://xmlsoft.org/libxslt/
+.. _lxml: https://lxml.de/
+.. _libxml2: https://gitlab.gnome.org/GNOME/libxml2/-/wikis/
+.. _libxslt: https://gitlab.gnome.org/GNOME/libxslt/-/wikis/
 .. _Pygments: https://pygments.org/

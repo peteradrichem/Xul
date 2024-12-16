@@ -7,7 +7,7 @@
 XML source
 ==========
 
-The Xul scripts require an XML source to operate on.
+Xul scripts require an XML source to operate on.
 An XML source can be a local file, an URL (HTTP or FTP) or a pipe.
 
 
@@ -56,7 +56,7 @@ For example, to pretty print an RSS feed:
 
 Loading XML through HTTPS is not supported and will result in an
 *failed to load external entity* error.
-Try redirecting the HTTPS URL output to an Xul script. See the ``curl`` example above.
+Try redirecting the HTTPS URL output to a Xul script. See the ``curl`` example above.
 
 Examples
 ========

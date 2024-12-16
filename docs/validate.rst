@@ -181,6 +181,6 @@ Remove XML files that fail to validate:
 
 .. rubric:: Footnotes
 
-.. [#] `XML Schema 1.0 and 1.1 <https://www.w3.org/XML/Schema>`_
+.. [#] `XML Schema 1.1 <https://www.w3.org/XML/Schema>`_
 .. [#] `XML Document Type Definition <https://www.w3.org/TR/xml/#dtd>`_
 .. [#] `RELAX NG Specification <https://www.oasis-open.org/committees/relax-ng/spec.html>`_
