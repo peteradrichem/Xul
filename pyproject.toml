@@ -46,6 +46,12 @@ Documentation = "https://xul.readthedocs.io/en/stable/"
 Changelog = "https://xul.readthedocs.io/en/latest/changelog.html"
 Source = "https://github.com/peteradrichem/Xul"
 
+[project.entry-points.console_scripts]
+transform = "xul.cmd.transform:main"
+ppx = "xul.cmd.ppx:main"
+xp = "xul.cmd.xp:main"
+validate = "xul.cmd.validate:main"
+
 [build-system]
 requires = [
     "setuptools>=42",
@@ -56,8 +62,5 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools.dynamic]
 version = { attr = "xul.__version__" }
 
-[project.entry-points.console_scripts]
-transform = "xul.cmd.transform:main"
-ppx = "xul.cmd.ppx:main"
-xp = "xul.cmd.xp:main"
-validate = "xul.cmd.validate:main"
+[tool.setuptools.packages.find]
+where = ["src"]

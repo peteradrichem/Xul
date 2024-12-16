@@ -22,9 +22,9 @@ Xul scripts
 ===========
 
 - ``ppx``: pretty print XML
-- ``xp``: select nodes in XML source
+- ``xp``: select XML nodes with XPath
 - ``transform``: transform XML with XSLT
-- ``validate``: validate an XML source
+- ``validate``: validate XML with XSD, DTD or RELAX NG
 
 Installation
 ------------
@@ -38,7 +38,7 @@ Install Pygments_ for XML syntax highlighting (optional).
 
 .. code:: text
 
-        $ pip install Pygments
+        $ pip install Xul[syntax]
 
 Dependencies
 ------------
@@ -87,7 +87,7 @@ Related
 
 
 .. _Read The Docs: https://xul.readthedocs.io/
-.. _lxml: http://lxml.de/
-.. _libxml2: http://www.xmlsoft.org/
-.. _libxslt: http://xmlsoft.org/libxslt/
+.. _lxml: https://lxml.de/
+.. _libxml2: https://gitlab.gnome.org/GNOME/libxml2/-/wikis/
+.. _libxslt: https://gitlab.gnome.org/GNOME/libxslt/-/wikis/
 .. _Pygments: https://pygments.org/
