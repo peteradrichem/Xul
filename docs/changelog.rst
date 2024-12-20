@@ -3,9 +3,10 @@ Changelog
 
 This document records all notable changes to `Xul <https://xul.readthedocs.io/>`_.
 
-`Unreleased <https://github.com/peteradrichem/Xul/compare/2.4.2...main>`_ (2024-12-20)
+`Unreleased <https://github.com/peteradrichem/Xul/compare/2.4.2...main>`_ (2024-12-XX)
 --------------------------------------------------------------------------------------
 * Documentation updates
+* Tested on Python 3.11, 3.12, 3.13
 
 `2.4.2 <https://github.com/peteradrichem/Xul/compare/2.4.1...2.4.2>`_ (2024-12-15)
 ----------------------------------------------------------------------------------
