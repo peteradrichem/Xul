@@ -9,10 +9,6 @@ Current version: |release|
    :target: https://pypi.org/project/Xul/
    :alt: Python versions
 
-.. image:: https://img.shields.io/pypi/wheel/xul.svg
-   :target: https://pypi.org/project/Xul/
-   :alt: Wheel
-
 .. image:: https://img.shields.io/pypi/l/xul.svg
    :target: https://pypi.org/project/Xul/
    :alt: License
@@ -20,6 +16,14 @@ Current version: |release|
 .. image:: https://img.shields.io/pypi/v/xul
    :target: https://pypi.org/project/Xul/
    :alt: PyPI version
+
+.. image:: https://img.shields.io/pypi/wheel/xul.svg
+   :target: https://pypi.org/project/Xul/
+   :alt: Wheel
+
+.. image:: https://readthedocs.org/projects/xul/badge/
+   :target: https://xul.readthedocs.io/en/stable/
+   :alt: Documentation
 
 .. index::
    single: scripts

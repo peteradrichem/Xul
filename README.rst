@@ -6,13 +6,21 @@ Xul -- XML Utilities
    :target: https://pypi.org/project/Xul/
    :alt: Python versions
 
-.. image:: https://readthedocs.org/projects/xul/badge/?version=latest
-   :target: https://xul.readthedocs.io/en/latest/?badge=latest
-   :alt: Documentation Status
+.. image:: https://img.shields.io/pypi/l/xul.svg
+   :target: https://pypi.org/project/Xul/
+   :alt: License
 
 .. image:: https://img.shields.io/pypi/v/xul
    :target: https://pypi.org/project/Xul/
    :alt: PyPI version
+
+.. image:: https://img.shields.io/pypi/wheel/xul.svg
+   :target: https://pypi.org/project/Xul/
+   :alt: Wheel
+
+.. image:: https://readthedocs.org/projects/xul/badge/
+   :target: https://xul.readthedocs.io/en/stable/
+   :alt: Documentation
 
 Xul is a set of XML scripts written in Python.
 Documentation can be found on `Read The Docs`_.

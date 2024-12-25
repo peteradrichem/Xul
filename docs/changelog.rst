@@ -3,10 +3,11 @@ Changelog
 
 This document records all notable changes to `Xul <https://xul.readthedocs.io/>`_.
 
-`Unreleased <https://github.com/peteradrichem/Xul/compare/2.4.2...main>`_ (2024-12-XX)
---------------------------------------------------------------------------------------
-* Documentation updates
-* Tested on Python 3.11, 3.12, 3.13
+`2.5.0 <https://github.com/peteradrichem/Xul/compare/2.4.2...2.5.0>`_ (2024-12-25)
+----------------------------------------------------------------------------------
+* Documentation updates.
+* Tested on Python 3.11, 3.12, 3.13.
+* :doc:`transform <transform>`: honor ``--file`` with a non-XML result.
 
 `2.4.2 <https://github.com/peteradrichem/Xul/compare/2.4.1...2.4.2>`_ (2024-12-15)
 ----------------------------------------------------------------------------------
