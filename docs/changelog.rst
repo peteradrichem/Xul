@@ -3,6 +3,10 @@ Changelog
 
 This document records all notable changes to `Xul <https://xul.readthedocs.io/>`_.
 
+`2.5.1 <https://github.com/peteradrichem/Xul/compare/2.5.0...2.5.1>`_ (2024-12-26)
+----------------------------------------------------------------------------------
+* Catch UnicodeDecodeError (Python 3).
+
 `2.5.0 <https://github.com/peteradrichem/Xul/compare/2.4.2...2.5.0>`_ (2024-12-25)
 ----------------------------------------------------------------------------------
 * Documentation updates.

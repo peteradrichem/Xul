@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """ElementTree XML API.
 
 The ElementTree XML API:
@@ -12,14 +10,12 @@ The lxml.etree Tutorial
     https://lxml.de/tutorial.html
 """
 
-
-from logging import getLogger
 import sys
+from logging import getLogger
 
 # pylint: disable=no-member
 # lxml ElementTree <https://lxml.de/>
 from lxml import etree
-
 
 # Module logging initialisation.
 logger = getLogger(__name__)
@@ -59,16 +55,19 @@ def build_etree(xml_source, parser=None, lenient=True, silent=False):
     except etree.XMLSyntaxError:
         if silent:
             return None
+
         if lenient:
             xmllogger = logger.warning
         else:
             xmllogger = logger.error
-        if xml_source in ('-', sys.stdin):
+
+        if xml_source in ("-", sys.stdin):
             name = sys.stdin.name
             xml_type = "object"
         else:
             name = xml_source
             xml_type = "file"
+
         xmllogger("%s is not a valid XML %s:", name, xml_type)
 
         # Parsers have an error_log property that lists the errors and warnings
@@ -84,8 +83,8 @@ def build_etree(xml_source, parser=None, lenient=True, silent=False):
         return None
     # Catch EnvironmentError (IOError) exceptions, for example:
     #   "failed to load external entity" (lxml.etree._raiseParseError)
-    except EnvironmentError as e:
+    except (EnvironmentError, UnicodeDecodeError) as e:
         logger.error(e)
         return None
-    else:
-        return el_tree
+
+    return el_tree
