@@ -1,12 +1,4 @@
-# -*- coding: utf-8 -*-
-
 """XPath.
-
-XML Path Language
-    https://www.w3.org/TR/xpath/
-
-Namespaces in XML 1.0
-    https://www.w3.org/TR/xml-names/
 
 XPath with lxml
     https://lxml.de/xpathxslt.html#xpath
@@ -23,17 +15,13 @@ The XPath result depends on the XPath expression used.
 - float:                    "count(location)"
 """
 
-
 from logging import getLogger
 
 # pylint: disable=no-name-in-module
-# lxml ElementTree <https://lxml.de/>
-from lxml.etree import XPath, XPathSyntaxError, XPathEvalError
-from lxml.etree import LIBXSLT_COMPILED_VERSION
+from lxml.etree import LIBXSLT_COMPILED_VERSION, XPath, XPathEvalError, XPathSyntaxError
 
 # Import my own modules.
 from .etree import build_etree
-
 
 # Module logging initialisation.
 logger = getLogger(__name__)
@@ -47,7 +35,7 @@ def build_xpath(xpath_exp, ns_map=None):
 
     Uses the lxml XPath class:
         https://lxml.de/xpathxslt.html#the-xpath-class
-        https://lxml.de/api/lxml.etree.XPath-class.html
+        https://lxml.de/apidoc/lxml.etree.html#lxml.etree.XPath
     """
     if not ns_map:
         ns_map = {}
@@ -119,7 +107,7 @@ def xml_xpath(xml_source, xpath_exp):
     return call_xpath(xml_source, xpath_obj)
 
 
-def update_ns_map(ns_map, elm, none_prefix='default'):
+def update_ns_map(ns_map, elm, none_prefix="default"):
     """Update XPath namespace prefix mapping with element namespaces.
 
     ns_map -- an XML namespace prefix mapping
@@ -142,15 +130,15 @@ def update_ns_map(ns_map, elm, none_prefix='default'):
     for key in elm.nsmap:
         if not key:
             # XPath prefix for element default namespace.
-            if not none_prefix in ns_map:
+            if none_prefix not in ns_map:
                 ns_map[none_prefix] = elm.nsmap[key]
-        elif not key in ns_map:
+        elif key not in ns_map:
             # Protect the XPath default namespace prefix.
             if not key == none_prefix:
                 ns_map[key] = elm.nsmap[key]
 
 
-def namespaces(el_tree, exslt=False, none_prefix='default'):
+def namespaces(el_tree, exslt=False, none_prefix="default"):
     """Collect all XML namespaces (xmlns) in ElementTree.
 
     el_tree -- ElementTree (lxml.etree._ElementTree)
@@ -165,25 +153,26 @@ def namespaces(el_tree, exslt=False, none_prefix='default'):
     if exslt:
         if LIBXSLT_COMPILED_VERSION < (1, 1, 25):
             logger.warning(
-                "EXSLT requires libxslt 1.1.25 or higher. " +
-                "lxml is compiled against libxslt %s",
-                '.'.join(str(n) for n in LIBXSLT_COMPILED_VERSION))
+                "EXSLT requires libxslt 1.1.25 or higher. " + "lxml is compiled against libxslt %s",
+                ".".join(str(n) for n in LIBXSLT_COMPILED_VERSION),
+            )
         # EXSLT <http://exslt.org/>
         ns_map = {
-            'date': "http://exslt.org/dates-and-times",
-            'dyn': "http://exslt.org/dynamic",
-            'exsl': "http://exslt.org/common",
-            'func': "http://exslt.org/functions",
-            'math': "http://exslt.org/math",
-            'random': "http://exslt.org/random",
-            're': "http://exslt.org/regular-expressions",
-            'set': "http://exslt.org/sets",
-            'str': "http://exslt.org/strings"}
+            "date": "http://exslt.org/dates-and-times",
+            "dyn": "http://exslt.org/dynamic",
+            "exsl": "http://exslt.org/common",
+            "func": "http://exslt.org/functions",
+            "math": "http://exslt.org/math",
+            "random": "http://exslt.org/random",
+            "re": "http://exslt.org/regular-expressions",
+            "set": "http://exslt.org/sets",
+            "str": "http://exslt.org/strings",
+        }
     else:
         ns_map = {}
 
     # Collect XML namespaces (xmlns) in all elements.
-    for elm in el_tree.iter('*'):
+    for elm in el_tree.iter("*"):
         if elm.nsmap:
             update_ns_map(ns_map, elm, none_prefix=none_prefix)
 

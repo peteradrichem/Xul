@@ -1,28 +1,17 @@
-# -*- coding: utf-8 -*-
-
 """XSL Transformations.
-
-The Extensible Stylesheet Language Family (XSL):
-    https://www.w3.org/Style/XSL/
-
-XSL Transformations (XSLT):
-    https://www.w3.org/TR/xslt
 
 XSLT with lxml
     https://lxml.de/xpathxslt.html#xslt
 """
 
-
-from logging import getLogger
 import sys
+from logging import getLogger
 
 # pylint: disable=no-member
-# lxml ElementTree <https://lxml.de/>
 from lxml import etree
 
 # Import my own modules.
 from .etree import build_etree
-
 
 # Module logging initialisation.
 logger = getLogger(__name__)
@@ -39,7 +28,7 @@ def build_xsl_transform(xslt_source):
     Return None on error.
 
     The lxml.etree.XSLT class:
-        https://lxml.de/api/lxml.etree.XSLT-class.html
+        https://lxml.de/apidoc/lxml.etree.html#lxml.etree.XSLT
     I/O access control in XSLT:
         https://lxml.de/resolvers.html#i-o-access-control-in-xslt
     """
@@ -114,11 +103,10 @@ def xml_transformer(xml_source, transformer, parser=None):
     if not el_tree:
         return None
 
-    xslt_result = etree_transformer(el_tree, transformer)
-    if xslt_result:
+    if xslt_result := etree_transformer(el_tree, transformer):
         return xslt_result
 
-    if xml_source in ('-', sys.stdin):
+    if xml_source in ("-", sys.stdin):
         name = sys.stdin.name
     else:
         name = xml_source

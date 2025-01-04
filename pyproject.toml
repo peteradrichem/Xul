@@ -5,9 +5,9 @@ readme = "README.rst"
 authors = [
     { name = "Peter Adrichem", email = "Peter.Adrichem@gmail.com" }
 ]
-requires-python = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
+requires-python = ">=3.9"
 dependencies = [
-    "lxml>=2.0"
+    "lxml>=4.0"
 ]
 keywords = [ "xml", "xpath", "xslt", "xsd", "dtd", "xml schema", "relax ng", "rng" ]
 classifiers = [
@@ -16,13 +16,6 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 2",
-    "Programming Language :: Python :: 2.7",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.5",
-    "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -36,11 +29,19 @@ license = { text = "MIT" }
 dynamic = [ "version" ]
 
 [project.optional-dependencies]
-syntax = [
-    "Pygments>=2.0"
-]
 docs = [
     "Sphinx~=8.1.3"
+]
+test = [
+    "black~=24.10",
+    "isort~=5.13.2",
+    "lxml-stubs~=0.5.1",
+    "mypy~=1.14.1",
+    "ruff~=0.8.5",
+    "types-Pygments~=2.18",
+]
+syntax = [
+    "Pygments>=2.7"
 ]
 
 [project.urls]
@@ -67,3 +68,32 @@ version = { attr = "xul.__version__" }
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.black]
+color = true
+line-length = 100
+verbose = true
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.ruff]
+cache-dir = "/tmp/.ruff_cache"
+include = ["pyproject.toml", "*.py"]
+line-length = 100
+
+[tool.ruff.lint]
+# On top of the default `select` (`E`, `F`), pycodestyle errors and Pyflakes.
+extend-select = [
+  "D",   # pydocstyle
+  "UP",  # pyupgrade
+  "W",   # pycodestyle warnings
+]
+ignore = [
+  "D105",       # Missing docstring in magic method
+  "D107",       # Missing docstring in `__init__`
+  "D203",       # 1 blank line required before class docstring
+  "D213",       # Multi-line docstring summary should start at the second line
+]
+pydocstyle.convention = "pep257"

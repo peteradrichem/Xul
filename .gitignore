@@ -1,6 +1,5 @@
-*.pyc
 **/__pycache__/
-/src/Xul\.egg\-info/
+/src/Xul\.egg-info/
 /aanteks/
 /build/
 /dist/
