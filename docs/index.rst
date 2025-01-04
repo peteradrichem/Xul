@@ -25,6 +25,10 @@ Current version: |release|
    :target: https://xul.readthedocs.io/en/stable/
    :alt: Documentation
 
+.. image:: https://github.com/peteradrichem/Xul/actions/workflows/code-checks.yml/badge.svg
+   :target: https://github.com/peteradrichem/Xul/
+   :alt: Code checks
+
 .. index::
    single: scripts
 

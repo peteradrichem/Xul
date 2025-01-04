@@ -22,6 +22,10 @@ Xul -- XML Utilities
    :target: https://xul.readthedocs.io/en/stable/
    :alt: Documentation
 
+.. image:: https://github.com/peteradrichem/Xul/actions/workflows/code-checks.yml/badge.svg
+   :target: https://github.com/peteradrichem/Xul/
+   :alt: Code checks
+
 Xul is a set of XML scripts written in Python.
 Documentation can be found on `Read The Docs`_.
 
