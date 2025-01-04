@@ -80,7 +80,7 @@ line_length = 100
 
 [tool.mypy]
 cache_dir = "/tmp/.mypy_cache"
-exclude = ["^docs/"]
+exclude = ["^docs/", "^build/"]
 pretty = true
 
 [tool.ruff]
