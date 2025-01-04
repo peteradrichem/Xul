@@ -1,31 +1,17 @@
-# -*- coding: utf-8 -*-
-
 """XML Validation.
-
-XML Schema Definition (XSD):
-    https://www.w3.org/XML/Schema
-
-Document Type Definition (DTD):
-    https://en.wikipedia.org/wiki/Document_type_definition
-
-RELAX NG:
-    https://relaxng.org/
 
 Validation with lxml:
     https://lxml.de/validation.html
 """
 
-
-from logging import getLogger
 import sys
+from logging import getLogger
 
 # pylint: disable=no-member
-# lxml ElementTree <https://lxml.de/>
 from lxml import etree
 
 # Import my own modules.
 from .etree import build_etree
-
 
 # Module logging initialisation.
 logger = getLogger(__name__)
@@ -41,7 +27,7 @@ def build_xml_schema(xsd_file):
 
     The lxml.etree.XMLSchema class:
         https://lxml.de/validation.html#xmlschema
-        https://lxml.de/api/lxml.etree.XMLSchema-class.html
+        https://lxml.de/apidoc/lxml.etree.html#lxml.etree.XMLSchema
     """
     xsd_etree = build_etree(xsd_file, lenient=False)
     if not xsd_etree:
@@ -75,8 +61,8 @@ def build_dtd(dtd_file):
     Return None on error.
 
     The lxml.etree.DTD class:
-        https://lxml.de/validation.html#id1
-        https://lxml.de/api/lxml.etree.DTD-class.html
+        https://lxml.de/validation.html#dtd-1
+        https://lxml.de/apidoc/lxml.etree.html#lxml.etree.DTD
     """
     try:
         validator = etree.DTD(file=dtd_file)
@@ -112,7 +98,7 @@ def xml_validator(xml_source, validator, lenient=True):
     if not el_tree:
         return (False, "Not an XML source")
 
-    if xml_source in ('-', sys.stdin):
+    if xml_source in ("-", sys.stdin):
         # <stdin>.
         source_name = sys.stdin.name
     else:
@@ -148,7 +134,7 @@ def build_relaxng(relaxng_file):
 
     The lxml.etree.RelaxNG class:
         https://lxml.de/validation.html#relaxng
-        https://lxml.de/api/lxml.etree.RelaxNG-class.html
+        https://lxml.de/apidoc/lxml.etree.html#lxml.etree.RelaxNG
     """
     relaxng_etree = build_etree(relaxng_file, lenient=False)
     if not relaxng_etree:
@@ -181,13 +167,13 @@ def validate_xml(xml_source, validator, lenient=True, silent=False):
     lenient -- log XML (validation) errors as warnings
     silent -- no logging
 
-    Return the validation result (True/False).
+    Return True when `xml_source' validates.
     """
     el_tree = build_etree(xml_source, lenient=lenient, silent=silent)
     if not el_tree:
         return False
 
-    if xml_source in ('-', sys.stdin):
+    if xml_source in ("-", sys.stdin):
         # <stdin>.
         source_name = sys.stdin.name
     else:
@@ -197,6 +183,7 @@ def validate_xml(xml_source, validator, lenient=True, silent=False):
         if not silent:
             logger.info("XML source '%s' validates", source_name)
         return True
+
     if silent:
         return False
 

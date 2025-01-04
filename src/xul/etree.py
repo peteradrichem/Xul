@@ -1,10 +1,10 @@
 """ElementTree XML API.
 
-The ElementTree XML API:
-    https://docs.python.org/library/xml.etree.elementtree.html
+The ElementTree XML API
+    https://docs.python.org/3/library/xml.etree.elementtree.html
 
-ElementTree Overview:
-    https://effbot.org/zone/element-index.htm
+lxml ElementTree
+    https://lxml.de
 
 The lxml.etree Tutorial
     https://lxml.de/tutorial.html
@@ -14,7 +14,6 @@ import sys
 from logging import getLogger
 
 # pylint: disable=no-member
-# lxml ElementTree <https://lxml.de/>
 from lxml import etree
 
 # Module logging initialisation.
@@ -32,21 +31,17 @@ def build_etree(xml_source, parser=None, lenient=True, silent=False):
     Return ElementTree (lxml.etree._ElementTree) on success.
     Return None on error.
 
-    Extensible Markup Language (XML):
-        https://www.w3.org/XML/
-
     The lxml.etree.parse function:
         https://lxml.de/parsing.html
-        https://effbot.org/zone/element.htm#reading-and-writing-xml-files
     Parser options (lxml.etree.XMLParser class):
         https://lxml.de/parsing.html#parser-options
-        https://effbot.org/elementtree/elementtree-xmlparser.htm
     """
     # XML parser preparation.
     if not parser:
         parser = etree.XMLParser(ns_clean=True)
 
     try:
+        etree.clear_error_log()
         el_tree = etree.parse(xml_source, parser)
     # Catch XML syntax errors.
     #   https://lxml.de/api.html#error-handling-on-exceptions
@@ -81,9 +76,14 @@ def build_etree(xml_source, parser=None, lenient=True, silent=False):
             else:
                 xmllogger("line %i, column %i: %s", e.line, e.column, e.message)
         return None
-    # Catch EnvironmentError (IOError) exceptions, for example:
+    # Catch UnicodeDecodeError exceptions, for example:
+    #   "'utf-8' codec can't decode byte 0xff in position 0: invalid start byte"
+    except UnicodeDecodeError as e:
+        logger.error(e)
+        return None
+    # Catch OSError exceptions, for example:
     #   "failed to load external entity" (lxml.etree._raiseParseError)
-    except (EnvironmentError, UnicodeDecodeError) as e:
+    except OSError as e:
         logger.error(e)
         return None
 

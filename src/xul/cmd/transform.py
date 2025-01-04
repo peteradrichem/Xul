@@ -1,13 +1,9 @@
 """Transform XML source with XSLT."""
 
-from __future__ import print_function
-
-import errno
 import sys
 from argparse import ArgumentParser, FileType
 
 # pylint: disable=no-name-in-module
-# lxml ElementTree <https://lxml.de/>
 from lxml.etree import XMLParser, tostring
 
 # Import my own modules.
@@ -50,14 +46,11 @@ def parse_cl():
 
 
 def print_result(result):
-    """Print transformation result (catch lookup errors)."""
+    """Print transformation result (catch broken pipe and lookup errors)."""
     try:
         print(result)
-    # io.TextIOWrapper catches Python 3 BrokenPipeError.
-    except IOError as e:
-        # Python 2: catch 'IOError: [Errno 32] Broken pipe'.
-        if e.errno != errno.EPIPE:
-            sys.stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
+    except BrokenPipeError:
+        pass
     except LookupError as e:
         # LookupError: unknown encoding: UCS-4.
         sys.stderr.write("Cannot print XSLT result (LookupError): %s\n" % e)
@@ -65,15 +58,11 @@ def print_result(result):
 
 def save_to_file(result, target_file):
     """Save transformation result to file."""
-    if sys.version_info[0] == 2:
-        # File exists?
-        file_mode = "wb"
-    else:
-        file_mode = "bx"
+    file_mode = "bx"
     try:
         with open(target_file, file_mode) as file_object:
             file_object.write(result)
-    except EnvironmentError as e:
+    except OSError as e:
         sys.stderr.write("Saving result to %s failed: %s\n" % (target_file, e.strerror))
         sys.exit(80)
 
@@ -95,7 +84,7 @@ def output_xslt(xml_source, transformer, parser, args):
         if args.file:
             save_to_file(result, args.file)
         else:
-            print(result)
+            print_result(result)
         return None
 
     # https://lxml.de/xpathxslt.html#xslt-result-objects

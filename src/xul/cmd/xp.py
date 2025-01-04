@@ -1,73 +1,99 @@
-# -*- coding: utf-8 -*-
-
 """Select nodes in an XML source with an XPath expression."""
 
-
-from __future__ import print_function
-
-from argparse import ArgumentParser
 import sys
-import errno
+from argparse import ArgumentParser
 
 # pylint: disable=no-name-in-module
-# lxml ElementTree <https://lxml.de/>
-from lxml.etree import XPathEvalError, XMLParser
-from lxml.etree import iselement, PI, Comment
+from lxml.etree import PI, Comment, XMLParser, XPathEvalError, iselement
 
 # Import my own modules.
 from .. import __version__
-from ..log import setup_logger_console
 from ..etree import build_etree
-from ..xpath import build_xpath, etree_xpath, namespaces
+from ..log import setup_logger_console
 from ..ppxml import prettyprint
+from ..xpath import build_xpath, etree_xpath, namespaces
 
 
 def parse_cl():
     """Parse the command line for options, XPath expression and XML sources."""
-    parser = ArgumentParser(
-        description=__doc__)
-    parser.add_argument(
-        "-V", "--version", action="version",
-        version="%(prog)s " + __version__)
+    parser = ArgumentParser(description=__doc__)
+    parser.add_argument("-V", "--version", action="version", version="%(prog)s " + __version__)
     parser.add_argument("xpath_expr", help="XPath expression")
     parser.add_argument(
-        "xml_sources", nargs='*',
-        metavar='xml_source', help="XML source (file, <stdin>, http://...)")
+        "xml_sources",
+        nargs="*",
+        metavar="xml_source",
+        help="XML source (file, <stdin>, http://...)",
+    )
     parser.add_argument(
-        "-e", "--exslt",
-        action="store_true", default=False, dest="exslt",
-        help="add EXSLT XML namespace prefixes")
+        "-e",
+        "--exslt",
+        action="store_true",
+        default=False,
+        dest="exslt",
+        help="add EXSLT XML namespace prefixes",
+    )
     parser.add_argument(
-        "-d", "--default-prefix",
-        action="store", default="d", dest="default_ns_prefix",
-        help="set the prefix for the default namespace in XPath [default: '%(default)s']")
+        "-d",
+        "--default-prefix",
+        action="store",
+        default="d",
+        dest="default_ns_prefix",
+        help="set the prefix for the default namespace in XPath [default: '%(default)s']",
+    )
     parser.add_argument(
-        "-r", "--result-xpath",
-        action="store_true", default=False, dest="result_xpath",
-        help="print the XPath expression of the result element (or its parent)")
+        "-r",
+        "--result-xpath",
+        action="store_true",
+        default=False,
+        dest="result_xpath",
+        help="print the XPath expression of the result element (or its parent)",
+    )
     parser.add_argument(
-        "-p", "--pretty-element",
-        action="store_true", default=False, dest="pretty_element",
-        help="pretty print the result element")
+        "-p",
+        "--pretty-element",
+        action="store_true",
+        default=False,
+        dest="pretty_element",
+        help="pretty print the result element",
+    )
     parser.add_argument(
-        "-m", "--method",
-        action="store_true", default=False, dest="lxml_method",
-        help="use ElementTree.xpath method instead of XPath class")
+        "-m",
+        "--method",
+        action="store_true",
+        default=False,
+        dest="lxml_method",
+        help="use ElementTree.xpath method instead of XPath class",
+    )
     file_group = parser.add_mutually_exclusive_group(required=False)
     file_group.add_argument(
-        "-f", "-l", "--files-with-hits",
-        action="store_true", default=False, dest="files_with_hits",
-        help="only the names of files with a non-false and non-NaN result " +
-        "are written to standard output")
+        "-f",
+        "-l",
+        "--files-with-hits",
+        action="store_true",
+        default=False,
+        dest="files_with_hits",
+        help="only the names of files with a non-false and non-NaN result "
+        + "are written to standard output",
+    )
     file_group.add_argument(
-        "-F", "-L", "--files-without-hits",
-        action="store_true", default=False, dest="files_without_hits",
-        help="only the names of files with a false or NaN result, " +
-        "or without any results are written to standard output")
+        "-F",
+        "-L",
+        "--files-without-hits",
+        action="store_true",
+        default=False,
+        dest="files_without_hits",
+        help="only the names of files with a false or NaN result, "
+        + "or without any results are written to standard output",
+    )
     parser.add_argument(
-        "-q", "--quiet",
-        action="store_false", default=True, dest="verbose",
-        help="don't print the XML namespace list")
+        "-q",
+        "--quiet",
+        action="store_false",
+        default=True,
+        dest="verbose",
+        help="don't print the XML namespace list",
+    )
 
     return parser.parse_args()
 
@@ -85,8 +111,7 @@ def eltree_xpath(el_tree, xpath_exp, ns_map):
     try:
         xp_result = el_tree.xpath(xpath_exp, namespaces=ns_map)
     except XPathEvalError as e:
-        sys.stderr.write(
-            "XPath '%s' evaluation error: %s\n" % (xpath_exp, e))
+        sys.stderr.write("XPath '%s' evaluation error: %s\n" % (xpath_exp, e))
         return None
     # EXSLT function call errors (re:test positional arguments).
     except TypeError as e:
@@ -251,12 +276,10 @@ def print_smart_string(smart_string, el_tree, args):
     if smart_repr:
         if args.result_xpath:
             # Print the absolute XPath expression of the parent element.
-            print("line %d, parent XPath %s" % (
-                par_el.sourceline, el_tree.getpath(par_el)))
+            print("line %d, parent XPath %s" % (par_el.sourceline, el_tree.getpath(par_el)))
             print("   %s %s %s" % (smart_repr, parent_rel, par_el_str))
         else:
-            print("line %4d:   %s %s %s" % (
-                par_el.sourceline, smart_repr, parent_rel, par_el_str))
+            print("line %4d:   %s %s %s" % (par_el.sourceline, smart_repr, parent_rel, par_el_str))
     else:
         print("**smart string DEBUG fallback**")
         print_elem(par_el, pretty=args.pretty_element)
@@ -273,10 +296,7 @@ def print_result_list(result_list, el_tree, args):
     for node in result_list:
         if iselement(node):
             if args.result_xpath:
-                print_elem(
-                    node,
-                    pretty=args.pretty_element,
-                    xpath_exp=el_tree.getpath(node))
+                print_elem(node, pretty=args.pretty_element, xpath_exp=el_tree.getpath(node))
             else:
                 print_elem(node, pretty=args.pretty_element)
 
@@ -354,10 +374,8 @@ def print_xp_result(xp_result, el_tree, ns_map, args):
         try:
             # List can be empty.
             print_result_list(xp_result, el_tree, args)
-        except IOError as e:
-            # Python 2: catch 'IOError: [Errno 32] Broken pipe'.
-            if e.errno != errno.EPIPE:
-                sys.stderr.write("IOError: %s [%s]\n" % (e.strerror, e.errno))
+        except BrokenPipeError:
+            sys.stderr.close()
 
     # FLOAT - float.
     elif hasattr(xp_result, "is_integer"):
@@ -399,7 +417,7 @@ def xpath_on_xml(xml_source, parser, xpath_fn, args):
         return False
 
     # Printable name for sys.stdin.
-    if xml_source in ('-', sys.stdin):
+    if xml_source in ("-", sys.stdin):
         source_name = sys.stdin.name
     else:
         source_name = xml_source
@@ -426,7 +444,7 @@ def xpath_on_xml(xml_source, parser, xpath_fn, args):
 
 
 def main():
-    """xp command line script entry point."""
+    """Entry point for command line script xp."""
     # Logging to the console.
     setup_logger_console()
 
