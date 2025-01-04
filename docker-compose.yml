@@ -1,0 +1,8 @@
+services:
+
+  test:
+    container_name: xul-test
+    build:
+      target: test
+
+    command: ./test.sh
