@@ -100,25 +100,22 @@ def parse_cl():
 
 def xpath_class(el_tree, xpath_exp, ns_map):
     """XPath with lxml.etree.XPath class."""
-    xpath_obj = build_xpath(xpath_exp, ns_map)
-    if not xpath_obj:
-        return None
-    return etree_xpath(el_tree, xpath_obj)
+    if xpath_obj := build_xpath(xpath_exp, ns_map):
+        return etree_xpath(el_tree, xpath_obj)
+    return None
 
 
 def eltree_xpath(el_tree, xpath_exp, ns_map):
     """XPath with lxml.etree.ElementTree.xpath method."""
     try:
-        xp_result = el_tree.xpath(xpath_exp, namespaces=ns_map)
+        return el_tree.xpath(xpath_exp, namespaces=ns_map)
     except XPathEvalError as e:
-        sys.stderr.write("XPath '%s' evaluation error: %s\n" % (xpath_exp, e))
+        sys.stderr.write(f"{e}: {xpath_exp}\n")
         return None
     # EXSLT function call errors (re:test positional arguments).
     except TypeError as e:
-        sys.stderr.write("XPath '%s' type error: %s\n" % (xpath_exp, e))
+        sys.stderr.write(f"Type error {e}: {xpath_exp}\n")
         return None
-    else:
-        return xp_result
 
 
 def xp_prepare(args):
@@ -145,12 +142,12 @@ def xp_prepare(args):
 def print_xmlns(ns_map, root):
     """Print XML namespaces."""
     if None in root.nsmap:
-        print("Default XML namespace URI: %s" % root.nsmap[None])
+        print(f"Default XML namespace URI: {root.nsmap[None]}")
     if ns_map:
         # Print all XML namespaces -- prefix: namespace URI.
         print("XML namespaces:")
         for key in ns_map:
-            print("%8s: %s" % (key, ns_map[key]))
+            print(f"{key:>9}: {ns_map[key]}")
 
 
 def element_repr(node, content=True):
@@ -170,13 +167,13 @@ def element_repr(node, content=True):
         elif node.tag is Comment:
             elem_str = node.tag(" comment ")
         else:
-            elem_str = "<%s>" % node.tag
+            elem_str = f"<{node.tag}>"
         return elem_str
 
     # node.tag is lxml.etree.PI (is lxml.etree.ProcessingInstruction).
     if node.tag is PI:
         # Processing instruction node - node.target -- node.tag(): <? ?>
-        return "%s value: '%s'" % (node.tag(node.target), node.text)
+        return f"{node.tag(node.target)} value: '{node.text}'"
 
     # node.tag is lxml.etree.Comment.
     if node.tag is Comment:
@@ -186,15 +183,13 @@ def element_repr(node, content=True):
     # node.tag: string.
     if node.text:
         if node.text.isspace():
-            elem_str = "<%s> contains whitespace" % node.tag
-        elif not isinstance(node.text, str):
+            return f"<{node.tag}> contains whitespace"
+        if not isinstance(node.text, str):
             # Python 2 Unicode naar Bytestring.
-            elem_str = "<%s> contains '%s'" % (node.tag, node.text.encode("utf-8"))
-        else:
-            # node.text is a Python string.
-            elem_str = "<%s> contains '%s'" % (node.tag, node.text)
-        return elem_str
-    return "<%s> is empty" % node.tag
+            return f"<{node.tag}> contains {node.text.encode('utf-8')}"
+        # node.text is a Python string.
+        return f"<{node.tag}> contains whitespace"
+    return f"<{node.tag}> is empty"
 
 
 def print_elem(node, pretty=False, xpath_exp=None):
@@ -208,16 +203,15 @@ def print_elem(node, pretty=False, xpath_exp=None):
     """
     if pretty:
         if xpath_exp:
-            print("XPath %s (line %d):" % (xpath_exp, node.sourceline))
+            print(f"XPath {xpath_exp} (line {node.sourceline}):")
         else:
-            print("line %d:" % node.sourceline)
+            print(f"line {node.sourceline}:")
         prettyprint(node, xml_declaration=False)
     else:
         if xpath_exp:
-            print("XPath %s (line %d):" % (xpath_exp, node.sourceline))
-            print("   %s" % element_repr(node))
+            print(f"XPath {xpath_exp} (line {node.sourceline}):\n   {element_repr(node)}")
         else:
-            print("line %4d:   %s" % (node.sourceline, element_repr(node)))
+            print(f"line {node.sourceline:<4d}: {element_repr(node)}")
 
 
 def smart_with_parent(smart_string):
@@ -233,7 +227,7 @@ def smart_with_parent(smart_string):
     # ATTRIBUTE node -- @ -- .is_attribute
     if smart_string.is_attribute:
         parent_rel = "of"
-        smart_repr = "@%s = '%s'" % (smart_string.attrname, smart_string)
+        smart_repr = f"@{smart_string.attrname} = '{smart_string}'"
     # TEXT node -- text() -- .is_text
     elif smart_string.is_text:
         parent_rel = "in"
@@ -241,14 +235,14 @@ def smart_with_parent(smart_string):
         if smart_string.isspace():
             smart_repr = "whitespace"
         else:
-            smart_repr = "'%s'" % smart_string
+            smart_repr = f"'{smart_string}'"
     # TAIL node -- text() -- .is_tail
     elif smart_string.is_tail:
         parent_rel = "after"
         if smart_string.isspace():
             smart_repr = "tail whitespace"
         else:
-            smart_repr = "tail '%s'" % smart_string
+            smart_repr = f"tail '{smart_string}'"
 
     return (smart_repr, parent_rel)
 
@@ -266,7 +260,7 @@ def print_smart_string(smart_string, el_tree, args):
     par_el = smart_string.getparent()
     # string() and concat() results do not have an origin.
     if par_el is None:
-        print("XPath string: '%s'" % smart_string)
+        print(f"XPath string: '{smart_string}'")
         return
     # Parent is an lxml.etree._Element instance.
     par_el_str = element_repr(par_el, content=False)
@@ -276,12 +270,14 @@ def print_smart_string(smart_string, el_tree, args):
     if smart_repr:
         if args.result_xpath:
             # Print the absolute XPath expression of the parent element.
-            print("line %d, parent XPath %s" % (par_el.sourceline, el_tree.getpath(par_el)))
-            print("   %s %s %s" % (smart_repr, parent_rel, par_el_str))
+            print(
+                f"line {par_el.sourceline}, parent XPath {el_tree.getpath(par_el)}\n"
+                f"   {smart_repr} {parent_rel} {par_el_str}"
+            )
         else:
-            print("line %4d:   %s %s %s" % (par_el.sourceline, smart_repr, parent_rel, par_el_str))
+            print(f"line {par_el.sourceline:<4d}: {smart_repr} {parent_rel} {par_el_str}")
     else:
-        print("**smart string DEBUG fallback**")
+        sys.stderr.write("Unable to print smart string\n")
         print_elem(par_el, pretty=args.pretty_element)
 
 
@@ -306,8 +302,9 @@ def print_result_list(result_list, el_tree, args):
 
         # Namespaces -- namespace::
         elif isinstance(node, tuple):
+            prefix, uri = node
             # No line number.
-            print("prefix: %-8s URI: %s" % node)
+            print(f"prefix: {str(prefix):<8} URI: {uri}")
 
         # ?
         else:
@@ -318,8 +315,7 @@ def print_result_list(result_list, el_tree, args):
 
 def print_result_header(source_name, xp_result):
     """Print header with XPath result summary."""
-    print("%s:" % source_name, end=" ")
-    # XPath result summary.
+    # Result count.
     if isinstance(xp_result, list):
         list_result = xp_result
         xp_r_len = len(list_result)
@@ -327,6 +323,9 @@ def print_result_header(source_name, xp_result):
         # String, number, boolean.
         list_result = [xp_result]
         xp_r_len = 1
+
+    # XPath result summary.
+    print(f"{source_name}:", end=" ")
     if xp_r_len == 0:
         print("no results.")
     elif xp_r_len == 1:
@@ -336,9 +335,9 @@ def print_result_header(source_name, xp_result):
             print("1 result.")
     else:
         if isinstance(list_result[0], tuple):
-            print("%d XML namespace results." % xp_r_len)
+            print(f"{xp_r_len} XML namespace results.")
         else:
-            print("%d results." % xp_r_len)
+            print(f"{xp_r_len} results.")
 
 
 def print_xp_result(xp_result, el_tree, ns_map, args):
@@ -381,19 +380,21 @@ def print_xp_result(xp_result, el_tree, ns_map, args):
     elif hasattr(xp_result, "is_integer"):
         # pylint: disable=comparison-with-itself ## NaN elif.
         if xp_result.is_integer():
-            print("XPath number: %i" % xp_result)
+            # count() => integer
+            print(f"XPath number: {int(xp_result)}")
         # float('nan') != float('nan') -- IEEE 754.
         elif xp_result != xp_result:
             print("XPath result: NaN (not a number)")
         # float.
         else:
-            print("XPath number: %s" % xp_result)
+            print(f"XPath number: {xp_result}")
 
     # BOOLEAN - bool - boolean.
     elif isinstance(xp_result, bool):
-        print("XPath test: %s" % xp_result)
+        print(f"XPath test: {xp_result}")
+
     else:
-        print("Unknown XPath result: %s" % xp_result)
+        print(f"Unknown XPath result: {xp_result}")
 
 
 def xpath_on_xml(xml_source, parser, xpath_fn, args):

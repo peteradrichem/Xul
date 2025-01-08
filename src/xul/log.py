@@ -34,7 +34,9 @@ def lvl_name2num(name):
 
 
 def setup_logger(log_level="debug", propagate=True):
-    """Configureer threshold log level van de root logger.
+    """Configure the rool logger.
+
+    Configureer threshold log level van de root logger.
 
     log_level -- threshold log level
     propagate -- messages doorgeven naar boven [default: ja]
@@ -50,7 +52,7 @@ def setup_logger(log_level="debug", propagate=True):
 
 
 def customize_handler(handler, level, fmt=None, datefmt=None):
-    """Configureer level en formatering van een log message handler.
+    """Configure log level and formatting of the log message handler.
 
     handler -- log message handler (StreamHandler, FileHandler ...)
     level -- log level voor de handler
@@ -70,7 +72,7 @@ def customize_handler(handler, level, fmt=None, datefmt=None):
 
 
 def setup_logger_console(log_level="info"):
-    """Setup de root logger en koppel de console handler.
+    """Set up the root logger and add console handler.
 
     log_level -- console log level [default 'info']
 
