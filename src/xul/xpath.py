@@ -40,15 +40,12 @@ def build_xpath(xpath_exp, ns_map=None):
     if not ns_map:
         ns_map = {}
     try:
-        xpath_obj = XPath(xpath_exp, namespaces=ns_map)
+        return XPath(xpath_exp, namespaces=ns_map)
     # Handle (parsing) errors in XPath expression.
     #   https://lxml.de/xpathxslt.html#error-handling
     except XPathSyntaxError as e:
-        logger.error("Invalid XPath '%s'", xpath_exp)
-        logger.error("XPathSyntaxError: %s", e)
+        logger.error("%s: %s", e, xpath_exp)
         return None
-    else:
-        return xpath_obj
 
 
 def etree_xpath(el_tree, xpath_obj):
@@ -58,20 +55,16 @@ def etree_xpath(el_tree, xpath_obj):
     xpath_obj -- lxml.etree.XPath instance; see build_xpath()
     """
     try:
-        xpath_result = xpath_obj(el_tree)
+        return xpath_obj(el_tree)
     # Handle errors in evaluating an XPath expression.
     #   https://lxml.de/xpathxslt.html#error-handling
     except XPathEvalError as e:
-        logger.error("Invalid XPath '%s'", xpath_obj)
-        logger.error("XPathEvalError: %s", e)
+        logger.error("%s: %s", e, xpath_obj)
         return None
     # Incorrect EXSLT function call (e.g. number of arguments for re:match).
     except TypeError as e:
-        logger.error("Invalid XPath '%s'", xpath_obj)
-        logger.error("TypeError: %s", e)
+        logger.error("Type error %s: %s", e, xpath_obj)
         return None
-    else:
-        return xpath_result
 
 
 def call_xpath(xml_source, xpath_obj):

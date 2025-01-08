@@ -9,7 +9,7 @@ echo() {
 
 
 echo "Lint checks (Ruff)"
-ruff check --diff
+ruff check --output-format=concise
 
 echo "\nCheck import sort (isort)"
 isort --check --diff .

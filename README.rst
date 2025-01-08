@@ -23,7 +23,7 @@ Xul -- XML Utilities
    :alt: Documentation
 
 .. image:: https://github.com/peteradrichem/Xul/actions/workflows/code-checks.yml/badge.svg
-   :target: https://github.com/peteradrichem/Xul/
+   :target: https://github.com/peteradrichem/Xul/actions/workflows/code-checks.yml
    :alt: Code checks
 
 Xul is a set of XML scripts written in Python.

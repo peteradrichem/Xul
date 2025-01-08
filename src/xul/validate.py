@@ -121,7 +121,7 @@ def xml_validator(xml_source, validator, lenient=True):
         val_logger("line %i, column %i: %s", e.line, e.column, e.message)
     # Return the status string: first validation error.
     e = validator.error_log[0]
-    return (False, "line %i, column %i: %s" % (e.line, e.column, e.message))
+    return (False, f"line {e.line}, column {e.column}: {e.message}")
 
 
 def build_relaxng(relaxng_file):

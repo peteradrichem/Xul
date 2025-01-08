@@ -26,7 +26,7 @@ Current version: |release|
    :alt: Documentation
 
 .. image:: https://github.com/peteradrichem/Xul/actions/workflows/code-checks.yml/badge.svg
-   :target: https://github.com/peteradrichem/Xul/
+   :target: https://github.com/peteradrichem/Xul/actions/workflows/code-checks.yml
    :alt: Code checks
 
 .. index::

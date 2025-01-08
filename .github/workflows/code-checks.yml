@@ -2,7 +2,7 @@ name: code checks
 
 on:
   push:
-    branches: [ "py3k" ]
+    branches: [ "main", "py3k" ]
   pull_request:
     branches: [ "main" ]
 
@@ -27,7 +27,7 @@ jobs:
         pip install .[test]
     - name: Lint checks (Ruff)
       run: |
-        ruff check --output-format=github --diff
+        ruff check --output-format=github
     - name: Import sort checks (isort)
       run: |
         isort --check --diff .

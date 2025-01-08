@@ -38,7 +38,7 @@ test = [
     "lxml-stubs~=0.5.1",
     "mypy~=1.14.1",
     "ruff~=0.8.6",
-    "types-Pygments~=2.18",
+    "types-Pygments~=2.19",
 ]
 syntax = [
     "Pygments>=2.7"
@@ -85,6 +85,7 @@ pretty = true
 
 [tool.ruff]
 cache-dir = "/tmp/.ruff_cache"
+exclude =  ["build/"]
 include = ["pyproject.toml", "*.py"]
 line-length = 100
 

@@ -53,7 +53,7 @@ def print_result(result):
         pass
     except LookupError as e:
         # LookupError: unknown encoding: UCS-4.
-        sys.stderr.write("Cannot print XSLT result (LookupError): %s\n" % e)
+        sys.stderr.write(f"Cannot print XSLT result (LookupError): {e}\n")
 
 
 def save_to_file(result, target_file):
@@ -63,7 +63,7 @@ def save_to_file(result, target_file):
         with open(target_file, file_mode) as file_object:
             file_object.write(result)
     except OSError as e:
-        sys.stderr.write("Saving result to %s failed: %s\n" % (target_file, e.strerror))
+        sys.stderr.write(f"Saving result to {target_file} failed: {e.strerror}\n")
         sys.exit(80)
 
 
