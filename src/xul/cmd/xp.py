@@ -1,12 +1,11 @@
 """Select nodes in an XML source with an XPath expression."""
 
+import argparse
 import sys
-from argparse import ArgumentParser
+from typing import Any, Callable, Optional, TextIO, Union
 
-# pylint: disable=no-name-in-module
-from lxml.etree import PI, Comment, XMLParser, XPathEvalError, iselement
+from lxml import etree
 
-# Import my own modules.
 from .. import __version__
 from ..etree import build_etree
 from ..log import setup_logger_console
@@ -14,9 +13,9 @@ from ..ppxml import prettyprint
 from ..xpath import build_xpath, etree_xpath, namespaces
 
 
-def parse_cl():
+def parse_cl() -> argparse.Namespace:
     """Parse the command line for options, XPath expression and XML sources."""
-    parser = ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("-V", "--version", action="version", version="%(prog)s " + __version__)
     parser.add_argument("xpath_expr", help="XPath expression")
     parser.add_argument(
@@ -98,18 +97,28 @@ def parse_cl():
     return parser.parse_args()
 
 
-def xpath_class(el_tree, xpath_exp, ns_map):
-    """XPath with lxml.etree.XPath class."""
+def xpath_class(el_tree: etree._ElementTree, xpath_exp: str, ns_map: dict[str, str]):
+    """XPath with lxml.etree.XPath class.
+
+    :param el_tree: lxml ElementTree
+    :param xpath_exp: XPath expression
+    :param ns_map: XML namespaces (xmlns) 'prefix': 'URI' dict
+    """
     if xpath_obj := build_xpath(xpath_exp, ns_map):
         return etree_xpath(el_tree, xpath_obj)
     return None
 
 
-def eltree_xpath(el_tree, xpath_exp, ns_map):
-    """XPath with lxml.etree.ElementTree.xpath method."""
+def eltree_xpath(el_tree: etree._ElementTree, xpath_exp: str, ns_map: dict[str, str]):
+    """XPath with lxml.etree.ElementTree.xpath method.
+
+    :param el_tree: lxml ElementTree
+    :param xpath_exp: XPath expression
+    :param ns_map: XML namespaces (xmlns) 'prefix': 'URI' dict
+    """
     try:
         return el_tree.xpath(xpath_exp, namespaces=ns_map)
-    except XPathEvalError as e:
+    except etree.XPathEvalError as e:
         sys.stderr.write(f"{e}: {xpath_exp}\n")
         return None
     # EXSLT function call errors (re:test positional arguments).
@@ -118,10 +127,12 @@ def eltree_xpath(el_tree, xpath_exp, ns_map):
         return None
 
 
-def xp_prepare(args):
+def xp_prepare(
+    args: argparse.Namespace,
+) -> tuple[Callable[[etree._ElementTree, str, dict[str, str]], Any], etree.XMLParser]:
     """Return XPath function and XML parser.
 
-    args -- Command-line arguments
+    :param args: command-line arguments
     """
     # ElementTree.xpath method or XPath class (default).
     if args.lxml_method:
@@ -132,15 +143,19 @@ def xp_prepare(args):
     # Initialise XML parser.
     if args.pretty_element:
         # Pretty print preparation (removes white space text nodes!).
-        xml_parser = XMLParser(remove_blank_text=True)
+        xml_parser = etree.XMLParser(remove_blank_text=True)
     else:
-        xml_parser = XMLParser()
+        xml_parser = etree.XMLParser()
 
     return xpath_fn, xml_parser
 
 
-def print_xmlns(ns_map, root):
-    """Print XML namespaces."""
+def print_xmlns(ns_map: dict[str, str], root: etree._Element) -> None:
+    """Print XML namespaces.
+
+    :param ns_map: XML namespaces (xmlns) 'prefix': 'URI' dict
+    :param root: root (document) element
+    """
     if None in root.nsmap:
         print(f"Default XML namespace URI: {root.nsmap[None]}")
     if ns_map:
@@ -150,56 +165,58 @@ def print_xmlns(ns_map, root):
             print(f"{key:>9}: {ns_map[key]}")
 
 
-def element_repr(node, content=True):
-    """Return element representation (UTF-8 Unicode).
+def element_repr(node) -> str:
+    """Return element representation with its content.
 
-    node -- lxml.etree._Element instance -- iselement(node)
+    :param node: element, comment or processing instruction node
 
     Node types:
-     * element node -- /path/el, //*
-     * comment node -- comment()
-     * processing instruction node -- processing-instruction()
-    """
-    if not content:
-        # Return lxml.etree._Element representation without content.
-        if node.tag is PI:
-            elem_str = node.tag(node.target)
-        elif node.tag is Comment:
-            elem_str = node.tag(" comment ")
-        else:
-            elem_str = f"<{node.tag}>"
-        return elem_str
+    - element (lxml.etree._Element) : /path/el, //*
+    - comment (lxml.etree._Comment) : comment()
+    - processing instruction (lxml.etree._ProcessingInstruction) : processing-instruction()
 
-    # node.tag is lxml.etree.PI (is lxml.etree.ProcessingInstruction).
-    if node.tag is PI:
+    Use node.tag to return representation with content.
+    """
+    # lxml.etree.PI (lxml.etree.ProcessingInstruction).
+    if node.tag is etree.PI:
         # Processing instruction node - node.target -- node.tag(): <? ?>
         return f"{node.tag(node.target)} value: '{node.text}'"
 
-    # node.tag is lxml.etree.Comment.
-    if node.tag is Comment:
+    # lxml.etree.Comment.
+    if node.tag is etree.Comment:
         # Comment node - node.tag(): <!-- -->
         return node.tag(node.text)
 
-    # node.tag: string.
+    # string (str).
     if node.text:
         if node.text.isspace():
             return f"<{node.tag}> contains whitespace"
         if not isinstance(node.text, str):
             # Python 2 Unicode naar Bytestring.
             return f"<{node.tag}> contains {node.text.encode('utf-8')}"
-        # node.text is a Python string.
-        return f"<{node.tag}> contains whitespace"
+        return f"<{node.tag}> contains '{node.text}'"
+
     return f"<{node.tag}> is empty"
 
 
-def print_elem(node, pretty=False, xpath_exp=None):
+def parent_repr(parent) -> str:
+    """Return parent element representation (without content).
+
+    :param node: element, comment or processing instruction node; see element_repr()
+    """
+    if parent.tag is etree.PI:
+        return parent.tag(parent.target)
+    if parent.tag is etree.Comment:
+        return parent.tag(" comment ")
+    return f"<{parent.tag}>"
+
+
+def print_elem(node, pretty: bool = False, xpath_exp: Optional[str] = None) -> None:
     """Print element (UTF-8 Unicode).
 
-    node -- lxml.etree._Element instance.
-            element, comment or processing instruction node; see element_repr()
-    pretty -- True: use prettyprint() to print an element.
-              False: use element_repr().
-    xpath_exp -- optional XPath expression
+    :param node: element, comment or processing instruction node; see element_repr()
+    :param pretty: pretty print node
+    :param xpath_exp: also print node XPath expression
     """
     if pretty:
         if xpath_exp:
@@ -214,47 +231,41 @@ def print_elem(node, pretty=False, xpath_exp=None):
             print(f"line {node.sourceline:<4d}: {element_repr(node)}")
 
 
-def smart_with_parent(smart_string):
+def smart_with_parent(smart_string: etree._ElementUnicodeResult) -> tuple[str, str]:
     """Return lxml 'smart' string representation (UTF-8) with parent relation.
 
-    lxml 'smart' string is a text node (atomic value) or an attribute node:
-     * text node (tail, entity): contains text; never empty
-     * attribute node: contains the value of the attribute
-    """
-    smart_repr = None
-    parent_rel = None
+    :param smart_string: XPath string result with parent element
 
+    lxml 'smart' string is a text node (atomic value) or an attribute node:
+    - text node (tail, entity): contains text; never empty
+    - attribute node: contains the value of the attribute
+    """
     # ATTRIBUTE node -- @ -- .is_attribute
     if smart_string.is_attribute:
-        parent_rel = "of"
-        smart_repr = f"@{smart_string.attrname} = '{smart_string}'"
+        return f"@{smart_string.attrname!r} = '{smart_string}'", "of"
     # TEXT node -- text() -- .is_text
-    elif smart_string.is_text:
-        parent_rel = "in"
-        # Python str.isspace()
-        if smart_string.isspace():
-            smart_repr = "whitespace"
-        else:
-            smart_repr = f"'{smart_string}'"
+    if smart_string.is_text:
+        smart_repr = "whitespace" if smart_string.isspace() else f"'{smart_string}'"
+        return smart_repr, "in"
     # TAIL node -- text() -- .is_tail
-    elif smart_string.is_tail:
-        parent_rel = "after"
+    if smart_string.is_tail:
         if smart_string.isspace():
             smart_repr = "tail whitespace"
         else:
             smart_repr = f"tail '{smart_string}'"
+        return smart_repr, "after"
 
-    return (smart_repr, parent_rel)
+    return "", ""
 
 
-def print_smart_string(smart_string, el_tree, args):
+def print_smart_string(
+    smart_string: etree._ElementUnicodeResult, el_tree: etree._ElementTree, args: argparse.Namespace
+) -> None:
     """Print lxml 'smart' string with parent element tag.
 
-    smart_string -- XPath string result that provides a getparent() method:
-     * string: lxml.etree._ElementStringResult
-     * Unicode: lxml.etree._ElementUnicodeResult
-    el_tree -- ElementTree (lxml.etree._ElementTree)
-    args -- Command-line arguments
+    :param smart_string: XPath string result with parent element
+    :param el_tree: lxml ElementTree to retrieve XPath path expressions
+    :param args: command-line arguments
     """
     # Parent element.
     par_el = smart_string.getparent()
@@ -263,7 +274,7 @@ def print_smart_string(smart_string, el_tree, args):
         print(f"XPath string: '{smart_string}'")
         return
     # Parent is an lxml.etree._Element instance.
-    par_el_str = element_repr(par_el, content=False)
+    par_el_str = parent_repr(par_el)
 
     # Print 'smart' string.
     smart_repr, parent_rel = smart_with_parent(smart_string)
@@ -281,16 +292,16 @@ def print_smart_string(smart_string, el_tree, args):
         print_elem(par_el, pretty=args.pretty_element)
 
 
-def print_result_list(result_list, el_tree, args):
+def print_result_list(result_list, el_tree: etree._ElementTree, args: argparse.Namespace) -> None:
     """Print all nodes from the list of XPath results.
 
-    result_list -- XPath result list
-    el_tree -- ElementTree (lxml.etree._ElementTree)
-    args -- Command-line arguments
+    :param result_list: XPath result list
+    :param el_tree: lxml ElementTree to retrieve XPath path expressions
+    :param args: command-line arguments
     """
     # All nodes -- //node()
     for node in result_list:
-        if iselement(node):
+        if etree.iselement(node):
             if args.result_xpath:
                 print_elem(node, pretty=args.pretty_element, xpath_exp=el_tree.getpath(node))
             else:
@@ -313,8 +324,12 @@ def print_result_list(result_list, el_tree, args):
             print(node)
 
 
-def print_result_header(source_name, xp_result):
-    """Print header with XPath result summary."""
+def print_result_header(source_name: str, xp_result) -> None:
+    """Print header with XPath result summary.
+
+    :param source_name: name of the XML source
+    :param xp_result: XPath result
+    """
     # Result count.
     if isinstance(xp_result, list):
         list_result = xp_result
@@ -340,17 +355,19 @@ def print_result_header(source_name, xp_result):
             print(f"{xp_r_len} results.")
 
 
-def print_xp_result(xp_result, el_tree, ns_map, args):
+def print_xp_result(
+    xp_result, el_tree: etree._ElementTree, ns_map: dict[str, str], args: argparse.Namespace
+) -> None:
     """Print XPath results.
 
-    xp_result -- XPath result
-    el_tree -- ElementTree (lxml.etree._ElementTree)
-    ns_map -- XML namespaces (xmlns) 'prefix: URI' dict
-    args -- Command-line arguments
+    :param xp_result: XPath result
+    :param el_tree: lxml ElementTree
+    :param ns_map: XML namespaces (xmlns) 'prefix': 'URI' dict
+    :param args: command-line arguments
 
     Prints:
-     * XML namespaces (if there are any)
-     * XPath result(s)
+    - XML namespaces (if there are any)
+    - XPath result(s)
 
     XPath return values:
         https://lxml.de/xpathxslt.html#xpath-return-values
@@ -358,14 +375,8 @@ def print_xp_result(xp_result, el_tree, ns_map, args):
     if args.verbose:
         print_xmlns(ns_map, el_tree.getroot())
 
-    # STRING - string (basestring) - smart string | Namespace URI.
-    try:
-        basestring
-    except NameError:
-        # Python 3 -- pylint: disable=redefined-builtin
-        basestring = (str, bytes)
-    # 'lxml.etree._ElementStringResult'
-    if isinstance(xp_result, basestring):
+    # STRING - string - smart string | Namespace URI.
+    if isinstance(xp_result, etree._ElementUnicodeResult):
         print_smart_string(xp_result, el_tree, args)
 
     # LIST - list - node-set.
@@ -376,8 +387,12 @@ def print_xp_result(xp_result, el_tree, ns_map, args):
         except BrokenPipeError:
             sys.stderr.close()
 
+    # BOOLEAN - bool - boolean.
+    elif isinstance(xp_result, bool):
+        print(f"XPath test: {xp_result}")
+
     # FLOAT - float.
-    elif hasattr(xp_result, "is_integer"):
+    elif isinstance(xp_result, float):
         # pylint: disable=comparison-with-itself ## NaN elif.
         if xp_result.is_integer():
             # count() => integer
@@ -389,21 +404,22 @@ def print_xp_result(xp_result, el_tree, ns_map, args):
         else:
             print(f"XPath number: {xp_result}")
 
-    # BOOLEAN - bool - boolean.
-    elif isinstance(xp_result, bool):
-        print(f"XPath test: {xp_result}")
-
     else:
-        print(f"Unknown XPath result: {xp_result}")
+        sys.stderr.write(f"Unknown XPath result: {xp_result}\n")
 
 
-def xpath_on_xml(xml_source, parser, xpath_fn, args):
+def xpath_on_xml(
+    xml_source: Union[TextIO, str],
+    parser: etree.XMLParser,
+    xpath_fn: Callable[[etree._ElementTree, str, dict[str, str]], Any],
+    args: argparse.Namespace,
+) -> bool:
     """Apply XPath expression to XML source.
 
-    xml_source -- XML file, file-like object or URL
-    parser -- XML parser (lxml.etree.XMLParser)
-    xpath_fn -- ElementTree.xpath method or XPath class
-    args -- Command-line arguments
+    :param xml_source: XML file, file-like object or URL
+    :param parser: XML parser
+    :param xpath_fn: ElementTree.xpath method or XPath class
+    :param args: command-line arguments
     """
     # ElementTree (lxml.etree._ElementTree).
     el_tree = build_etree(xml_source, parser=parser, lenient=False)
@@ -444,7 +460,7 @@ def xpath_on_xml(xml_source, parser, xpath_fn, args):
     return True
 
 
-def main():
+def main() -> None:
     """Entry point for command line script xp."""
     # Logging to the console.
     setup_logger_console()
