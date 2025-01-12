@@ -30,7 +30,7 @@ def parse_cl() -> argparse.Namespace:
         action="store_true",
         default=False,
         dest="exslt",
-        help="add EXSLT XML namespace prefixes",
+        help="add EXSLT XML namespaces",
     )
     parser.add_argument(
         "-d",
@@ -41,12 +41,12 @@ def parse_cl() -> argparse.Namespace:
         help="set the prefix for the default namespace in XPath [default: '%(default)s']",
     )
     parser.add_argument(
-        "-r",
-        "--result-xpath",
-        action="store_true",
-        default=False,
-        dest="result_xpath",
-        help="print the XPath expression of the result element (or its parent)",
+        "-q",
+        "--quiet",
+        action="store_false",
+        default=True,
+        dest="verbose",
+        help="don't print XML source namespaces",
     )
     parser.add_argument(
         "-p",
@@ -57,12 +57,12 @@ def parse_cl() -> argparse.Namespace:
         help="pretty print the result element",
     )
     parser.add_argument(
-        "-m",
-        "--method",
+        "-r",
+        "--result-xpath",
         action="store_true",
         default=False,
-        dest="lxml_method",
-        help="use ElementTree.xpath method instead of XPath class",
+        dest="result_xpath",
+        help="print the XPath expression of the result element (or its parent)",
     )
     file_group = parser.add_mutually_exclusive_group(required=False)
     file_group.add_argument(
@@ -86,12 +86,12 @@ def parse_cl() -> argparse.Namespace:
         + "or without any results are written to standard output",
     )
     parser.add_argument(
-        "-q",
-        "--quiet",
-        action="store_false",
-        default=True,
-        dest="verbose",
-        help="don't print the XML namespace list",
+        "-m",
+        "--method",
+        action="store_true",
+        default=False,
+        dest="lxml_method",
+        help="use ElementTree.xpath method instead of XPath class",
     )
 
     return parser.parse_args()
@@ -151,18 +151,20 @@ def xp_prepare(
 
 
 def print_xmlns(ns_map: dict[str, str], root: etree._Element) -> None:
-    """Print XML namespaces.
+    """Print XML source namespaces (prefix: namespace URI).
 
     :param ns_map: XML namespaces (xmlns) 'prefix': 'URI' dict
     :param root: root (document) element
     """
-    if None in root.nsmap:
-        print(f"Default XML namespace URI: {root.nsmap[None]}")
     if ns_map:
-        # Print all XML namespaces -- prefix: namespace URI.
-        print("XML namespaces:")
+        print("XML namespaces (prefix: URI):")
         for key in ns_map:
-            print(f"{key:>9}: {ns_map[key]}")
+            if None in root.nsmap and ns_map[key] == root.nsmap[None]:
+                print(f"{key:>9}: {ns_map[key]} (default namespace)")
+            else:
+                print(f"{key:>9}: {ns_map[key]}")
+    elif None in root.nsmap:
+        print(f"Default XML namespace URI: {root.nsmap[None]}")
 
 
 def element_repr(node) -> str:
@@ -315,7 +317,10 @@ def print_result_list(result_list, el_tree: etree._ElementTree, args: argparse.N
         elif isinstance(node, tuple):
             prefix, uri = node
             # No line number.
-            print(f"prefix: {str(prefix):<8} URI: {uri}")
+            if prefix is None:
+                print(f"prefix: {args.default_ns_prefix:<8} URI: {uri}")
+            else:
+                print(f"prefix: {prefix:<8} URI: {uri}")
 
         # ?
         else:
@@ -355,14 +360,11 @@ def print_result_header(source_name: str, xp_result) -> None:
             print(f"{xp_r_len} results.")
 
 
-def print_xp_result(
-    xp_result, el_tree: etree._ElementTree, ns_map: dict[str, str], args: argparse.Namespace
-) -> None:
+def print_xp_result(xp_result, el_tree: etree._ElementTree, args: argparse.Namespace) -> None:
     """Print XPath results.
 
     :param xp_result: XPath result
     :param el_tree: lxml ElementTree
-    :param ns_map: XML namespaces (xmlns) 'prefix': 'URI' dict
     :param args: command-line arguments
 
     Prints:
@@ -372,9 +374,6 @@ def print_xp_result(
     XPath return values:
         https://lxml.de/xpathxslt.html#xpath-return-values
     """
-    if args.verbose:
-        print_xmlns(ns_map, el_tree.getroot())
-
     # STRING - string - smart string | Namespace URI.
     if isinstance(xp_result, etree._ElementUnicodeResult):
         print_smart_string(xp_result, el_tree, args)
@@ -453,10 +452,13 @@ def xpath_on_xml(
             print(source_name)
         return True
 
+    # XML namespaces.
+    if args.verbose:
+        print_xmlns(ns_map, el_tree.getroot())
     # Result header.
     print_result_header(source_name, xp_result)
     # XPath results.
-    print_xp_result(xp_result, el_tree, ns_map, args)
+    print_xp_result(xp_result, el_tree, args)
     return True
 
 

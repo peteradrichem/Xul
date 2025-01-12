@@ -40,33 +40,29 @@ Options
 
    $ xp --help
 
-   usage: xp [-h] [-V] [-e] [-d DEFAULT_NS_PREFIX] [-r] [-p] [-m] [-f | -F] [-q]
-             xpath_expr [xml_source [xml_source ...]]
+   usage: xp [-h] [-V] [-e] [-d DEFAULT_NS_PREFIX] [-q] [-p] [-r] [-f | -F] [-m] xpath_expr [xml_source ...]
 
    Select nodes in an XML source with an XPath expression.
 
    positional arguments:
-     xpath_expr            XPath expression
-     xml_source            XML source (file, <stdin>, http://...)
+   xpath_expr            XPath expression
+   xml_source            XML source (file, <stdin>, http://...)
 
-   optional arguments:
-     -h, --help            show this help message and exit
-     -V, --version         show program's version number and exit
-     -e, --exslt           add EXSLT XML namespace prefixes
-     -d DEFAULT_NS_PREFIX, --default-prefix DEFAULT_NS_PREFIX
-                           set the prefix for the default namespace in XPath
-                           [default: 'd']
-     -r, --result-xpath    print the XPath expression of the result element (or
-                           its parent)
-     -p, --pretty-element  pretty print the result element
-     -m, --method          use ElementTree.xpath method instead of XPath class
-     -f, -l, --files-with-hits
-                           only the names of files with a non-false and non-NaN
-                           result are written to standard output
-     -F, -L, --files-without-hits
-                           only the names of files with a false or NaN result, or
-                           without any results are written to standard output
-     -q, --quiet           don't print the XML namespace list
+   options:
+   -h, --help            show this help message and exit
+   -V, --version         show program's version number and exit
+   -e, --exslt           add EXSLT XML namespaces
+   -d DEFAULT_NS_PREFIX, --default-prefix DEFAULT_NS_PREFIX
+                         set the prefix for the default namespace in XPath [default: 'd']
+   -q, --quiet           don't print XML source namespaces
+   -p, --pretty-element  pretty print the result element
+   -r, --result-xpath    print the XPath expression of the result element (or its parent)
+   -f, -l, --files-with-hits
+                         only the names of files with a non-false and non-NaN result are written to standard output
+   -F, -L, --files-without-hits
+                         only the names of files with a false or NaN result, or without any results are written to
+                         standard output
+   -m, --method          use ElementTree.xpath method instead of XPath class
 
 
 .. index::
