@@ -102,7 +102,8 @@ def xpath_class(el_tree: etree._ElementTree, xpath_exp: str, ns_map: dict[str, s
 
     :param el_tree: lxml ElementTree
     :param xpath_exp: XPath expression
-    :param ns_map: XML namespaces (xmlns) 'prefix': 'URI' dict
+    :param ns_map: XML namespace (prefix: URI) dictionary
+    :return: XPath result
     """
     if xpath_obj := build_xpath(xpath_exp, ns_map):
         return etree_xpath(el_tree, xpath_obj)
@@ -114,16 +115,17 @@ def eltree_xpath(el_tree: etree._ElementTree, xpath_exp: str, ns_map: dict[str, 
 
     :param el_tree: lxml ElementTree
     :param xpath_exp: XPath expression
-    :param ns_map: XML namespaces (xmlns) 'prefix': 'URI' dict
+    :param ns_map: XML namespace (prefix: URI) dictionary
+    :return: XPath result
     """
     try:
         return el_tree.xpath(xpath_exp, namespaces=ns_map)
     except etree.XPathEvalError as e:
         sys.stderr.write(f"{e}: {xpath_exp}\n")
         return None
-    # EXSLT function call errors (re:test positional arguments).
+    # Incorrect EXSLT function call (e.g. number of positional arguments for re:test).
     except TypeError as e:
-        sys.stderr.write(f"Type error {e}: {xpath_exp}\n")
+        sys.stderr.write(f"{xpath_exp} is invalid: {e}\n")
         return None
 
 
@@ -153,7 +155,7 @@ def xp_prepare(
 def print_xmlns(ns_map: dict[str, str], root: etree._Element) -> None:
     """Print XML source namespaces (prefix: namespace URI).
 
-    :param ns_map: XML namespaces (xmlns) 'prefix': 'URI' dict
+    :param ns_map: XML namespace (prefix: URI) dictionary
     :param root: root (document) element
     """
     if ns_map:
@@ -321,12 +323,6 @@ def print_result_list(result_list, el_tree: etree._ElementTree, args: argparse.N
                 print(f"prefix: {args.default_ns_prefix:<8} URI: {uri}")
             else:
                 print(f"prefix: {prefix:<8} URI: {uri}")
-
-        # ?
-        else:
-            print("**DEBUG fallback**")
-            print(type(node))
-            print(node)
 
 
 def print_result_header(source_name: str, xp_result) -> None:
