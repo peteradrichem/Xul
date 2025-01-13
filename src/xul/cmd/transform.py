@@ -1,27 +1,26 @@
 """Transform XML source with XSLT."""
 
+import argparse
 import sys
-from argparse import ArgumentParser, FileType
+from typing import TextIO, Union
 
-# pylint: disable=no-name-in-module
-from lxml.etree import XMLParser, tostring
+from lxml import etree
 
-# Import my own modules.
 from .. import __version__
 from ..log import setup_logger_console
 from ..xsl import build_xsl_transform, xml_transformer
 
 
-def parse_cl():
+def parse_cl() -> argparse.Namespace:
     """Parse the command line for options, XSLT source and XML sources."""
-    parser = ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("-V", "--version", action="version", version="%(prog)s " + __version__)
     parser.add_argument("xslt_source", help="XSLT source (file, http://...)")
     parser.add_argument(
         "xml_source",
         nargs="?",
         default=sys.stdin,
-        type=FileType("r"),
+        type=argparse.FileType("r"),
         help="XML source (file, <stdin>, http://...)",
     )
     output_group = parser.add_mutually_exclusive_group(required=False)
@@ -45,7 +44,7 @@ def parse_cl():
     return parser.parse_args()
 
 
-def print_result(result):
+def print_result(result) -> None:
     """Print transformation result (catch broken pipe and lookup errors)."""
     try:
         print(result)
@@ -56,31 +55,37 @@ def print_result(result):
         sys.stderr.write(f"Cannot print XSLT result (LookupError): {e}\n")
 
 
-def save_to_file(result, target_file):
+def save_to_file(result, target_file: str) -> None:
     """Save transformation result to file."""
-    file_mode = "bx"
     try:
-        with open(target_file, file_mode) as file_object:
+        with open(target_file, "bx") as file_object:
             file_object.write(result)
     except OSError as e:
         sys.stderr.write(f"Saving result to {target_file} failed: {e.strerror}\n")
         sys.exit(80)
 
 
-def output_xslt(xml_source, transformer, parser, args):
+def output_xslt(
+    xml_source: Union[TextIO, str],
+    transformer: etree.XSLT,
+    parser: etree.XMLParser,
+    args: argparse.Namespace,
+) -> None:
     """Print or save the result of an XSL Transformation.
 
-    xml_source -- XML file, file-like object or URL
-    transformer -- XSL Transformer (lxml.etree.XSLT)
-    parser -- XML parser (lxml.etree.XMLParser)
-    args -- Command-line arguments
+    :param xml_source: XML file, file-like object or URL
+    :param transformer: XSL Transformer
+    :param parser: XML parser
+    :param args: command-line arguments
     """
     result = xml_transformer(xml_source, transformer, parser)
     if not result:
         return None
 
+    # https://lxml.de/apidoc/lxml.etree.html#lxml.etree._XSLTResultTree
+    #   _XSLTResultTree (./src/lxml/xslt.pxi):
     if result.getroot() is None:
-        # Result is not an ElementTree.
+        # Result (lxml.etree._XSLTResultTree) is not an ElementTree.
         if args.file:
             save_to_file(result, args.file)
         else:
@@ -88,15 +93,7 @@ def output_xslt(xml_source, transformer, parser, args):
         return None
 
     # https://lxml.de/xpathxslt.html#xslt-result-objects
-    # https://lxml.de/apidoc/lxml.etree.html#lxml.etree._XSLTResultTree
-    #   _XSLTResultTree (./src/lxml/xslt.pxi):
     if args.xsl_output:
-        # https://lxml.de/apidoc/lxml.etree.html#lxml.etree.XSLT
-        # XSLT.tostring(). Deprecated: use str(result_tree) instead.
-        #
-        # Python 2: str(_XSLTResultTree) == bytes(_XSLTResultTree).
-        #
-        # Python 3: str(_XSLTResultTree) != bytes(_XSLTResultTree).
         if args.file:
             save_to_file(result, args.file)
         else:
@@ -110,17 +107,15 @@ def output_xslt(xml_source, transformer, parser, args):
     # For normal byte encodings, the tostring() function automatically adds
     # a declaration as needed that reflects the encoding of the returned string.
     else:
-        etree_result = tostring(
+        # lxml.etree.tostring returns bytes.
+        etree_result = etree.tostring(
             result, encoding=result.docinfo.encoding, xml_declaration=args.declaration
         )
         if args.file:
             save_to_file(etree_result, args.file)
         else:
-            # lxml.etree.tostring returns bytes (bytestring).
-            if not isinstance(etree_result, str):
-                # Bytes => unicode string (Python 3).
-                etree_result = etree_result.decode(result.docinfo.encoding)
-            print_result(etree_result)
+            # Bytes => unicode string (Python 3).
+            print_result(etree_result.decode(result.docinfo.encoding))  # type: ignore[arg-type,union-attr]
 
     return None
 
@@ -145,6 +140,6 @@ def main():
         sys.exit(50)
 
     # Initialise XML parser.
-    parser = XMLParser()
+    parser = etree.XMLParser()
     # Transform XML source with XSL Transformer.
     output_xslt(args.xml_source, transformer, parser, args)

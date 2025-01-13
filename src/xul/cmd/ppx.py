@@ -1,20 +1,18 @@
 """Pretty Print XML source in human readable form."""
 
-from argparse import ArgumentParser
+import argparse
 from sys import stderr, stdin
 
-# pylint: disable=no-name-in-module
 from lxml.etree import XMLParser
 
-# Import my own modules.
 from .. import __version__
 from ..log import setup_logger_console
 from ..ppxml import pp_xml
 
 
-def parse_cl():
+def parse_cl() -> argparse.Namespace:
     """Parse the command line for options and XML sources."""
-    parser = ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("-V", "--version", action="version", version="%(prog)s " + __version__)
     parser.add_argument(
         "xml_sources",
@@ -41,7 +39,7 @@ def parse_cl():
     return parser.parse_args()
 
 
-def main():
+def main() -> None:
     """Entry point for command line script ppx."""
     # Logging to the console.
     setup_logger_console()
