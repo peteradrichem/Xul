@@ -4,7 +4,8 @@ The ElementTree XML API
     https://docs.python.org/3/library/xml.etree.elementtree.html
 
 lxml ElementTree
-    https://lxml.de
+    https://lxml.de/apidoc/lxml.etree.html#lxml.etree._ElementTree
+    https://lxml.de/compatibility.html
 
 The lxml.etree Tutorial
     https://lxml.de/tutorial.html
@@ -12,21 +13,25 @@ The lxml.etree Tutorial
 
 import sys
 from logging import getLogger
+from typing import Optional, TextIO, Union
 
-# pylint: disable=no-member
 from lxml import etree
 
-# Module logging initialisation.
 logger = getLogger(__name__)
 
 
-def build_etree(xml_source, parser=None, lenient=True, silent=False):
+def build_etree(
+    xml_source: Union[TextIO, str],
+    parser: Optional[etree.XMLParser] = None,
+    lenient: bool = True,
+    silent: bool = False,
+) -> Optional[etree._ElementTree]:
     """Parse XML source into an ElementTree.
 
-    xml_source -- XML file, file-like object or URL
-    parser -- (optional) XML parser (lxml.etree.XMLParser)
-    lenient -- log XMLSyntaxError as warnings instead of errors
-    silent -- no logging
+    :param xml_source: XML file, file-like object or URL
+    :param parser: (optional) XML parser
+    :param lenient: log XMLSyntaxError as warnings instead of errors
+    :param silent: disable logging
 
     Return ElementTree (lxml.etree._ElementTree) on success.
     Return None on error.
@@ -42,7 +47,8 @@ def build_etree(xml_source, parser=None, lenient=True, silent=False):
 
     try:
         etree.clear_error_log()
-        el_tree = etree.parse(xml_source, parser)
+        return etree.parse(xml_source, parser)
+
     # Catch XML syntax errors.
     #   https://lxml.de/api.html#error-handling-on-exceptions
     # error log copy attached to the exception: global error log of all errors
@@ -62,7 +68,6 @@ def build_etree(xml_source, parser=None, lenient=True, silent=False):
         else:
             name = xml_source
             xml_type = "file"
-
         xmllogger("%s is not a valid XML %s:", name, xml_type)
 
         # Parsers have an error_log property that lists the errors and warnings
@@ -76,15 +81,15 @@ def build_etree(xml_source, parser=None, lenient=True, silent=False):
             else:
                 xmllogger("line %i, column %i: %s", e.line, e.column, e.message)
         return None
+
     # Catch UnicodeDecodeError exceptions, for example:
     #   "'utf-8' codec can't decode byte 0xff in position 0: invalid start byte"
     except UnicodeDecodeError as e:
         logger.error(e)
         return None
+
     # Catch OSError exceptions, for example:
     #   "failed to load external entity" (lxml.etree._raiseParseError)
     except OSError as e:
         logger.error(e)
         return None
-
-    return el_tree

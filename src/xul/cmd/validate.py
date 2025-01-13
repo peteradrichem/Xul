@@ -1,17 +1,19 @@
 """Validate XML source with XSD, DTD or RELAX NG."""
 
+import argparse
 import sys
-from argparse import ArgumentParser
+from typing import TextIO, Union
 
-# Import my own modules.
+from lxml import etree
+
 from .. import __version__
 from ..log import setup_logger_console
 from ..validate import build_dtd, build_relaxng, build_xml_schema, validate_xml
 
 
-def parse_cl():
+def parse_cl() -> argparse.Namespace:
     """Parse the command line for options and XML sources."""
-    parser = ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("-V", "--version", action="version", version="%(prog)s " + __version__)
     lang_group = parser.add_mutually_exclusive_group(required=True)
     lang_group.add_argument(
@@ -55,8 +57,17 @@ def parse_cl():
     return parser.parse_args()
 
 
-def apply_validator(xml_source, validator, args):
-    """Apply XML validator on an XML source."""
+def apply_validator(
+    xml_source: Union[TextIO, str],
+    validator: Union[etree.XMLSchema, etree.DTD, etree.RelaxNG],
+    args: argparse.Namespace,
+) -> None:
+    """Apply XML validator on an XML source.
+
+    :param xml_source: XML file, file-like object or URL
+    :param validator: XMLSchema, DTD or RELAX NG validator
+    :param args: command-line arguments
+    """
     if args.validated_files or args.invalidated_files:
         valid = validate_xml(xml_source, validator, silent=True)
         if (valid and args.validated_files) or (not valid and args.invalidated_files):
@@ -69,7 +80,7 @@ def apply_validator(xml_source, validator, args):
         validate_xml(xml_source, validator)
 
 
-def main():
+def main() -> None:
     """Entry point for command line script validate."""
     # Logging to the console.
     setup_logger_console()
@@ -78,6 +89,7 @@ def main():
     args = parse_cl()
 
     # XSD, DTD or RelaxNG Validator?
+    validator: Union[etree.XMLSchema, etree.DTD, etree.RelaxNG]
     if args.xsd_source:
         validator = build_xml_schema(args.xsd_source)
     elif args.dtd_source:

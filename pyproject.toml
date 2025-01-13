@@ -69,6 +69,11 @@ version = { attr = "xul.__version__" }
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+xul = [
+    "py.typed"
+]
+
 [tool.black]
 color = true
 line-length = 100

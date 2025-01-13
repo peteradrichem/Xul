@@ -6,21 +6,20 @@ Validation with lxml:
 
 import sys
 from logging import getLogger
+from typing import Optional, TextIO, Union
 
-# pylint: disable=no-member
 from lxml import etree
 
-# Import my own modules.
+# pylint: disable=no-member
 from .etree import build_etree
 
-# Module logging initialisation.
 logger = getLogger(__name__)
 
 
-def build_xml_schema(xsd_file):
+def build_xml_schema(xsd_file: Union[TextIO, str]) -> Optional[etree.XMLSchema]:
     """Parse an XSD file into an XMLSchema validator.
 
-    xsd_file -- XSD file (XML schema file)
+    :param xsd_file: XSD (XML schema) file, file-like object or URL
 
     Return XMLSchema validator (lxml.etree.XMLSchema) on success.
     Return None on error.
@@ -34,7 +33,8 @@ def build_xml_schema(xsd_file):
         return None
 
     try:
-        validator = etree.XMLSchema(xsd_etree)
+        return etree.XMLSchema(xsd_etree)
+
     # Catch XSD parse errors.
     except etree.XMLSchemaParseError as inst:
         if inst.error_log.last_error.line == 0:
@@ -48,14 +48,12 @@ def build_xml_schema(xsd_file):
             # e.type_name: "SCHEMAP_S4S_ATTR_INVALID_VALUE".
             logger.warning("line %i, column %i: %s", e.line, e.column, e.message)
         return None
-    else:
-        return validator
 
 
-def build_dtd(dtd_file):
+def build_dtd(dtd_file: Union[TextIO, str]) -> Optional[etree.DTD]:
     """Parse a DTD file into a DTD validator.
 
-    dtd_file -- DTD file
+    :param dtd_file: DTD file, file-like object or URL
 
     Return DTD validator (lxml.etree.DTD) on success.
     Return None on error.
@@ -65,7 +63,8 @@ def build_dtd(dtd_file):
         https://lxml.de/apidoc/lxml.etree.html#lxml.etree.DTD
     """
     try:
-        validator = etree.DTD(file=dtd_file)
+        return etree.DTD(file=dtd_file)
+
     # Catch DTD parse errors.
     except etree.DTDParseError as inst:
         if inst.error_log.last_error.line == 0:
@@ -81,53 +80,12 @@ def build_dtd(dtd_file):
             # e.type_name: "ERR_EXT_SUBSET_NOT_FINISHED"
             logger.warning("line %i, column %i: %s", e.line, e.column, e.message)
         return None
-    else:
-        return validator
 
 
-def xml_validator(xml_source, validator, lenient=True):
-    """Validate an XML source against an XSD, DTD or RELAX NG validator.
-
-    xml_source -- XML file, file-like object or URL
-    validator -- XMLSchema, DTD validator or RELAX NG validator
-    lenient -- log XML (validation) errors as warnings
-
-    Return a tuple with the validation result (True/False) and the status string.
-    """
-    el_tree = build_etree(xml_source, lenient=lenient)
-    if not el_tree:
-        return (False, "Not an XML source")
-
-    if xml_source in ("-", sys.stdin):
-        # <stdin>.
-        source_name = sys.stdin.name
-    else:
-        source_name = xml_source
-    if validator.validate(el_tree):
-        logger.info("XML source '%s' validates", source_name)
-        return (True, "XML source validates")
-
-    if lenient:
-        val_logger = logger.warning
-    else:
-        val_logger = logger.error
-    val_logger("XML source '%s' does not validate", source_name)
-    # Lines with XML validation errors.
-    for e in validator.error_log:
-        # E.g. DTD e.level_name: "ERROR", e.domain_name: "VALID",
-        # e.type_name: "DTD_UNKNOWN_ELEM".
-        # E.g. XSD e.level_name: "ERROR", e.domain_name: "SCHEMASV",
-        # e.type_name: "SCHEMAV_CVC_ELT_1".
-        val_logger("line %i, column %i: %s", e.line, e.column, e.message)
-    # Return the status string: first validation error.
-    e = validator.error_log[0]
-    return (False, f"line {e.line}, column {e.column}: {e.message}")
-
-
-def build_relaxng(relaxng_file):
+def build_relaxng(relaxng_file: Union[TextIO, str]) -> Optional[etree.RelaxNG]:
     """Parse a RELAX NG file into a RELAX NG validator.
 
-    relaxng_file -- RELAX NG file
+    :param relaxng_file: RELAX NG file, file-like object or URL
 
     Return RelaxNG validator (lxml.etree.RelaxNG) on success.
     Return None on error.
@@ -141,7 +99,8 @@ def build_relaxng(relaxng_file):
         return None
 
     try:
-        validator = etree.RelaxNG(relaxng_etree)
+        return etree.RelaxNG(relaxng_etree)
+
     # Catch RELAX NG parse errors.
     except etree.RelaxNGParseError as inst:
         logger.error("XML file '%s' is not a valid RELAX NG file", relaxng_file)
@@ -155,17 +114,64 @@ def build_relaxng(relaxng_file):
             # e.type_name: "RNGP_UNKNOWN_CONSTRUCT".
             logger.warning("line %i, column %i: %s", e.line, e.column, e.message)
         return None
-    else:
-        return validator
 
 
-def validate_xml(xml_source, validator, lenient=True, silent=False):
+def xml_validator(
+    xml_source: Union[TextIO, str],
+    validator: Union[etree.XMLSchema, etree.DTD, etree.RelaxNG],
+    lenient: bool = True,
+) -> tuple[bool, str]:
     """Validate an XML source against an XSD, DTD or RELAX NG validator.
 
-    xml_source -- XML file, file-like object or URL
-    validator -- XMLSchema, DTD validator or RELAX NG validator
-    lenient -- log XML (validation) errors as warnings
-    silent -- no logging
+    :param xml_source: XML file, file-like object or URL
+    :param validator: XMLSchema, DTD or RELAX NG validator
+    :param lenient: log XML (validation) errors as warnings instead of errors
+
+    Return a tuple with the validation result (True/False) and the status string.
+    """
+    el_tree = build_etree(xml_source, lenient=lenient)
+    if not el_tree:
+        return (False, "Not an XML source")
+
+    if xml_source in ("-", sys.stdin):
+        # <stdin>.
+        source_name = sys.stdin.name
+    else:
+        source_name = xml_source
+
+    if validator.validate(el_tree):
+        logger.info("XML source '%s' validates", source_name)
+        return (True, "XML source validates")
+
+    if lenient:
+        val_logger = logger.warning
+    else:
+        val_logger = logger.error
+    val_logger("XML source '%s' does not validate", source_name)
+    # Lines with XML validation errors.
+    for e in validator.error_log:  # type: ignore[union-attr]
+        # E.g. DTD e.level_name: "ERROR", e.domain_name: "VALID",
+        # e.type_name: "DTD_UNKNOWN_ELEM".
+        # E.g. XSD e.level_name: "ERROR", e.domain_name: "SCHEMASV",
+        # e.type_name: "SCHEMAV_CVC_ELT_1".
+        val_logger("line %i, column %i: %s", e.line, e.column, e.message)
+    # Return the status string: first validation error.
+    e = validator.error_log[0]  # type: ignore[index]
+    return (False, f"line {e.line}, column {e.column}: {e.message}")
+
+
+def validate_xml(
+    xml_source: Union[TextIO, str],
+    validator: Union[etree.XMLSchema, etree.DTD, etree.RelaxNG],
+    lenient: bool = True,
+    silent: bool = False,
+):
+    """Validate an XML source against an XSD, DTD or RELAX NG validator.
+
+    :param xml_source: XML file, file-like object or URL
+    :param validator: XMLSchema, DTD or RELAX NG validator
+    :param lenient: log XML (validation) errors as warnings instead of errors
+    :param silent: disable logging
 
     Return True when `xml_source' validates.
     """
@@ -193,8 +199,8 @@ def validate_xml(xml_source, validator, lenient=True, silent=False):
     else:
         val_logger = logger.error
     val_logger("XML source '%s' does not validate", source_name)
-    # Lines with XML validation errors.
-    for e in validator.error_log:
+    # Lines with XML validation errors (lxml.etree._ListErrorLog).
+    for e in validator.error_log:  # type: ignore[union-attr]
         # E.g. DTD e.level_name: "ERROR", e.domain_name: "VALID",
         # e.type_name: "DTD_UNKNOWN_ELEM".
         # E.g. XSD e.level_name: "ERROR", e.domain_name: "SCHEMASV",

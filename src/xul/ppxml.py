@@ -1,61 +1,45 @@
 """Pretty Print XML."""
 
 import sys
+from typing import Optional, TextIO, Union
 
-# pylint: disable=no-name-in-module
-from lxml.etree import tostring
+from lxml import etree
 
-# Import my own modules.
 from .etree import build_etree
 
 __all__ = ["prettyprint", "pp_xml"]
 
 
-def _private_pp(etree, syntax=True, xml_declaration=None):
+def _private_pp(
+    el_tree: etree._ElementTree, syntax: bool = True, xml_declaration: bool = True
+) -> None:
     """Pretty print XML ElementTree with (optional) syntax highlighting.
+
+    :param el_tree: ElementTree to pretty print
+    :param syntax: syntax highlighting (or not)
+    :param xml_declaration: print an XML declaration (or not)
 
     https://lxml.de/api.html#serialisation
     https://lxml.de/apidoc/lxml.etree.html#lxml.etree.tostring
     """
     try:
-        if sys.stdout.encoding is None:
-            encoding = "utf-8"
-        else:
-            encoding = sys.stdout.encoding
-        # lxml.etree.tostring returns bytes (bytestring).
-        etree_string = tostring(
-            etree, encoding=encoding, xml_declaration=xml_declaration, pretty_print=True
+        encoding = "utf-8" if sys.stdout.encoding is None else sys.stdout.encoding
+        # lxml.etree.tostring returns bytes.
+        etree_string = etree.tostring(
+            el_tree, encoding=encoding, xml_declaration=xml_declaration, pretty_print=True
         )
 
         if syntax:
-            # pygments.highlight() will return a Unicode string …
+            # pygments.highlight() will return an Unicode string.
             # https://pygments.org/docs/formatters/
-            etree_string = highlight(etree_string, lexer, Terminal256Formatter())
+            print(highlight(etree_string, lexer, Terminal256Formatter()))
         else:
-            # Bytes(string) => Unicode object.
-            etree_string = etree_string.decode(encoding)
+            # Bytes => Unicode string.
+            print(etree_string.decode(encoding))  # type: ignore[union-attr]
 
-        # Fix output encoding errors (Python 2) when piping multiple etree_string.
-        # E.g.: % ppx Unicode_1.xml Unicode_2.xml | less
-        #       % xp -q "//d:OtherIdentifier[position()<=12]/.." Unicode.xml -p | less
-        if not sys.stdout.isatty() and sys.stdout.encoding is None:
-            # Standard out is buffered.
-            sys.stdout.flush()
-            sys.stdout = open(
-                # Do not close sys.stdout file descriptor.
-                sys.stdout.fileno(),
-                "w",
-                encoding=encoding,
-                closefd=False,
-            )
-            print(etree_string)
-            # Restore sys.stdout (reuse file descriptor).
-            sys.stdout = sys.__stdout__
-        else:
-            print(etree_string)
     # Catch Broken pipe errors.
     except BrokenPipeError:
-        pass
+        sys.stderr.close()
 
 
 try:
@@ -65,25 +49,44 @@ try:
     from pygments.lexers import get_lexer_by_name
 except ImportError:
     # pylint: disable=unused-argument
-    def prettyprint(etree, syntax=False, xml_declaration=None):
-        """Plain pretty print XML ElementTree (without syntax highlighting)."""
-        return _private_pp(etree, syntax=False, xml_declaration=xml_declaration)
+    def prettyprint(
+        el_tree: etree._ElementTree, syntax: bool = False, xml_declaration: bool = True
+    ) -> None:
+        """Plain pretty print XML ElementTree (without syntax highlighting).
+
+        :param el_tree: ElementTree to pretty print
+        :param syntax: syntax highlighting (or not)
+        :param xml_declaration: print an XML declaration (or not)
+        """
+        return _private_pp(el_tree, syntax=False, xml_declaration=xml_declaration)
 
 else:
     lexer = get_lexer_by_name("xml")
 
-    def prettyprint(etree, syntax=True, xml_declaration=None):
-        """Pretty print XML ElementTree with (optional) syntax highlighting."""
-        return _private_pp(etree, syntax=syntax, xml_declaration=xml_declaration)
+    def prettyprint(
+        el_tree: etree._ElementTree, syntax: bool = True, xml_declaration: bool = True
+    ) -> None:
+        """Pretty print XML ElementTree with (optional) syntax highlighting.
+
+        :param el_tree: ElementTree to pretty print
+        :param syntax: syntax highlighting (or not)
+        :param xml_declaration: print an XML declaration (or not)
+        """
+        return _private_pp(el_tree, syntax=syntax, xml_declaration=xml_declaration)
 
 
-def pp_xml(xml_source, parser=None, syntax=True, xml_declaration=None):
+def pp_xml(
+    xml_source: Union[TextIO, str],
+    parser: Optional[etree.XMLParser] = None,
+    syntax: bool = True,
+    xml_declaration: bool = True,
+) -> None:
     """Pretty Print XML source.
 
-    xml_source -- XML file, file-like object or URL
-    parser -- (optional) XML parser (lxml.etree.XMLParser)
-    syntax -- syntax highlighting (or not)
-    xml_declaration -- print XML declaration (or not)
+    :param xml_source: XML file, file-like object or URL
+    :param parser: (optional) XML parser
+    :param syntax: syntax highlighting (or not)
+    :param xml_declaration: print an XML declaration (or not)
     """
     if xml_tree := build_etree(xml_source, parser=parser):
         prettyprint(xml_tree, syntax=syntax, xml_declaration=xml_declaration)

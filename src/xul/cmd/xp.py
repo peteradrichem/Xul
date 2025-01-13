@@ -195,9 +195,6 @@ def element_repr(node) -> str:
     if node.text:
         if node.text.isspace():
             return f"<{node.tag}> contains whitespace"
-        if not isinstance(node.text, str):
-            # Python 2 Unicode naar Bytestring.
-            return f"<{node.tag}> contains {node.text.encode('utf-8')}"
         return f"<{node.tag}> contains '{node.text}'"
 
     return f"<{node.tag}> is empty"
@@ -466,10 +463,7 @@ def main() -> None:
     # Command line.
     args = parse_cl()
 
-    # XPath expression.
-    if isinstance(args.xpath_expr, bytes):
-        # Python 2 Bytestring to Unicode.
-        args.xpath_expr = args.xpath_expr.decode("utf-8")
+    # Valid XPath expression?
     if not build_xpath(args.xpath_expr):
         sys.exit(60)
 
