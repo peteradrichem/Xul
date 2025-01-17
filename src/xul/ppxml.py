@@ -19,8 +19,16 @@ def _private_pp(
     :param syntax: syntax highlighting (or not)
     :param xml_declaration: print an XML declaration (or not)
 
-    https://lxml.de/api.html#serialisation
-    https://lxml.de/apidoc/lxml.etree.html#lxml.etree.tostring
+    Serialising to Unicode strings
+        https://lxml.de/parsing.html#serialising-to-unicode-strings
+    For normal byte encodings, the tostring() function automatically adds
+    a declaration as needed that reflects the encoding of the returned string.
+
+    Pretty printing
+        https://lxml.de/api.html#serialisation
+
+    lxml.etree.tostring
+        https://lxml.de/apidoc/lxml.etree.html#lxml.etree.tostring
     """
     try:
         encoding = "utf-8" if sys.stdout.encoding is None else sys.stdout.encoding

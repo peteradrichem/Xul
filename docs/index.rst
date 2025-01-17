@@ -29,6 +29,9 @@ Current version: |release|
    :target: https://github.com/peteradrichem/Xul/actions/workflows/code-checks.yml
    :alt: Code checks
 
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+   :target: https://github.com/psf/black
+
 .. index::
    single: scripts
 

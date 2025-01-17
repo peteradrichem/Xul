@@ -17,6 +17,8 @@ Use ``ppx`` to pretty print an :ref:`xml_source` in human readable form.
 .. index::
    single: white space
 
+``ppx`` will try to use the character encoding of your terminal and defaults to UTF-8.
+
 White Space
 -----------
 For greater readability ``ppx`` removes and adds *white space*.
@@ -33,14 +35,14 @@ Options
 
    $ ppx --help
 
-   usage: ppx [-h] [-V] [-n] [-o] [xml_source [xml_source ...]]
+   usage: ppx [-h] [-V] [-n] [-o] [xml_source ...]
 
    Pretty Print XML source in human readable form.
 
    positional arguments:
      xml_source            XML source (file, <stdin>, http://...)
 
-   optional arguments:
+   options:
      -h, --help            show this help message and exit
      -V, --version         show program's version number and exit
      -n, --no-syntax       no syntax highlighting
@@ -50,7 +52,7 @@ Options
 
 .. index::
    single: ppx script; syntax highlighting
-   single: syntax highlighting
+   single: syntax highlighting; ppx
 
 Syntax Highlighting
 -------------------
@@ -70,7 +72,6 @@ You can disable syntax highlighting with the ``--no-syntax`` option.
 
 .. index::
    single: ppx script; XML declaration
-   single: XML declaration
    single: XML declaration; ppx
 
 XML declaration
