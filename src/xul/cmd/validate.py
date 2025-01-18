@@ -1,4 +1,4 @@
-"""Validate XML source with XSD, DTD or RELAX NG."""
+"""Validate an XML source with XSD, DTD or RELAX NG."""
 
 import argparse
 import sys
@@ -7,6 +7,7 @@ from typing import TextIO, Union
 from lxml import etree
 
 from .. import __version__
+from ..etree import get_source_name
 from ..log import setup_logger_console
 from ..validate import build_dtd, build_relaxng, build_xml_schema, validate_xml
 
@@ -15,33 +16,39 @@ def parse_cl() -> argparse.Namespace:
     """Parse the command line for options and XML sources."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("-V", "--version", action="version", version="%(prog)s " + __version__)
-    lang_group = parser.add_mutually_exclusive_group(required=True)
-    lang_group.add_argument(
+    validator_args_group = parser.add_argument_group(
+        title="XML validator", description="choose an XML validator: XSD, DTD or RELAX NG"
+    )
+    validator_group = validator_args_group.add_mutually_exclusive_group(required=True)
+    validator_group.add_argument(
         "-x", "--xsd", action="store", dest="xsd_source", help="XML Schema Definition (XSD) source"
     )
-    lang_group.add_argument(
+    validator_group.add_argument(
         "-d",
         "--dtd",
         action="store",
         dest="dtd_source",
         help="Document Type Definition (DTD) source",
     )
-    lang_group.add_argument(
+    validator_group.add_argument(
         "-r", "--relaxng", action="store", dest="relaxng_source", help="RELAX NG source"
     )
-    file_group = parser.add_mutually_exclusive_group(required=False)
-    file_group.add_argument(
-        "-f",
+    file_group = parser.add_argument_group(
+        title="file hit options", description="output filenames to standard output"
+    )
+    file_hit_group = file_group.add_mutually_exclusive_group(required=False)
+    file_hit_group.add_argument(
         "-l",
+        "-f",
         "--validated-files",
         action="store_true",
         default=False,
         dest="validated_files",
         help="only the names of validated XML files are written to standard output",
     )
-    file_group.add_argument(
-        "-F",
+    file_hit_group.add_argument(
         "-L",
+        "-F",
         "--invalidated-files",
         action="store_true",
         default=False,
@@ -71,11 +78,7 @@ def apply_validator(
     if args.validated_files or args.invalidated_files:
         valid = validate_xml(xml_source, validator, silent=True)
         if (valid and args.validated_files) or (not valid and args.invalidated_files):
-            if xml_source in ("-", sys.stdin):
-                # <stdin>.
-                print(sys.stdin.name)
-            else:
-                print(xml_source)
+            print(get_source_name(xml_source))
     else:
         validate_xml(xml_source, validator)
 
