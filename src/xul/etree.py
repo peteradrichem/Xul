@@ -11,13 +11,26 @@ The lxml.etree Tutorial
     https://lxml.de/tutorial.html
 """
 
-import sys
+import io
 from logging import getLogger
 from typing import Optional, TextIO, Union
 
 from lxml import etree
 
 logger = getLogger(__name__)
+
+
+def get_source_name(xml_source: Union[TextIO, str]) -> str:
+    """Return the name of XML source."""
+    if isinstance(xml_source, str):
+        return xml_source
+    if isinstance(xml_source, io.TextIOWrapper):
+        # e.g. sys.stdin
+        return xml_source.name
+    if isinstance(xml_source, io.StringIO):
+        return "StringIO"
+    # ?
+    return str(xml_source)
 
 
 def build_etree(
@@ -45,6 +58,7 @@ def build_etree(
     if not parser:
         parser = etree.XMLParser(ns_clean=True)
 
+    file_name = get_source_name(xml_source)
     try:
         etree.clear_error_log()
         return etree.parse(xml_source, parser)
@@ -61,14 +75,7 @@ def build_etree(
             xmllogger = logger.warning
         else:
             xmllogger = logger.error
-
-        if xml_source in ("-", sys.stdin):
-            name = sys.stdin.name
-            xml_type = "object"
-        else:
-            name = xml_source
-            xml_type = "file"
-        xmllogger("%s is not a valid XML %s:", name, xml_type)
+        xmllogger("%s is not a valid XML source:", file_name)
 
         # Parsers have an error_log property that lists the errors and warnings
         # of the last parser run.
@@ -85,11 +92,11 @@ def build_etree(
     # Catch UnicodeDecodeError exceptions, for example:
     #   "'utf-8' codec can't decode byte 0xff in position 0: invalid start byte"
     except UnicodeDecodeError as e:
-        logger.error(e)
+        logger.error("%s: %s", file_name, e)
         return None
 
     # Catch OSError exceptions, for example:
-    #   "failed to load external entity" (lxml.etree._raiseParseError)
+    #   Error reading file '404.xml': failed to load external entity "404.xml"
     except OSError as e:
         logger.error(e)
         return None

@@ -19,11 +19,7 @@ def parse_cl() -> argparse.Namespace:
     parser.add_argument("-V", "--version", action="version", version="%(prog)s " + __version__)
     parser.add_argument("xslt_source", help="XSLT source (file, http://...)")
     parser.add_argument(
-        "xml_source",
-        nargs="?",
-        default=sys.stdin,
-        type=argparse.FileType("r"),
-        help="XML source (file, <stdin>, http://...)",
+        "xml_source", nargs="?", default=sys.stdin, help="XML source (file, <stdin>, http://...)"
     )
     parser.add_argument("-f", "--file", dest="file", help="save result to file")
 
