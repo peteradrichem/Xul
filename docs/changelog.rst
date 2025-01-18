@@ -3,7 +3,7 @@ Changelog
 
 This document records all notable changes to `Xul <https://xul.readthedocs.io/>`_.
 
-`Unreleased <https://github.com/peteradrichem/Xul/compare/2.5.1...py3k>`_ (2025-01-17)
+`Unreleased <https://github.com/peteradrichem/Xul/compare/2.5.1...py3k>`_ (2025-01-18)
 --------------------------------------------------------------------------------------
 * Drop support for Python < 3.9.
 * :doc:`xp <xp>`: fix boolean result (Python >= 3.12).
@@ -14,6 +14,7 @@ This document records all notable changes to `Xul <https://xul.readthedocs.io/>`
 * :doc:`transform <transform>`: removed ``--xsl-output`` option (always for ``--file``).
 * Fixed encoding issues.
 * Clearer error messages.
+* Improved documentation; grouped CLI options.
 * Code checks: ruff, black, isort, mypy (GitHub Action).
 * Test script for local testing with Docker Compose.
 * Typing.

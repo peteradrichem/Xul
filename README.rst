@@ -30,8 +30,6 @@ Xul -- XML Utilities
    :target: https://github.com/psf/black
 
 Xul is a set of XML scripts written in Python.
-Documentation can be found on `Read The Docs`_.
-
 
 Xul scripts
 ===========
@@ -60,6 +58,10 @@ Dependencies
 Xul uses the excellent lxml_ XML toolkit, a Pythonic binding for the C libraries
 libxml2_ and libxslt_.
 
+Documentation
+=============
+Xul documentation can be found on `Read The Docs`_.
+
 Options
 -------
 List the command-line options of a Xul script with ``--help``.
@@ -67,25 +69,39 @@ For example:
 
 .. code::
 
-   $ ppx --help
+   $ xp --help
 
-   usage: ppx [-h] [-V] [-n] [-o] [xml_source [xml_source ...]]
+   usage: xp [-h] [-V] [-l | -L] [-d DEFAULT_NS_PREFIX] [-e] [-q] [-p] [-r] [-m] xpath_expr [xml_source ...]
 
-   Pretty Print XML source in human readable form.
+   Select nodes in an XML source with an XPath expression.
 
    positional arguments:
-   xml_source            XML source (file, <stdin>, http://...)
+     xpath_expr            XPath expression
+     xml_source            XML source (file, <stdin>, http://...)
 
-   optional arguments:
-   -h, --help            show this help message and exit
-   -V, --version         show program's version number and exit
-   -n, --no-syntax       no syntax highlighting
-   -o, --omit-declaration
-                         omit the XML declaration
+   options:
+     -h, --help            show this help message and exit
+     -V, --version         show program's version number and exit
+     -m, --method          use ElementTree.xpath method instead of XPath class
 
-Documentation
-=============
-Xul documentation can be found on `Read The Docs`_.
+   file hit options:
+     output filenames to standard output
+
+     -l, -f, --files-with-hits
+                           only the names of files with a non-false and non-NaN result are written to standard output
+     -L, -F, --files-without-hits
+                           only the names of files with a false or NaN result, or without any results are written to
+                           standard output
+
+   namespace options:
+     -d DEFAULT_NS_PREFIX, --default-prefix DEFAULT_NS_PREFIX
+                           set the prefix for the default namespace in XPath [default: 'd']
+     -e, --exslt           add EXSLT XML namespaces
+     -q, --quiet           don't print XML source namespaces
+
+   output options:
+     -p, --pretty-element  pretty print the result element
+     -r, --result-xpath    print the XPath expression of the result element (or its parent)
 
 W3C standards
 -------------

@@ -40,7 +40,7 @@ Options
 
    $ xp --help
 
-   usage: xp [-h] [-V] [-e] [-d DEFAULT_NS_PREFIX] [-q] [-p] [-r] [-f | -F] [-m] xpath_expr [xml_source ...]
+   usage: xp [-h] [-V] [-l | -L] [-d DEFAULT_NS_PREFIX] [-e] [-q] [-p] [-r] [-m] xpath_expr [xml_source ...]
 
    Select nodes in an XML source with an XPath expression.
 
@@ -51,18 +51,26 @@ Options
    options:
      -h, --help            show this help message and exit
      -V, --version         show program's version number and exit
-     -e, --exslt           add EXSLT XML namespaces
-     -d DEFAULT_NS_PREFIX, --default-prefix DEFAULT_NS_PREFIX
-                           set the prefix for the default namespace in XPath [default: 'd']
-     -q, --quiet           don't print XML source namespaces
-     -p, --pretty-element  pretty print the result element
-     -r, --result-xpath    print the XPath expression of the result element (or its parent)
-     -f, -l, --files-with-hits
+     -m, --method          use ElementTree.xpath method instead of XPath class
+
+   file hit options:
+     output filenames to standard output
+
+     -l, -f, --files-with-hits
                            only the names of files with a non-false and non-NaN result are written to standard output
-     -F, -L, --files-without-hits
+     -L, -F, --files-without-hits
                            only the names of files with a false or NaN result, or without any results are written to
                            standard output
-     -m, --method          use ElementTree.xpath method instead of XPath class
+
+   namespace options:
+     -d DEFAULT_NS_PREFIX, --default-prefix DEFAULT_NS_PREFIX
+                           set the prefix for the default namespace in XPath [default: 'd']
+     -e, --exslt           add EXSLT XML namespaces
+     -q, --quiet           don't print XML source namespaces
+
+   output options:
+   -p, --pretty-element  pretty print the result element
+   -r, --result-xpath    print the XPath expression of the result element (or its parent)
 
 
 .. index::
@@ -88,6 +96,27 @@ List the XPath expressions of all elements with attributes:
 .. code-block:: bash
 
    xp -r "//@*" file.xml
+
+
+.. index::
+   single: xp script; pretty print
+
+Pretty print result element
+---------------------------
+.. program:: xp
+.. option:: -p, --pretty-element
+
+A result element node can be pretty printed with the ``--pretty-element`` command-line option.
+
+.. warning:: The ``--pretty-element`` option removes all white space text nodes
+   *before* applying the XPath expression. Therefore there will be no white space
+   text nodes in the results.
+
+Pretty print the latest Python PEP:
+
+.. code-block:: bash
+
+   curl -s https://peps.python.org/peps.rss | xp "//item[1]" -p
 
 
 .. index::
@@ -175,42 +204,22 @@ Find Python PEPs with four digits in the title (case-insensitive):
 
 
 .. index::
-   single: xp script; pretty print
-
-Pretty print element result
----------------------------
-.. program:: xp
-.. option:: -p, --pretty-element
-
-A result element node can be pretty printed with the ``--pretty-element`` command-line option.
-
-.. warning:: The ``--pretty-element`` option removes all white space text nodes
-   *before* applying the XPath expression. Therefore there will be no white space
-   text nodes in the results.
-
-Pretty print the latest Python PEP:
-
-.. code-block:: bash
-
-   curl -s https://peps.python.org/peps.rss | xp "//item[1]" -p
-
-
-.. index::
    single: xp script; file names
 
 Print file names
 ----------------
 .. program:: xp
-.. option:: -f, -l, --files-with-hits
+.. option:: -l, -f, --files-with-hits
 
 The ``--files-with-hits`` command-line option only prints the names
 of files with an XPath result that is not false and not NaN (not a number).
+This is similar to ``grep --files-with-matches`` using XPath instead of regular expressions.
 
 Find XML files with HTTP URL's:
 
 .. code-block:: bash
 
-   xp "//mpeg7:MediaUri[starts-with(., 'http://')]" *.xml -f
+   xp "//mpeg7:MediaUri[starts-with(., 'http://')]" *.xml -l
 
 XML files where all the book prices are below € 25,-.
 
@@ -219,16 +228,17 @@ XML files where all the book prices are below € 25,-.
    xp -el "math:max(//book/price[@currency='€'])<25" *.xml
 
 .. program:: xp
-.. option:: -F, -L, --files-without-hits
+.. option:: -L, -F, --files-without-hits
 
 The ``--files-without-hits`` command-line option only prints the names
 of files without any XPath results, or with a false or NaN result.
+This is similar to ``grep --files-without-match`` using XPath instead of regular expressions.
 
 XML files without a person with the family name 'Bauwens':
 
 .. code-block:: bash
 
-   xp "//mpeg7:FamilyName[text()='Bauwens']" *.xml -F
+   xp "//mpeg7:FamilyName[text()='Bauwens']" *.xml -L
 
 xpath method
 ------------

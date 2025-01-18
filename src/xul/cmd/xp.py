@@ -7,7 +7,7 @@ from typing import Any, Callable, Optional, TextIO, Union
 from lxml import etree
 
 from .. import __version__
-from ..etree import build_etree
+from ..etree import build_etree, get_source_name
 from ..log import setup_logger_console
 from ..ppxml import prettyprint
 from ..xpath import build_xpath, etree_xpath, namespaces
@@ -24,50 +24,13 @@ def parse_cl() -> argparse.Namespace:
         metavar="xml_source",
         help="XML source (file, <stdin>, http://...)",
     )
-    parser.add_argument(
-        "-e",
-        "--exslt",
-        action="store_true",
-        default=False,
-        dest="exslt",
-        help="add EXSLT XML namespaces",
+    file_group = parser.add_argument_group(
+        title="file hit options", description="output filenames to standard output"
     )
-    parser.add_argument(
-        "-d",
-        "--default-prefix",
-        action="store",
-        default="d",
-        dest="default_ns_prefix",
-        help="set the prefix for the default namespace in XPath [default: '%(default)s']",
-    )
-    parser.add_argument(
-        "-q",
-        "--quiet",
-        action="store_false",
-        default=True,
-        dest="verbose",
-        help="don't print XML source namespaces",
-    )
-    parser.add_argument(
-        "-p",
-        "--pretty-element",
-        action="store_true",
-        default=False,
-        dest="pretty_element",
-        help="pretty print the result element",
-    )
-    parser.add_argument(
-        "-r",
-        "--result-xpath",
-        action="store_true",
-        default=False,
-        dest="result_xpath",
-        help="print the XPath expression of the result element (or its parent)",
-    )
-    file_group = parser.add_mutually_exclusive_group(required=False)
-    file_group.add_argument(
-        "-f",
+    file_hit_group = file_group.add_mutually_exclusive_group(required=False)
+    file_hit_group.add_argument(
         "-l",
+        "-f",
         "--files-with-hits",
         action="store_true",
         default=False,
@@ -75,15 +38,57 @@ def parse_cl() -> argparse.Namespace:
         help="only the names of files with a non-false and non-NaN result "
         + "are written to standard output",
     )
-    file_group.add_argument(
-        "-F",
+    file_hit_group.add_argument(
         "-L",
+        "-F",
         "--files-without-hits",
         action="store_true",
         default=False,
         dest="files_without_hits",
         help="only the names of files with a false or NaN result, "
         + "or without any results are written to standard output",
+    )
+    namespace_group = parser.add_argument_group(title="namespace options")
+    namespace_group.add_argument(
+        "-d",
+        "--default-prefix",
+        action="store",
+        default="d",
+        dest="default_ns_prefix",
+        help="set the prefix for the default namespace in XPath [default: '%(default)s']",
+    )
+    namespace_group.add_argument(
+        "-e",
+        "--exslt",
+        action="store_true",
+        default=False,
+        dest="exslt",
+        help="add EXSLT XML namespaces",
+    )
+    namespace_group.add_argument(
+        "-q",
+        "--quiet",
+        action="store_false",
+        default=True,
+        dest="verbose",
+        help="don't print XML source namespaces",
+    )
+    output_group = parser.add_argument_group(title="output options")
+    output_group.add_argument(
+        "-p",
+        "--pretty-element",
+        action="store_true",
+        default=False,
+        dest="pretty_element",
+        help="pretty print the result element",
+    )
+    output_group.add_argument(
+        "-r",
+        "--result-xpath",
+        action="store_true",
+        default=False,
+        dest="result_xpath",
+        help="print the XPath expression of the result element (or its parent)",
     )
     parser.add_argument(
         "-m",
@@ -426,10 +431,7 @@ def xpath_on_xml(
         return False
 
     # Printable name for sys.stdin.
-    if xml_source in ("-", sys.stdin):
-        source_name = sys.stdin.name
-    else:
-        source_name = xml_source
+    source_name = get_source_name(xml_source)
 
     # XML sources names (--files-with-results/--files-without-results).
     if args.files_with_hits or args.files_without_hits:

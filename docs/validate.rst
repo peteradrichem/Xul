@@ -67,30 +67,34 @@ Options
 
    $ validate --help
 
-   usage: validate [-h] [-V] (-x XSD_SOURCE | -d DTD_SOURCE | -r RELAXNG_SOURCE)
-                   [-f | -F]
-                   [xml_source [xml_source ...]]
+   usage: validate [-h] [-V] (-x XSD_SOURCE | -d DTD_SOURCE | -r RELAXNG_SOURCE) [-l | -L] [xml_source ...]
 
-   Validate XML source with XSD, DTD or RELAX NG.
+   Validate an XML source with XSD, DTD or RELAX NG.
 
    positional arguments:
      xml_source            XML source (file, <stdin>, http://...)
 
-   optional arguments:
+   options:
      -h, --help            show this help message and exit
      -V, --version         show program's version number and exit
+
+   XML validator:
+     choose an XML validator: XSD, DTD or RELAX NG
+
      -x XSD_SOURCE, --xsd XSD_SOURCE
                            XML Schema Definition (XSD) source
      -d DTD_SOURCE, --dtd DTD_SOURCE
                            Document Type Definition (DTD) source
      -r RELAXNG_SOURCE, --relaxng RELAXNG_SOURCE
                            RELAX NG source
-     -f, -l, --validated-files
-                           only the names of validated XML files are written to
-                           standard output
-     -F, -L, --invalidated-files
-                           only the names of invalidated XML files are written to
-                           standard output
+
+   file hit options:
+     output filenames to standard output
+
+     -l, -f, --validated-files
+                           only the names of validated XML files are written to standard output
+     -L, -F, --invalidated-files
+                           only the names of invalidated XML files are written to standard output
 
 
 XML Validation
@@ -155,10 +159,10 @@ Validate the XML Schema XSD with the
 Print file names
 ----------------
 .. program:: validate
-.. option:: -f, -l, --validated-files
+.. option:: -l, -f, --validated-files
 
-The ``-f, -l, --validated-files`` command-line option only prints the names
-of validated XML files.
+The ``--validated-files`` command-line option only prints the names of validated XML files
+(similar to ``grep --files-with-matches``).
 
 Find XML files that validate:
 
@@ -167,10 +171,10 @@ Find XML files that validate:
    validate -x schema.xsd *.xml -l
 
 .. program:: validate
-.. option:: -F, -L, --invalidated-files
+.. option:: -L, -F, --invalidated-files
 
-The ``-F, -L, --invalidated-files`` command-line option only prints the names
-of XML files that don't validate.
+The ``--invalidated-files`` command-line option only prints the names of XML files that don't validate
+(similar to ``grep --files-without-match``).
 
 Remove XML files that fail to validate:
 
