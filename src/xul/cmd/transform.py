@@ -7,8 +7,8 @@ from typing import TextIO, Union
 from lxml import etree
 
 from .. import __version__
-from ..log import setup_logger_console
 from ..ppxml import prettyprint
+from ..utils import config_logger
 from ..xsl import build_xsl_transform, xml_transformer
 
 
@@ -89,7 +89,7 @@ def output_xslt(
 def main():
     """Entry point for command line script transform."""
     # Logging to the console.
-    setup_logger_console()
+    config_logger()
 
     # Command line.
     args = parse_cl()

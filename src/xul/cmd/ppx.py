@@ -6,8 +6,8 @@ from sys import stderr, stdin
 from lxml.etree import XMLParser
 
 from .. import __version__
-from ..log import setup_logger_console
 from ..ppxml import pp_xml
+from ..utils import config_logger
 
 
 def parse_cl() -> argparse.Namespace:
@@ -42,7 +42,7 @@ def parse_cl() -> argparse.Namespace:
 def main() -> None:
     """Entry point for command line script ppx."""
     # Logging to the console.
-    setup_logger_console()
+    config_logger()
 
     # Command line.
     args = parse_cl()

@@ -7,8 +7,7 @@ from typing import TextIO, Union
 from lxml import etree
 
 from .. import __version__
-from ..etree import get_source_name
-from ..log import setup_logger_console
+from ..utils import config_logger, get_source_name
 from ..validate import build_dtd, build_relaxng, build_xml_schema, validate_xml
 
 
@@ -86,7 +85,7 @@ def apply_validator(
 def main() -> None:
     """Entry point for command line script validate."""
     # Logging to the console.
-    setup_logger_console()
+    config_logger()
 
     # Command line.
     args = parse_cl()

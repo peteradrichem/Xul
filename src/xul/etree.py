@@ -11,26 +11,14 @@ The lxml.etree Tutorial
     https://lxml.de/tutorial.html
 """
 
-import io
 from logging import getLogger
 from typing import Optional, TextIO, Union
 
 from lxml import etree
 
+from .utils import get_source_name
+
 logger = getLogger(__name__)
-
-
-def get_source_name(xml_source: Union[TextIO, str]) -> str:
-    """Return the name of XML source."""
-    if isinstance(xml_source, str):
-        return xml_source
-    if isinstance(xml_source, io.TextIOWrapper):
-        # e.g. sys.stdin
-        return xml_source.name
-    if isinstance(xml_source, io.StringIO):
-        return "StringIO"
-    # ?
-    return str(xml_source)
 
 
 def build_etree(
