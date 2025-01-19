@@ -7,9 +7,9 @@ from typing import Any, Callable, Optional, TextIO, Union
 from lxml import etree
 
 from .. import __version__
-from ..etree import build_etree, get_source_name
-from ..log import setup_logger_console
+from ..etree import build_etree
 from ..ppxml import prettyprint
+from ..utils import config_logger, get_source_name
 from ..xpath import build_xpath, etree_xpath, namespaces
 
 
@@ -460,7 +460,7 @@ def xpath_on_xml(
 def main() -> None:
     """Entry point for command line script xp."""
     # Logging to the console.
-    setup_logger_console()
+    config_logger()
 
     # Command line.
     args = parse_cl()
