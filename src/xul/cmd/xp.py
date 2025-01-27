@@ -35,8 +35,10 @@ def parse_cl() -> argparse.Namespace:
         action="store_true",
         default=False,
         dest="files_with_hits",
-        help="only the names of files with a non-false and non-NaN result "
-        + "are written to standard output",
+        help=(
+            "only names of files with a result that is not false and not NaN"
+            " are written to standard output"
+        ),
     )
     file_hit_group.add_argument(
         "-L",
@@ -45,8 +47,10 @@ def parse_cl() -> argparse.Namespace:
         action="store_true",
         default=False,
         dest="files_without_hits",
-        help="only the names of files with a false or NaN result, "
-        + "or without any results are written to standard output",
+        help=(
+            "only names of files with a false or NaN result,"
+            " or without a result, are written to standard output"
+        ),
     )
     namespace_group = parser.add_argument_group(title="namespace options")
     namespace_group.add_argument(
@@ -73,7 +77,7 @@ def parse_cl() -> argparse.Namespace:
         dest="verbose",
         help="don't print XML source namespaces",
     )
-    output_group = parser.add_argument_group(title="output options")
+    output_group = parser.add_argument_group(title="element output options")
     output_group.add_argument(
         "-p",
         "--pretty-element",

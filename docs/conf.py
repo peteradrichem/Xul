@@ -28,13 +28,14 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = "alabaster"
-html_static_path = ["_static"]
-
+html_theme = "furo"
 html_theme_options = {
-    "description": "XML Utilities",
-    "font_size": "16px",
-    "code_font_size": "13px",
-    "fixed_sidebar": True,
-    "extra_nav_links": {"Index": "genindex.html"},
+    "source_repository": "https://github.com/peteradrichem/Xul/",
+    "source_branch": "main",
+    "source_directory": "docs/",
 }
+html_title = "XML Utilities"
+html_short_title = "Xul"
+
+pygments_style = "default"
+pygments_dark_style = "lightbulb"

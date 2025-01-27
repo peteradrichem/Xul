@@ -3,32 +3,41 @@
    single: scripts; ppx
    single: pretty print
 
+=======================
 ppx -- Pretty Print XML
 =======================
-Use ``ppx`` to pretty print an :ref:`xml_source` in human readable form.
+``ppx`` pretty prints an :ref:`xml_source` in human readable form.
+
+Examples
+========
+``ppx`` will try to use the character encoding of your terminal and defaults to UTF-8.
+
+Pretty print any local XML file:
 
 .. code-block:: bash
 
    ppx file.xml
 
+Pretty print an RSS feed:
 
-.. _white_space:
+.. code-block:: bash
 
-.. index::
-   single: white space
+   ppx http://feeds.feedburner.com/PythonInsider
 
-``ppx`` will try to use the character encoding of your terminal and defaults to UTF-8.
+Page an XML file with less:
 
-White Space
------------
-For greater readability ``ppx`` removes and adds *white space*.
+.. code-block:: bash
 
-.. warning:: White space can be significant in an XML document [#]_.
-   So be careful when using ``ppx`` to rewrite XML files.
+   ppx xml/large.xml | less -RX
 
+Redirect output (pipe) to ``ppx``:
+
+.. code-block:: bash
+
+   curl -s https://peps.python.org/peps.rss | ppx
 
 Options
--------
+=======
 ``ppx`` can be used with the following command-line options:
 
 .. code-block:: console
@@ -50,6 +59,32 @@ Options
                            omit the XML declaration
 
 
+.. _white_space:
+
+.. index::
+   single: white space
+   single: rewrite XML
+
+White Space
+===========
+For greater readability ``ppx`` removes and adds *white space*.
+
+Rewrite an XML file:
+
+.. code-block:: bash
+
+   ppx -n data_dump.xml > pp_data_dump.xml
+
+.. warning:: White space can be significant in an XML document [#]_.
+
+So be careful when using ``ppx`` to rewrite XML files.
+
+
+Output options
+==============
+``ppx`` terminal output options.
+
+
 .. index::
    single: ppx script; syntax highlighting
    single: syntax highlighting; ppx
@@ -67,7 +102,11 @@ Pretty print the XML Schema 1.0 schema document:
 .. program:: ppx
 .. option:: -n, --no-syntax
 
-You can disable syntax highlighting with the ``--no-syntax`` option.
+You can disable syntax highlighting with the ``--no-syntax`` option:
+
+.. code-block:: bash
+
+   ppx --no-syntax http://www.w3.org/2001/XMLSchema.xsd
 
 
 .. index::
@@ -83,43 +122,11 @@ By default ``ppx`` will print an (UTF-8) XML declaration.
 .. program:: ppx
 .. option:: -o, --omit-declaration
 
-Omit the XML declaration with the ``--omit-declaration`` option.
+Omit the XML declaration with the ``--omit-declaration`` option:
 
 .. code-block:: bash
 
    ppx --omit-declaration file.xml
-
-Examples
---------
-Pretty print any local XML file:
-
-.. code-block:: bash
-
-   ppx data_dump.xml
-
-RSS feed:
-
-.. code-block:: bash
-
-   ppx http://feeds.feedburner.com/PythonInsider
-
-Page XML file with less:
-
-.. code-block:: bash
-
-   ppx xml/large.xml | less -RX
-
-Redirect output (pipe) to ``ppx``:
-
-.. code-block:: bash
-
-   curl -s https://peps.python.org/peps.rss | ppx
-
-:ref:`Rewrite XML <white_space>`:
-
-.. code-block:: bash
-
-   ppx -n data_dump.xml > pp_data_dump.xml
 
 
 .. _Pygments: https://pygments.org/

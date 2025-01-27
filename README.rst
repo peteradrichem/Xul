@@ -2,14 +2,6 @@
 Xul -- XML Utilities
 ====================
 
-.. image:: https://img.shields.io/pypi/pyversions/xul.svg
-   :target: https://pypi.org/project/Xul/
-   :alt: Python versions
-
-.. image:: https://img.shields.io/pypi/l/xul.svg
-   :target: https://pypi.org/project/Xul/
-   :alt: License
-
 .. image:: https://img.shields.io/pypi/v/xul
    :target: https://pypi.org/project/Xul/
    :alt: PyPI version
@@ -18,21 +10,42 @@ Xul -- XML Utilities
    :target: https://pypi.org/project/Xul/
    :alt: Wheel
 
+.. image:: https://img.shields.io/pypi/pyversions/xul.svg
+   :target: https://pypi.org/project/Xul/
+   :alt: Python versions
+
+.. image:: https://img.shields.io/pypi/l/xul.svg
+   :target: https://pypi.org/project/Xul/
+   :alt: License
+
 .. image:: https://readthedocs.org/projects/xul/badge/
    :target: https://xul.readthedocs.io/en/stable/
    :alt: Documentation
+
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+   :target: https://github.com/psf/black
+   :alt: Black code style
+
+.. image:: https://img.shields.io/badge/type%20checked-mypy-039dfc
+   :target: https://mypy-lang.org
+   :alt: Typing checked by mypy
+
+.. image:: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json
+   :target: https://astral.sh/ruff
+   :alt: Ruff linting
+
+.. image:: https://img.shields.io/badge/imports-isort-1674b1
+   :target: https://pycqa.github.io/isort/
+   :alt: Imports sorted by isort
 
 .. image:: https://github.com/peteradrichem/Xul/actions/workflows/code-checks.yml/badge.svg
    :target: https://github.com/peteradrichem/Xul/actions/workflows/code-checks.yml
    :alt: Code checks
 
-.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-   :target: https://github.com/psf/black
-
-Xul is a set of XML scripts written in Python.
 
 Xul scripts
 ===========
+Xul is a set of XML scripts written in Python.
 
 - ``ppx``: pretty print XML
 - ``xp``: select XML nodes with XPath
@@ -41,7 +54,7 @@ Xul scripts
 
 Installation
 ------------
-Xul command line scripts can be installed with **pip**:
+Xul command line scripts can be installed with pip:
 
 .. code:: text
 
@@ -88,10 +101,11 @@ For example:
      output filenames to standard output
 
      -l, -f, --files-with-hits
-                           only the names of files with a non-false and non-NaN result are written to standard output
+                           only names of files with a result that is not false and
+                           not NaN are written to standard output
      -L, -F, --files-without-hits
-                           only the names of files with a false or NaN result, or without any results are written to
-                           standard output
+                           only names of files with a false or NaN result, or without a result,
+                           are written to standard output
 
    namespace options:
      -d DEFAULT_NS_PREFIX, --default-prefix DEFAULT_NS_PREFIX
@@ -99,7 +113,7 @@ For example:
      -e, --exslt           add EXSLT XML namespaces
      -q, --quiet           don't print XML source namespaces
 
-   output options:
+   element output options:
      -p, --pretty-element  pretty print the result element
      -r, --result-xpath    print the XPath expression of the result element (or its parent)
 

@@ -2,65 +2,33 @@
    single: validate script
    single: scripts; validate
 
+========================
 validate -- Validate XML
 ========================
-The ``validate`` script can check if an :ref:`xml_source` conforms to an XML schema.
-It supports the following XML schema languages.
+The ``validate`` script can check if an :ref:`xml_source` conforms to an XML schema language.
+You can also use ``validate`` to search for XML files that validate against an XML schema language.
 
 
-.. index::
-   single: validate script; XSD
-   single: XSD
-   single: XML Schema Definition
-   single: XML Schema
-
-XSD
----
-.. program:: validate
-.. option:: -x <xml_schema>, --xsd <xml_schema>
-
-Use the ``--xsd`` option to validate an XML source with an XSD [#]_ file:
+Examples
+========
+Validate XHTML with the
+:download:`XHTML 1.0 strict XSD <../examples/xsd/xhtml1-strict.xsd>`:
 
 .. code-block:: bash
 
-   validate -x schema.xsd source.xml
+   curl -s https://www.webstandards.org/learn/reference/templates/xhtml10s/ | \
+      validate -x examples/xsd/xhtml1-strict.xsd
 
-
-.. index::
-   single: validate script; DTD
-   single: DTD
-   single: Document Type Definition
-
-DTD
----
-.. program:: validate
-.. option:: -d <dtd_schema>, --dtd <dtd_schema>
-
-Validate an XML source with a DTD [#]_ file with the ``--dtd`` option:
+Validate XHTML with the
+:download:`XHTML 1.0 strict DTD <../examples/dtd/xhtml1-strict.dtd>`:
 
 .. code-block:: bash
 
-   validate -d doctype.dtd source.xml
-
-
-.. index::
-   single: validate script; RELAX NG
-   single: RELAX NG
-
-RELAX NG
---------
-.. program:: validate
-.. option:: -r <relax_ng_schema>, --relaxng <relax_ng_schema>
-
-The ``--relaxng`` option validates an XML source with a RELAX NG [#]_ file:
-
-.. code-block:: bash
-
-   validate -r relaxng.rng source.xml
-
+   curl -s https://www.webstandards.org/learn/reference/templates/xhtml10s/ | \
+      validate -d examples/dtd/xhtml1-strict.dtd
 
 Options
--------
+=======
 ``validate`` can be used with the following command-line options:
 
 .. code-block:: console
@@ -97,38 +65,30 @@ Options
                            only the names of invalidated XML files are written to standard output
 
 
-XML Validation
---------------
+.. index::
+   single: XML schema languages
 
-Validate XHTML with the
-:download:`XHTML 1.0 strict DTD <../examples/dtd/xhtml1-strict.dtd>`:
+XML schema languages
+====================
+``validate`` supports the following XML schema languages.
 
-.. code-block:: bash
 
-   curl -s https://www.webstandards.org/learn/reference/templates/xhtml10s/ | validate -d examples/dtd/xhtml1-strict.dtd
+.. index::
+   single: validate script; XSD
+   single: XSD
+   single: XML Schema Definition
+   single: XML Schema
 
-Validate XHTML with the
-:download:`XHTML 1.0 strict XSD <../examples/xsd/xhtml1-strict.xsd>`:
+XML Schema Definition (XSD)
+---------------------------
+.. program:: validate
+.. option:: -x <xml_schema>, --xsd <xml_schema>
 
-.. code-block:: bash
-
-   curl -s https://www.webstandards.org/learn/reference/templates/xhtml10s/ | validate -x examples/xsd/xhtml1-strict.xsd
-
-Validation Errors
------------------
-
-If an :ref:`xml_source` doesn't validate the ``validate`` script will show the
-reason with some additional information:
+Use the ``--xsd`` option to validate an XML source with an XSD [#]_ file:
 
 .. code-block:: bash
 
-   validate -x TV-Anytime.xsd NED120200816E.xml
-
-   XML source 'NED120200816E.xml' does not validate
-   line 92, column 0: Element '{urn:tva:metadata:2019}Broadcaster': This element is not expected. Expected is one of ( {urn:tva:metadata:2019}FirstShowing, {urn:tva:metadata:2019}LastShowing, {urn:tva:metadata:2019}Free ).
-
-XSD Validation
---------------
+   validate -x schema.xsd source.xml
 
 Validate an XSD file with the
 :download:`XML Schema schema document <../examples/xsd/XMLSchema.xsd>`:
@@ -149,6 +109,23 @@ And vice versa:
 
    validate -x http://www.w3.org/2009/XMLSchema/XMLSchema.xsd examples/xsd/XMLSchema.xsd
 
+
+.. index::
+   single: validate script; DTD
+   single: DTD
+   single: Document Type Definition
+
+Document Type Definition (DTD)
+------------------------------
+.. program:: validate
+.. option:: -d <dtd_schema>, --dtd <dtd_schema>
+
+Validate an XML source with a DTD [#]_ file with the ``--dtd`` option:
+
+.. code-block:: bash
+
+   validate -d doctype.dtd source.xml
+
 Validate the XML Schema XSD with the
 :download:`DTD for XML Schema <../examples/dtd/XMLSchema.dtd>`:
 
@@ -156,8 +133,46 @@ Validate the XML Schema XSD with the
 
    validate -d examples/dtd/XMLSchema.dtd examples/xsd/XMLSchema.xsd
 
-Print file names
-----------------
+
+.. index::
+   single: validate script; RELAX NG
+   single: RELAX NG
+   single: RNG
+
+RELAX NG
+--------
+.. program:: validate
+.. option:: -r <relax_ng_schema>, --relaxng <relax_ng_schema>
+
+The ``--relaxng`` option validates an XML source with a RELAX NG [#]_ file:
+
+.. code-block:: bash
+
+   validate -r relaxng.rng source.xml
+
+Validation Errors
+=================
+If an :ref:`xml_source` doesn't validate the ``validate`` script will show the
+reason with some additional information:
+
+.. code-block:: bash
+
+   validate -x TV-Anytime.xsd NED120200816E.xml
+
+   XML source 'NED120200816E.xml' does not validate
+   line 92, column 0: Element '{urn:tva:metadata:2019}Broadcaster': This element is not expected.
+   Expected is one of ( {urn:tva:metadata:2019}FirstShowing, {urn:tva:metadata:2019}LastShowing, {urn:tva:metadata:2019}Free ).
+
+
+.. index::
+   single: validate script; file names
+
+Searching XML files
+===================
+``validate`` can print the names of validated or invalidated XML files to standard output.
+
+Validated XML files
+-------------------
 .. program:: validate
 .. option:: -l, -f, --validated-files
 
@@ -168,19 +183,21 @@ Find XML files that validate:
 
 .. code-block:: bash
 
-   validate -x schema.xsd *.xml -l
+   validate -lx schema.xsd *.xml
 
+Invalidated XML files
+---------------------
 .. program:: validate
 .. option:: -L, -F, --invalidated-files
 
-The ``--invalidated-files`` command-line option only prints the names of XML files that don't validate
+The ``--invalidated-files`` command-line option only prints the names of invalidated XML files
 (similar to ``grep --files-without-match``).
 
 Remove XML files that fail to validate:
 
 .. code-block:: bash
 
-   validate -x schema.xsd *.xml -L | xargs rm
+   validate -Lx schema.xsd *.xml | xargs rm
 
 
 .. rubric:: Footnotes
