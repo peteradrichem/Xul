@@ -6,14 +6,18 @@ Changelog
 
 This document records all notable changes to `Xul <https://xul.readthedocs.io/>`_.
 
+`3.1.0-rc.1 <https://github.com/peteradrichem/Xul/compare/3.0.0...xp_count>`_ (2025-09-28)
+==========================================================================================
+* Added ``--count`` option to :doc:`xp <xp>`: only print the number of selected nodes.
+
 `3.0.0 <https://github.com/peteradrichem/Xul/compare/2.5.1...3.0.0>`_ (2025-01-27)
 ==================================================================================
 * Drop support for Python < 3.9.
 * :doc:`xp <xp>`: fix boolean result (Python >= 3.12).
 * :doc:`xp <xp>`: fix string result representation (Python 3).
 * :doc:`xp <xp>`: improved printing of namespaces.
-* :doc:`transform <transform>`: syntax highlighting for terminal output
-* :doc:`transform <transform>`: added ``--no-syntax`` option for terminal output
+* :doc:`transform <transform>`: syntax highlighting for terminal output.
+* :doc:`transform <transform>`: added ``--no-syntax`` option for terminal output.
 * :doc:`transform <transform>`: removed ``--xsl-output`` option (always for ``--file``).
 * Fixed encoding issues.
 * Clearer error messages.
