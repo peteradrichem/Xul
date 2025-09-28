@@ -18,13 +18,7 @@ Pretty print any local XML file:
 
    ppx file.xml
 
-Pretty print an RSS feed:
-
-.. code-block:: bash
-
-   ppx http://feeds.feedburner.com/PythonInsider
-
-Page an XML file with less:
+Page a syntax hightlighted XML file with less:
 
 .. code-block:: bash
 
@@ -35,6 +29,12 @@ Redirect output (pipe) to ``ppx``:
 .. code-block:: bash
 
    curl -s https://peps.python.org/peps.rss | ppx
+
+Pretty print an RSS feed:
+
+.. code-block:: bash
+
+   curl -s https://feeds.feedburner.com/PythonInsider | ppx
 
 Options
 =======

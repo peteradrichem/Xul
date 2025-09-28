@@ -78,7 +78,16 @@ def parse_cl() -> argparse.Namespace:
         help="don't print XML source namespaces",
     )
     output_group = parser.add_argument_group(title="element output options")
-    output_group.add_argument(
+    output_type_group = output_group.add_mutually_exclusive_group(required=False)
+    output_type_group.add_argument(
+        "-c",
+        "--count",
+        action="store_true",
+        default=False,
+        dest="count",
+        help="only print the number of selected nodes",
+    )
+    output_type_group.add_argument(
         "-p",
         "--pretty-element",
         action="store_true",
@@ -331,38 +340,44 @@ def print_result_list(result_list, el_tree: etree._ElementTree, args: argparse.N
                 print(f"prefix: {prefix:<8} URI: {uri}")
 
 
-def print_result_header(source_name: str, xp_result) -> None:
+def build_result_list(xp_result: Any) -> list[Any]:
+    """Return a list with XPath results.
+
+    :param xp_result: XPath result
+    """
+    if isinstance(xp_result, list):
+        # List is empty if there are no results.
+        return xp_result
+    # String, number, boolean.
+    return [xp_result]
+
+
+def print_result_header(source_name: str, xp_result: Any) -> None:
     """Print header with XPath result summary.
 
     :param source_name: name of the XML source
     :param xp_result: XPath result
     """
-    # Result count.
-    if isinstance(xp_result, list):
-        list_result = xp_result
-        xp_r_len = len(list_result)
-    else:
-        # String, number, boolean.
-        list_result = [xp_result]
-        xp_r_len = 1
+    result_list = build_result_list(xp_result)
+    xp_r_len = len(result_list)
 
     # XPath result summary.
     print(f"{source_name}:", end=" ")
     if xp_r_len == 0:
         print("no results.")
     elif xp_r_len == 1:
-        if isinstance(list_result[0], tuple):
+        if isinstance(xp_result, tuple):
             print("1 XML namespace result.")
         else:
             print("1 result.")
     else:
-        if isinstance(list_result[0], tuple):
+        if isinstance(result_list[0], tuple):
             print(f"{xp_r_len} XML namespace results.")
         else:
             print(f"{xp_r_len} results.")
 
 
-def print_xp_result(xp_result, el_tree: etree._ElementTree, args: argparse.Namespace) -> None:
+def print_xp_result(xp_result: Any, el_tree: etree._ElementTree, args: argparse.Namespace) -> None:
     """Print XPath results.
 
     :param xp_result: XPath result
@@ -427,7 +442,7 @@ def xpath_on_xml(
     if el_tree is None:
         return False
 
-    # XML namespaces.
+    # Determine XML namespaces.
     ns_map = namespaces(el_tree, args.exslt, args.default_ns_prefix)
     # XPath expression on ElementTree.
     xp_result = xpath_fn(el_tree, args.xpath_expr, ns_map)
@@ -437,7 +452,7 @@ def xpath_on_xml(
     # Printable name for sys.stdin.
     source_name = get_source_name(xml_source)
 
-    # XML sources names (--files-with-results/--files-without-results).
+    # XML sources names (--files-with-hits/--files-without-hits).
     if args.files_with_hits or args.files_without_hits:
         # pylint: disable=comparison-with-itself
         # NaN check: float('nan') != float('nan').
@@ -451,12 +466,21 @@ def xpath_on_xml(
             print(source_name)
         return True
 
-    # XML namespaces.
+    # Result count (--count).
+    if args.count:
+        xp_result_count = len(build_result_list(xp_result))
+        if len(args.xml_sources) > 1:
+            print(f"{source_name}:{xp_result_count}")
+        else:
+            print(xp_result_count)
+        return True
+
+    # XML namespaces (verbose).
     if args.verbose:
         print_xmlns(ns_map, el_tree.getroot())
-    # Result header.
+    # XPath result(s) header.
     print_result_header(source_name, xp_result)
-    # XPath results.
+    # XPath result(s).
     print_xp_result(xp_result, el_tree, args)
     return True
 
@@ -481,7 +505,7 @@ def main() -> None:
     for xml_s in args.xml_sources:
         if extra_new_line:
             print()
-        elif not (args.files_with_hits or args.files_without_hits):
+        elif not (args.files_with_hits or args.files_without_hits or args.count):
             extra_new_line = True
         xpath_on_xml(xml_s, xml_parser, xpath_fn, args)
 

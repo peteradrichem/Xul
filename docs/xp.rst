@@ -42,7 +42,7 @@ Options
 
    $ xp --help
 
-   usage: xp [-h] [-V] [-l | -L] [-d DEFAULT_NS_PREFIX] [-e] [-q] [-p] [-r] [-m] xpath_expr [xml_source ...]
+   usage: xp [-h] [-V] [-l | -L] [-d DEFAULT_NS_PREFIX] [-e] [-q] [-c | -p] [-r] [-m] xpath_expr [xml_source ...]
 
    Select nodes in an XML source with an XPath expression.
 
@@ -72,6 +72,7 @@ Options
      -q, --quiet           don't print XML source namespaces
 
    element output options:
+     -c, --count           only print the number of selected nodes
      -p, --pretty-element  pretty print the result element
      -r, --result-xpath    print the XPath expression of the result element (or its parent)
 
@@ -159,15 +160,15 @@ List the five most recent Python Insider posts:
 
 .. code-block:: bash
 
-   xp "descendant::d:entry[position()<=5]/d:title/text()" \
-      http://feeds.feedburner.com/PythonInsider
+   curl -s https://feeds.feedburner.com/PythonInsider | \
+      xp "descendant::d:entry[position()<=5]/d:title/text()"
 
 You can change the prefix for the default namespace with the ``--default-prefix`` option:
 
 .. code-block:: bash
 
-   xp -d p "descendant::p:entry[position()<=5]/p:title/text()" \
-      http://feeds.feedburner.com/PythonInsider
+   curl -s https://feeds.feedburner.com/PythonInsider | \
+      xp -d p "descendant::p:entry[position()<=5]/p:title/text()" \
 
 
 .. index::
@@ -187,15 +188,15 @@ Find Python Insider posts published in or after 2015 with EXSLT (``date`` prefix
 
 .. code-block:: bash
 
-   xp -e "//d:entry[date:year(d:published) >= '2015']/d:title/text()" \
-      http://feeds.feedburner.com/PythonInsider
+   curl -s https://feeds.feedburner.com/PythonInsider | \
+      xp -e "//d:entry[date:year(d:published) >= '2015']/d:title/text()"
 
 Python Insider posts updated in December:
 
 .. code-block:: bash
 
-   xp -e "//d:entry[date:month-name(d:updated) = 'December']/d:title/text()" \
-      http://feeds.feedburner.com/PythonInsider
+   curl -s https://feeds.feedburner.com/PythonInsider | \
+      xp -e "//d:entry[date:month-name(d:updated) = 'December']/d:title/text()"
 
 
 .. index::
@@ -264,6 +265,24 @@ Pretty print the latest Python PEP:
 .. code-block:: bash
 
    curl -s https://peps.python.org/peps.rss | xp -p "//item[1]"
+
+
+.. index::
+   single: xp script; node count
+
+Node count
+----------
+.. program:: xp
+.. option:: -c, --count
+
+Only count the number of selected nodes with the ``--count`` command-line option.
+This is similar to ``grep --count`` using XPath instead of regular expressions.
+
+Count the number of series titles:
+
+.. code-block:: bash
+
+   xp --count "//d:Title[@type='parentSeriesTitle']" file1.xml file2.xml⋅file3.xml
 
 
 Other options
