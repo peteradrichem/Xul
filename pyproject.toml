@@ -6,9 +6,7 @@ authors = [
     { name = "Peter Adrichem", email = "Peter.Adrichem@gmail.com" }
 ]
 requires-python = ">=3.9"
-dependencies = [
-    "lxml>=4.0"
-]
+dependencies = [ "lxml>=4.0" ]
 keywords = [ "xml", "xpath", "xslt", "xsd", "dtd", "xml schema", "relax ng", "rng" ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -21,6 +19,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: Implementation :: CPython",
     "Topic :: Text Processing :: Markup :: XML",
     "Topic :: Utilities"
@@ -35,10 +34,10 @@ docs = [
 ]
 test = [
     "black~=25.9",
-    "isort~=6.0.1",
+    "isort~=6.1.0",
     "lxml-stubs~=0.5.1",
     "mypy~=1.18.2",
-    "ruff~=0.13.2",
+    "ruff~=0.14.0",
     "types-Pygments~=2.19",
 ]
 syntax = [
@@ -71,9 +70,7 @@ version = { attr = "xul.__version__" }
 where = ["src"]
 
 [tool.setuptools.package-data]
-xul = [
-    "py.typed"
-]
+xul = [ "py.typed" ]
 
 [tool.black]
 color = true
@@ -109,3 +106,8 @@ ignore = [
   "D213",       # Multi-line docstring summary should start at the second line
 ]
 pydocstyle.convention = "pep257"
+
+[tool.ruff.format]
+# Use `\n` line endings for all files
+line-ending = "lf"
+skip-magic-trailing-comma = true

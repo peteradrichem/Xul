@@ -6,9 +6,10 @@ Changelog
 
 This document records all notable changes to `Xul <https://xul.readthedocs.io/>`_.
 
-`3.1.0-rc.1 <https://github.com/peteradrichem/Xul/compare/3.0.0...xp_count>`_ (2025-09-28)
-==========================================================================================
+`3.1.0 <https://github.com/peteradrichem/Xul/compare/3.0.0...3.1.0>`_ (2025-10-12)
+==================================================================================
 * Added ``--count`` option to :doc:`xp <xp>`: only print the number of selected nodes.
+* Last Python 3.9 release.
 
 `3.0.0 <https://github.com/peteradrichem/Xul/compare/2.5.1...3.0.0>`_ (2025-01-27)
 ==================================================================================
