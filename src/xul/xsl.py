@@ -52,9 +52,7 @@ def build_xsl_transform(xslt_source: Union[TextIO, str]) -> Optional[etree.XSLT]
 
 
 def etree_transformer(
-    el_tree: etree._ElementTree,
-    transformer: etree.XSLT,
-    **params,
+    el_tree: etree._ElementTree, transformer: etree.XSLT, **params
 ) -> Optional[etree._XSLTResultTree]:
     """Transform an ElementTree with an XSL Transformer.
 

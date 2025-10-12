@@ -11,6 +11,9 @@ echo() {
 echo "Lint checks (Ruff)"
 ruff check --output-format=concise
 
+echo "\nCheck formatting (Ruff)"
+ruff format --diff
+
 echo "\nCheck import sort (isort)"
 isort --check --diff .
 
