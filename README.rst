@@ -80,11 +80,11 @@ Options
 List the command-line options of a Xul script with ``--help``.
 For example:
 
-.. code::
+.. code-block:: console
 
    $ xp --help
 
-   usage: xp [-h] [-V] [-l | -L] [-d DEFAULT_NS_PREFIX] [-e] [-q] [-p] [-r] [-m] xpath_expr [xml_source ...]
+   usage: xp [-h] [-V] [-l | -L] [-d DEFAULT_NS_PREFIX] [-e] [-q] [-c | -p] [-r] [-m] xpath_expr [xml_source ...]
 
    Select nodes in an XML source with an XPath expression.
 
@@ -114,8 +114,10 @@ For example:
      -q, --quiet           don't print XML source namespaces
 
    element output options:
+     -c, --count           only print the number of selected nodes
      -p, --pretty-element  pretty print the result element
      -r, --result-xpath    print the XPath expression of the result element (or its parent)
+
 
 W3C standards
 -------------
