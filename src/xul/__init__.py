@@ -9,5 +9,4 @@ XML scripts in Python.
 """
 
 # Xul version.
-__version_info__ = ("3", "1", "0")
-__version__ = ".".join(__version_info__)
+__version__ = "3.1.1-beta"
