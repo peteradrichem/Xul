@@ -4,5 +4,6 @@ services:
     container_name: xul-test
     build:
       target: test
-
+    volumes:
+      - .:/app
     command: ./test.sh

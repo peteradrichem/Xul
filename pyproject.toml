@@ -11,7 +11,6 @@ keywords = [ "xml", "xpath", "xslt", "xsd", "dtd", "xml schema", "relax ng", "rn
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3.9",
@@ -24,7 +23,8 @@ classifiers = [
     "Topic :: Text Processing :: Markup :: XML",
     "Topic :: Utilities"
 ]
-license = { text = "MIT" }
+license = "MIT"
+license-files = ["LICENSE.txt"]
 dynamic = [ "version" ]
 
 [project.optional-dependencies]
@@ -50,27 +50,21 @@ Documentation = "https://xul.readthedocs.io/en/stable/"
 Changelog = "https://xul.readthedocs.io/en/latest/changelog.html"
 Source = "https://github.com/peteradrichem/Xul"
 
-[project.entry-points.console_scripts]
+[project.scripts]
 transform = "xul.cmd.transform:main"
 ppx = "xul.cmd.ppx:main"
 xp = "xul.cmd.xp:main"
 validate = "xul.cmd.validate:main"
 
 [build-system]
-requires = [
-    "setuptools>=42",
-    "wheel"
-]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling~=1.27"]
+build-backend = "hatchling.build"
 
-[tool.setuptools.dynamic]
-version = { attr = "xul.__version__" }
+[tool.hatch.version]
+path = "src/xul/__init__.py"
 
-[tool.setuptools.packages.find]
-where = ["src"]
-
-[tool.setuptools.package-data]
-xul = [ "py.typed" ]
+[tool.hatch.build.targets.wheel]
+packages = ["src/xul"]
 
 [tool.black]
 color = true
