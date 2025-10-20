@@ -20,7 +20,8 @@ def parse_cl() -> argparse.Namespace:
         metavar="xml_source",
         help="XML source (file, <stdin>, http://...)",
     )
-    parser.add_argument(
+    output_group = parser.add_argument_group("output options")
+    output_group.add_argument(
         "-n",
         "--no-syntax",
         action="store_false",
@@ -28,7 +29,7 @@ def parse_cl() -> argparse.Namespace:
         dest="syntax",
         help="no syntax highlighting",
     )
-    parser.add_argument(
+    output_group.add_argument(
         "-o",
         "--omit-declaration",
         action="store_false",

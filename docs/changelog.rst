@@ -6,6 +6,10 @@ Changelog
 
 This document records all notable changes to `Xul <https://xul.readthedocs.io/>`_.
 
+`3.1.1 <https://github.com/peteradrichem/Xul/compare/3.1.0...3.1.1>`_ (2025-10-20)
+==================================================================================
+* :doc:`ppx <ppx>`: group output options in help
+
 `3.1.0 <https://github.com/peteradrichem/Xul/compare/3.0.0...3.1.0>`_ (2025-10-12)
 ==================================================================================
 * Added ``--count`` option to :doc:`xp <xp>`: only print the number of selected nodes.

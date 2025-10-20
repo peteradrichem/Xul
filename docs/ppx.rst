@@ -54,6 +54,8 @@ Options
    options:
      -h, --help            show this help message and exit
      -V, --version         show program's version number and exit
+
+   output options:
      -n, --no-syntax       no syntax highlighting
      -o, --omit-declaration
                            omit the XML declaration
