@@ -267,6 +267,9 @@ Pretty print the latest Python PEP:
    curl -s https://peps.python.org/peps.rss | xp -p "//item[1]"
 
 
+Other options
+=============
+
 .. index::
    single: xp script; node count
 
@@ -285,8 +288,9 @@ Count the number of series titles:
    xp --count "//d:Title[@type='parentSeriesTitle']" file1.xml file2.xml⋅file3.xml
 
 
-Other options
-=============
+
+.. index::
+   single: xp script; xpath method
 
 xpath method
 ------------

@@ -9,4 +9,4 @@ XML scripts in Python.
 """
 
 # Xul version.
-__version__ = "3.1.1-beta"
+__version__ = "3.1.1"
