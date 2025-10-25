@@ -6,6 +6,10 @@ Changelog
 
 This document records all notable changes to `Xul <https://xul.readthedocs.io/>`_.
 
+`3.1.2 <https://github.com/peteradrichem/Xul/compare/3.1.1...3.1.2>`_ (2025-10-25)
+==================================================================================
+* :doc:`xp <xp>`: output group should not be mutually exclusive
+
 `3.1.1 <https://github.com/peteradrichem/Xul/compare/3.1.0...3.1.1>`_ (2025-10-20)
 ==================================================================================
 * :doc:`ppx <ppx>`: group output options in help

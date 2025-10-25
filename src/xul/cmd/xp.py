@@ -77,17 +77,16 @@ def parse_cl() -> argparse.Namespace:
         dest="verbose",
         help="don't print XML source namespaces",
     )
-    output_group = parser.add_argument_group(title="element output options")
-    output_type_group = output_group.add_mutually_exclusive_group(required=False)
-    output_type_group.add_argument(
+    output_group = parser.add_argument_group(title="output options")
+    output_group.add_argument(
         "-c",
         "--count",
         action="store_true",
         default=False,
         dest="count",
-        help="only print the number of selected nodes",
+        help="only a count of the result nodes is printed",
     )
-    output_type_group.add_argument(
+    output_group.add_argument(
         "-p",
         "--pretty-element",
         action="store_true",
@@ -101,7 +100,7 @@ def parse_cl() -> argparse.Namespace:
         action="store_true",
         default=False,
         dest="result_xpath",
-        help="print the XPath expression of the result element (or its parent)",
+        help="also print the XPath expression of the result element (or its parent)",
     )
     parser.add_argument(
         "-m",
@@ -116,7 +115,7 @@ def parse_cl() -> argparse.Namespace:
 
 
 def xpath_class(el_tree: etree._ElementTree, xpath_exp: str, ns_map: dict[str, str]):
-    """XPath with lxml.etree.XPath class.
+    """XPath with lxml.etree.XPath class (default).
 
     :param el_tree: lxml ElementTree
     :param xpath_exp: XPath expression
@@ -129,7 +128,7 @@ def xpath_class(el_tree: etree._ElementTree, xpath_exp: str, ns_map: dict[str, s
 
 
 def eltree_xpath(el_tree: etree._ElementTree, xpath_exp: str, ns_map: dict[str, str]):
-    """XPath with lxml.etree.ElementTree.xpath method.
+    """XPath with lxml.etree.ElementTree.xpath method (--method).
 
     :param el_tree: lxml ElementTree
     :param xpath_exp: XPath expression

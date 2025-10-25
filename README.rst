@@ -84,7 +84,7 @@ For example:
 
    $ xp --help
 
-   usage: xp [-h] [-V] [-l | -L] [-d DEFAULT_NS_PREFIX] [-e] [-q] [-c | -p] [-r] [-m] xpath_expr [xml_source ...]
+   usage: xp [-h] [-V] [-l | -L] [-d DEFAULT_NS_PREFIX] [-e] [-q] [-c] [-p] [-r] [-m] xpath_expr [xml_source ...]
 
    Select nodes in an XML source with an XPath expression.
 
@@ -101,8 +101,8 @@ For example:
      output filenames to standard output
 
      -l, -f, --files-with-hits
-                           only names of files with a result that is not false and
-                           not NaN are written to standard output
+                           only names of files with a result that is not false and not NaN
+                           are written to standard output
      -L, -F, --files-without-hits
                            only names of files with a false or NaN result, or without a result,
                            are written to standard output
@@ -113,10 +113,10 @@ For example:
      -e, --exslt           add EXSLT XML namespaces
      -q, --quiet           don't print XML source namespaces
 
-   element output options:
-     -c, --count           only print the number of selected nodes
+   output options:
+     -c, --count           only a count of the result nodes is printed
      -p, --pretty-element  pretty print the result element
-     -r, --result-xpath    print the XPath expression of the result element (or its parent)
+     -r, --result-xpath    also print the XPath expression of the result element (or its parent)
 
 
 W3C standards
