@@ -42,7 +42,7 @@ Options
 
    $ xp --help
 
-   usage: xp [-h] [-V] [-l | -L] [-d DEFAULT_NS_PREFIX] [-e] [-q] [-c | -p] [-r] [-m] xpath_expr [xml_source ...]
+   usage: xp [-h] [-V] [-l | -L] [-d DEFAULT_NS_PREFIX] [-e] [-q] [-c] [-p] [-r] [-m] xpath_expr [xml_source ...]
 
    Select nodes in an XML source with an XPath expression.
 
@@ -59,8 +59,8 @@ Options
      output filenames to standard output
 
      -l, -f, --files-with-hits
-                           only names of files with a result that is not false and
-                           not NaN are written to standard output
+                           only names of files with a result that is not false and not NaN
+                           are written to standard output
      -L, -F, --files-without-hits
                            only names of files with a false or NaN result, or without a result,
                            are written to standard output
@@ -71,10 +71,10 @@ Options
      -e, --exslt           add EXSLT XML namespaces
      -q, --quiet           don't print XML source namespaces
 
-   element output options:
-     -c, --count           only print the number of selected nodes
+   output options:
+     -c, --count           only a count of the result nodes is printed
      -p, --pretty-element  pretty print the result element
-     -r, --result-xpath    print the XPath expression of the result element (or its parent)
+     -r, --result-xpath    also print the XPath expression of the result element (or its parent)
 
 
 .. index::
@@ -218,8 +218,31 @@ regular expression (EXSLT ``re`` prefix):
       xp -eq '//item/title[re:match(text(), "pep [0-9]{4}:", "i")]'
 
 
-Result element output
-=====================
+.. index::
+   single: xp script; result element output
+
+Output options
+==============
+``xp`` can show the XPath expression of the result elements and/or pretty print the result elements.
+Or you can just count the number of result nodes.
+
+.. index::
+   single: xp script; node count
+
+Node count
+----------
+.. program:: xp
+.. option:: -c, --count
+
+Count the number of result nodes with the ``--count`` command-line option.
+This is similar to ``grep --count`` using XPath instead of regular expressions.
+
+Only count the number of series titles:
+
+.. code-block:: bash
+
+   xp --count "//d:Title[@type='parentSeriesTitle']" file1.xml file2.xml⋅file3.xml
+
 
 .. index::
    single: xp script; result XPath
@@ -269,25 +292,6 @@ Pretty print the latest Python PEP:
 
 Other options
 =============
-
-.. index::
-   single: xp script; node count
-
-Node count
-----------
-.. program:: xp
-.. option:: -c, --count
-
-Only count the number of selected nodes with the ``--count`` command-line option.
-This is similar to ``grep --count`` using XPath instead of regular expressions.
-
-Count the number of series titles:
-
-.. code-block:: bash
-
-   xp --count "//d:Title[@type='parentSeriesTitle']" file1.xml file2.xml⋅file3.xml
-
-
 
 .. index::
    single: xp script; xpath method
